@@ -6,7 +6,9 @@ import snake.gui.SpielfeldGui;
 import snake.spielfeld.Spielfeld;
 
 import javax.swing.*;
+import java.io.BufferedReader;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Scanner;
 /**
  * Created by scisneromam on 15.02.2018.
  */
@@ -15,8 +17,20 @@ public class Main
 
 	public static void main(String[] args) throws InterruptedException
 	{
-		GameEngine gameEngine = new GameEngine();
+		long loopTime = 50;
+		if (args.length > 0)
+		{
+			try
+			{
+				loopTime = Long.parseLong(args[0]);
+			} catch (NumberFormatException nfe)
+			{
+				System.out.println("Ignoriere " + args[0] + " da keine zahl");
+			}
+		}
+		GameEngine gameEngine = new GameEngine(loopTime);
 		GameMaster gameMaster = new GameMaster(null, null, null);
+
 		try
 		{
 			SwingUtilities.invokeAndWait(new Runnable()
@@ -46,8 +60,37 @@ public class Main
 		{
 			e.printStackTrace();
 		}
-		gameMaster.testAIs();
-		System.out.println("Snake dead");
+		boolean beendet = false;
+		Scanner scanner = new Scanner(System.in);
+		while (!beendet)
+		{
+			boolean restartPrompt = true;
+			gameMaster.testAIs();
+			while (restartPrompt)
+			{
+				System.out.println("Restart? Y/n");
+				String restart = scanner.nextLine();
+				if (restart.equalsIgnoreCase("y") || restart.equalsIgnoreCase("yes") || restart.equalsIgnoreCase("ja") || restart.equalsIgnoreCase("j"))
+				{
+					beendet = false;
+					restartPrompt = false;
+				} else if (restart.equalsIgnoreCase("n") || restart.equalsIgnoreCase("no") || restart.equalsIgnoreCase("nein"))
+				{
+					beendet = true;
+					restartPrompt = false;
+				} else if (restart.isEmpty() || restart.equalsIgnoreCase(""))
+				{
+					beendet = false;
+					restartPrompt = false;
+				} else
+				{
+					System.out.println("onley no/n and yes/y accepted!");
+					restartPrompt = true;
+				}
+			}
+
+		}
+
 	}
 
 	private static void setupAIs(GameMaster gameMaster, Spielfeld spielfeld)

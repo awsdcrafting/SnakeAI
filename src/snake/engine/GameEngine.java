@@ -19,6 +19,16 @@ public class GameEngine
 	private int turn;
 	private int score;
 
+	public GameEngine(long loopTime)
+	{
+		this.loopTime = loopTime;
+	}
+
+	public GameEngine()
+	{
+		this.loopTime = 50;
+	}
+
 	public int getTurn()
 	{
 		return turn;
