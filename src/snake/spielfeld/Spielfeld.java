@@ -11,6 +11,8 @@ public class Spielfeld
 	private int width;
 	private int height;
 
+	private boolean log = true;
+
 	private int headX;
 	private int headY;
 	private int tailX;
@@ -19,6 +21,11 @@ public class Spielfeld
 	private int emptyPlaces;
 
 	private direction moveDirection;
+
+	public void setLog(boolean log)
+	{
+		this.log = log;
+	}
 
 	public int getWidth()
 	{
@@ -173,7 +180,10 @@ public class Spielfeld
 				tries++;
 			}
 			field[x][y] = state.APPLE;
-			System.out.println("Placed the apple after " + tries + " tries");
+			if(log)
+			{
+				System.out.println("Placed the apple after " + tries + " tries");
+			}
 		}
 	}
 

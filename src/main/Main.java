@@ -25,22 +25,25 @@ public class Main
 	public static void main(String[] args) throws InterruptedException
 	{
 		long loopTime = 50;
-		long generations;
-		int population;
-
+		long generations = 100;
+		int population = 25;
 
 		if (args.length > 0)
 		{
 			try
 			{
 				loopTime = Long.parseLong(args[0]);
-				if(args.length>1){
+				if (args.length > 1)
+				{
 					generations = Long.parseLong(args[1]);
-					if(args.length>2)
+					if (args.length > 2)
 					{
 						population = Integer.parseInt(args[2]);
-						if(args.length>3){
-							if(args[3].equalsIgnoreCase("speed")||args[3].equalsIgnoreCase("fast")||args[3].equalsIgnoreCase("speedevolve")||args[3].equalsIgnoreCase("fastevolve")){
+						if (args.length > 3)
+						{
+							if (args[3].equalsIgnoreCase("speed") || args[3].equalsIgnoreCase("fast") || args[3].equalsIgnoreCase("speedevolve") || args[3]
+									.equalsIgnoreCase("fastevolve"))
+							{
 								bGui = false;
 								bLog = false;
 								loopTime = 0;
@@ -55,7 +58,9 @@ public class Main
 		}
 		GameEngine gameEngine = new GameEngine(loopTime);
 		//GameMaster gameMaster = new GameMaster(null, null, null);
-		EvolutionMaster evolutionMaster = new EvolutionMaster(null,null,null);
+		EvolutionMaster evolutionMaster = new EvolutionMaster(null, null, null);
+		evolutionMaster.setGenerations(generations);
+		evolutionMaster.setPopulation(population);
 
 		try
 		{
@@ -67,7 +72,7 @@ public class Main
 
 					Spielfeld spielfeld = new Spielfeld(75, 75);
 					gameEngine.setSpielfeld(spielfeld);
-					if(bGui)
+					if (bGui)
 					{
 						Gui gui = new Gui("SNAKE", 800, 800);
 						SpielfeldGui spielfeldGui = new SpielfeldGui();
@@ -82,6 +87,7 @@ public class Main
 					}
 					gameEngine.setLog(bLog);
 					evolutionMaster.setLog(bLog);
+					spielfeld.setLog(bLog);
 					evolutionMaster.setGameEngine(gameEngine);
 					evolutionMaster.setSpielfeld(spielfeld);
 
@@ -104,7 +110,7 @@ public class Main
 	private static void setupAIs(GameMaster gameMaster, Spielfeld spielfeld)
 	{
 		//gameMaster.addAI(new RandomAI(spielfeld,77));
-		for(int i = 0;i<5;i++)
+		for (int i = 0; i < 5; i++)
 		{
 			gameMaster.addAI(new BaseAI(spielfeld));
 			gameMaster.addAI(new BaseAI2(spielfeld));
