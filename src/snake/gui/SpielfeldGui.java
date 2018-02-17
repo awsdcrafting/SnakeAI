@@ -19,8 +19,6 @@ public class SpielfeldGui extends JPanel
 	@Override
 	public void paintComponent(Graphics g)
 	{
-		System.out.println("Repainting sfg");
-		long startTime = System.currentTimeMillis();
 		Graphics2D g2d = (Graphics2D) g;
 		g2d.setColor(Color.ORANGE);
 		g2d.fillRect(0, 0, 770, 770);
@@ -38,7 +36,6 @@ public class SpielfeldGui extends JPanel
 				}
 			}
 		}
-		System.out.println("SFG:"+ (System.currentTimeMillis() - startTime));
 	}
 
 	private void paintField(int x, int y, Graphics2D g2d)

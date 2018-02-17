@@ -113,8 +113,8 @@ public class Spielfeld
 		field[tailX][tailY] = state.TAILEAST;
 		moveDirection = direction.EAST;
 		placeApple();
-		/*
-		field[2][2] = state.BODYNORTHEAST;
+
+		/*field[2][2] = state.BODYNORTHEAST;
 		field[2][4] = state.BODYNORTHWEST;
 		field[2][6] = state.BODYSOUTHEAST;
 		field[2][8] = state.BODYSOUTHWEST;*/
@@ -245,7 +245,7 @@ public class Spielfeld
 				case BODYNORTHEAST:
 					field[tailX][tailY] = state.TAILEAST;
 					break;
-				case BODYSOUTHWEST:
+				case BODYNORTHWEST:
 					field[tailX][tailY] = state.TAILWEST;
 					break;
 				}

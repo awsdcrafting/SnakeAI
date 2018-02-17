@@ -1,4 +1,5 @@
 package snake.engine;
+import ai.AI;
 import snake.gui.Gui;
 import snake.spielfeld.Spielfeld;
 
@@ -10,6 +11,7 @@ public class GameEngine
 {
 	Spielfeld spielfeld;
 	Gui gui;
+	AI ai;
 
 	public void setSpielfeld(Spielfeld spielfeld)
 	{
@@ -19,21 +21,28 @@ public class GameEngine
 	{
 		this.gui = gui;
 	}
+	public void setAi(AI ai){
+		this.ai = ai;
+	}
 	private boolean snakeAlive = true;
 	private boolean running = true;
 	private boolean paused;
-	private long loopTime = 150;
+	private long loopTime = 50;
 
 	public void run()
 	{
+		int zug = 1;
 		while (running && snakeAlive)
 		{
 			long time = System.currentTimeMillis();
+			if(ai!=null){
+				System.out.println("AI zug: " + zug++);
+				ai.zug();
+			}
 			//doing things
 			int headX = spielfeld.getHeadX();
 			int headY = spielfeld.getHeadY();
-			System.out.println(headX + " " + headY + " before");
-			Spielfeld.state fieldState;
+			Spielfeld.state fieldState = Spielfeld.state.EMPTY;
 			switch (spielfeld.getMoveDirection())
 			{
 			case EAST:
@@ -77,11 +86,13 @@ public class GameEngine
 				}
 				break;
 			}
-			System.out.println(headX + " " + headY + " after");
+			if(fieldState == Spielfeld.state.APPLE){
+				spielfeld.placeApple();
+			}
+			gui.repaint();
 			try
 			{
 				//idling
-				System.out.println("GE:" + (System.currentTimeMillis() - time));
 				long waitTime = loopTime - (System.currentTimeMillis() - time);
 				if (waitTime > 0)
 				{
@@ -94,8 +105,7 @@ public class GameEngine
 			{
 				e.printStackTrace();
 			}
-			System.out.println("Repainting gui");
-			gui.repaint();
+
 
 		}
 		if (!snakeAlive)
