@@ -3,6 +3,7 @@ import ai.impl.BaseAI;
 import ai.impl.BaseAI2;
 import ai.impl.RandomAI;
 import org.neuroph.contrib.neat.gen.persistence.PersistenceException;
+import org.neuroph.core.NeuralNetwork;
 import snake.engine.GameEngine;
 import snake.gui.Gui;
 import snake.gui.SpielfeldGui;
@@ -21,6 +22,9 @@ public class Main
 
 	private static boolean bGui = true;
 	private static boolean bLog = true;
+	private static boolean runSaved = false;
+	private static BaseAI baseAI = null;
+	private static String path = "Winner";
 
 	public static void main(String[] args) throws InterruptedException
 	{
@@ -29,33 +33,47 @@ public class Main
 		long loopTime = 50;
 		long generations = 100;
 		int population = 25;
+		
 
 		if (args.length > 0)
 		{
-			try
+			if (args[0].equalsIgnoreCase("run"))
 			{
-				loopTime = Long.parseLong(args[0]);
+				runSaved = true;
 				if (args.length > 1)
 				{
-					generations = Long.parseLong(args[1]);
-					if (args.length > 2)
+					path = args[1];
+				} else
+				{
+					path = "Winner";
+				}
+			} else
+			{
+				try
+				{
+					loopTime = Long.parseLong(args[0]);
+					if (args.length > 1)
 					{
-						population = Integer.parseInt(args[2]);
-						if (args.length > 3)
+						generations = Long.parseLong(args[1]);
+						if (args.length > 2)
 						{
-							if (args[3].equalsIgnoreCase("speed") || args[3].equalsIgnoreCase("fast") || args[3].equalsIgnoreCase("speedevolve") || args[3]
-									.equalsIgnoreCase("fastevolve"))
+							population = Integer.parseInt(args[2]);
+							if (args.length > 3)
 							{
-								bGui = false;
-								bLog = false;
-								loopTime = 0;
+								if (args[3].equalsIgnoreCase("speed") || args[3].equalsIgnoreCase("fast") || args[3].equalsIgnoreCase("speedevolve") || args[3]
+										.equalsIgnoreCase("fastevolve"))
+								{
+									bGui = false;
+									bLog = false;
+									loopTime = 0;
+								}
 							}
 						}
 					}
+				} catch (NumberFormatException nfe)
+				{
+					System.out.println("Ignoriere " + args[0] + " da keine zahl");
 				}
-			} catch (NumberFormatException nfe)
-			{
-				System.out.println("Ignoriere " + args[0] + " da keine zahl");
 			}
 		}
 		GameEngine gameEngine = new GameEngine(loopTime);
@@ -87,6 +105,10 @@ public class Main
 						gameEngine.setGui(gui);
 						evolutionMaster.setGui(gui);
 					}
+					if (runSaved)
+					{
+						baseAI = new BaseAI(spielfeld, NeuralNetwork.load(path));
+					}
 					gameEngine.setLog(bLog);
 					evolutionMaster.setLog(bLog);
 					spielfeld.setLog(bLog);
@@ -99,14 +121,21 @@ public class Main
 		{
 			e.printStackTrace();
 		}
-		try
+		if (!runSaved)
 		{
-			evolutionMaster.evolve();
-		} catch (PersistenceException e)
+			try
+			{
+				evolutionMaster.evolve();
+			} catch (PersistenceException e)
+			{
+				e.printStackTrace();
+			}
+			System.out.println("Did " + generations + " generations with a population of " + population + " in " + (System.currentTimeMillis() - time) + "ms.");
+		} else
 		{
-			e.printStackTrace();
+			gameEngine.setAi(baseAI);
+			gameEngine.run();
 		}
-		System.out.println("Did " + generations + " generations with a population of " + population + " in " + (System.currentTimeMillis()-time) + "ms.");
 
 	}
 
