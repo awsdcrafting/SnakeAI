@@ -1,17 +1,32 @@
 package snake.engine;
-import ai.AI;
+import ai.impl.AI;
 import snake.gui.Gui;
 import snake.spielfeld.Spielfeld;
-
-import javax.swing.*;
 /**
  * Created by scisneromam on 16.02.2018.
  */
 public class GameEngine
 {
-	Spielfeld spielfeld;
-	Gui gui;
-	AI ai;
+	private Spielfeld spielfeld;
+	private Gui gui;
+	private AI ai;
+
+	private boolean snakeAlive = true;
+	private boolean running = true;
+	private boolean paused;
+	private long loopTime = 50;
+
+	private int turn;
+	private int score;
+
+	public int getTurn()
+	{
+		return turn;
+	}
+	public int getScore()
+	{
+		return score;
+	}
 
 	public void setSpielfeld(Spielfeld spielfeld)
 	{
@@ -21,22 +36,22 @@ public class GameEngine
 	{
 		this.gui = gui;
 	}
-	public void setAi(AI ai){
+	public void setAi(AI ai)
+	{
 		this.ai = ai;
 	}
-	private boolean snakeAlive = true;
-	private boolean running = true;
-	private boolean paused;
-	private long loopTime = 50;
 
 	public void run()
 	{
-		int zug = 1;
+		turn = 1;
+		score = 0;
+		snakeAlive = true;
 		while (running && snakeAlive)
 		{
 			long time = System.currentTimeMillis();
-			if(ai!=null){
-				System.out.println("AI zug: " + zug++);
+			if (ai != null)
+			{
+				System.out.println("AI turn: " + turn++);
 				ai.zug();
 			}
 			//doing things
@@ -87,8 +102,10 @@ public class GameEngine
 				}
 				break;
 			}
-			if(fieldState == Spielfeld.state.APPLE){
+			if (fieldState == Spielfeld.state.APPLE)
+			{
 				spielfeld.placeApple();
+				score++;
 			}
 			gui.repaint();
 			try
@@ -107,7 +124,6 @@ public class GameEngine
 				e.printStackTrace();
 			}
 
-
 		}
 		if (!snakeAlive)
 		{
@@ -119,6 +135,7 @@ public class GameEngine
 					System.out.println(spielfeld.getState(x, y) + "@x:" + x + " y:" + y);
 				}
 			}*/
+			System.out.println("Snake survived " + turn + " turns and achieved a score of " + score + ".");
 		}
 	}
 

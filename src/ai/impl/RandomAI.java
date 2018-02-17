@@ -1,4 +1,4 @@
-package ai;
+package ai.impl;
 import snake.spielfeld.Spielfeld;
 import utils.RandomUtils;
 /**
@@ -10,9 +10,15 @@ public class RandomAI implements AI
 	Spielfeld spielfeld;
 	private int failSaves = 777;
 
+
+
 	public RandomAI(Spielfeld spielfeld)
 	{
 		this.spielfeld = spielfeld;
+	}
+
+	public String getName(){
+		return "RandomAI";
 	}
 
 	@Override
@@ -40,6 +46,11 @@ public class RandomAI implements AI
 				System.out.println("Going " + Spielfeld.direction.WEST);
 				dir = Spielfeld.direction.WEST;
 				break;
+			}
+			if (!spielfeld.validMoveDirection(dir))
+			{
+				System.out.println(dir + " is not a valid direction retrying!");
+				continue;
 			}
 			//failsave
 			int headX = spielfeld.getHeadX();

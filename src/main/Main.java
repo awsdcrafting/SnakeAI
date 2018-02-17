@@ -1,5 +1,5 @@
 package main;
-import ai.RandomAI;
+import ai.impl.RandomAI;
 import snake.engine.GameEngine;
 import snake.gui.Gui;
 import snake.gui.SpielfeldGui;
@@ -16,6 +16,7 @@ public class Main
 	public static void main(String[] args) throws InterruptedException
 	{
 		GameEngine gameEngine = new GameEngine();
+		GameMaster gameMaster = new GameMaster(null, null, null);
 		try
 		{
 			SwingUtilities.invokeAndWait(new Runnable()
@@ -35,15 +36,25 @@ public class Main
 					gui.repaint();
 					gui.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 					gameEngine.setGui(gui);
-					gameEngine.setAi(new RandomAI(spielfeld));
+					gameMaster.setGameEngine(gameEngine);
+					gameMaster.setGui(gui);
+					gameMaster.setSpielfeld(spielfeld);
+					setupAIs(gameMaster, spielfeld);
 				}
 			});
 		} catch (InvocationTargetException e)
 		{
 			e.printStackTrace();
 		}
-		gameEngine.run();
+		gameMaster.testAIs();
 		System.out.println("Snake dead");
+	}
+
+	private static void setupAIs(GameMaster gameMaster, Spielfeld spielfeld)
+	{
+		gameMaster.addAI(new RandomAI(spielfeld));
+		gameMaster.addAI(new RandomAI(spielfeld));
+		gameMaster.addAI(new RandomAI(spielfeld));
 	}
 
 }

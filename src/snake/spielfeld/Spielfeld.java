@@ -16,6 +16,8 @@ public class Spielfeld
 	private int tailX;
 	private int tailY;
 
+	private int emptyPlaces;
+
 	private direction moveDirection;
 
 	public int getWidth()
@@ -63,6 +65,37 @@ public class Spielfeld
 		}
 	}
 
+	public boolean validMoveDirection(direction moveDirection){
+		switch (field[headX][headY])
+		{
+		case HEADSOUTH:
+			if (moveDirection != direction.NORTH)
+			{
+				return true;
+			}
+			break;
+		case HEADNORTH:
+			if (moveDirection != direction.SOUTH)
+			{
+				return true;
+			}
+			break;
+		case HEADWEST:
+			if (moveDirection != direction.EAST)
+			{
+				return true;
+			}
+			break;
+		case HEADEAST:
+			if (moveDirection != direction.WEST)
+			{
+				return true;
+			}
+			break;
+		}
+		return false;
+	}
+
 	public direction getMoveDirection()
 	{
 		return moveDirection;
@@ -103,16 +136,17 @@ public class Spielfeld
 		int x = RandomUtils.randomInt(width / 4, width - width / 4);
 		int y = RandomUtils.randomInt(height / 4, height - height / 4);
 		field[x][y] = state.HEADEAST;
-		for (int i = 1; i < 3; i++)
+		for (int i = 1; i <= 3; i++)
 		{
 			field[x - i][y] = state.BODYHORIZONTAL;
 		}
 		headX = x;
 		headY = y;
-		tailX = x - 3;
+		tailX = x - 4;
 		tailY = y;
 		field[tailX][tailY] = state.TAILEAST;
 		moveDirection = direction.EAST;
+		emptyPlaces = 75*75 - 5;
 		placeApple();
 
 		/*field[2][2] = state.BODYNORTHEAST;
@@ -124,19 +158,22 @@ public class Spielfeld
 
 	public void placeApple()
 	{
-		int width = field.length;
-		int height = field[0].length;
-		int x = RandomUtils.randomInt(1, width);
-		int y = RandomUtils.randomInt(1, height);
-		int tries = 1;
-		while (field[x][y] != state.EMPTY)
+		if((emptyPlaces--)>0)
 		{
-			x = RandomUtils.randomInt(1, width);
-			y = RandomUtils.randomInt(1, height);
-			tries++;
+			int width = field.length;
+			int height = field[0].length;
+			int x = RandomUtils.randomInt(1, width);
+			int y = RandomUtils.randomInt(1, height);
+			int tries = 1;
+			while (field[x][y] != state.EMPTY)
+			{
+				x = RandomUtils.randomInt(1, width);
+				y = RandomUtils.randomInt(1, height);
+				tries++;
+			}
+			field[x][y] = state.APPLE;
+			System.out.println("Placed the apple after " + tries + " tries");
 		}
-		field[x][y] = state.APPLE;
-		System.out.println("Placed the apple after " + tries + " tries");
 	}
 
 	public boolean willDie(direction moveDirection)
