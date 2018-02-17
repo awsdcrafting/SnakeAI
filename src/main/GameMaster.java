@@ -4,6 +4,8 @@ import snake.engine.GameEngine;
 import snake.gui.Gui;
 import snake.spielfeld.Spielfeld;
 
+import javax.swing.*;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 /**
  * Created by scisneromam on 17.02.2018.
@@ -16,6 +18,10 @@ public class GameMaster
 	Gui gui;
 	ArrayList<AI> aiArrayList;
 	ArrayList<String> outComes;
+
+	private void fitnessFunction(AI ai){
+		//(turns - (turns/(score+1)))
+	}
 
 	private int starts = 1;
 
@@ -67,9 +73,25 @@ public class GameMaster
 			long time = System.currentTimeMillis();
 			System.out.println("----------");
 			ai.reset();
-			gameEngine.setAi(ai);
-			spielfeld.setUp(77, 77);
-			gui.repaint();
+			try
+			{
+				SwingUtilities.invokeAndWait(new Runnable()
+				{
+					@Override
+					public void run()
+					{
+						gameEngine.setAi(ai);
+						spielfeld.setUp(77, 77);
+						gui.repaint();
+					}
+				});
+			} catch (InterruptedException e)
+			{
+				e.printStackTrace();
+			} catch (InvocationTargetException e)
+			{
+				e.printStackTrace();
+			}
 			System.out.println(ai.getName() + " is Controlling the run!");
 			gameEngine.run();
 			System.out.println(ai.getName() + " finished its run with " + gameEngine.getTurn() + " turns and a score of " + gameEngine.getScore() + ".");

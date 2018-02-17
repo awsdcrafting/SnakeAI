@@ -4,7 +4,7 @@ import utils.RandomUtils;
 /**
  * Created by scisneromam on 17.02.2018.
  */
-public class RandomAI implements AI
+public class RandomAI extends AI
 {
 
 	Spielfeld spielfeld;
@@ -20,15 +20,12 @@ public class RandomAI implements AI
 		this.spielfeld = spielfeld;
 		this.maxFailSaves = maxFailSaves;
 		failSaves = maxFailSaves;
+		this.name = "Random'AI'";
 	}
 
 	public RandomAI(Spielfeld spielfeld)
 	{
 		this.spielfeld = spielfeld;
-	}
-
-	public String getName(){
-		return "RandomAI";
 	}
 
 	@Override

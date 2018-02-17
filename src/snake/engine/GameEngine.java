@@ -18,6 +18,7 @@ public class GameEngine
 
 	private int turn;
 	private int score;
+	private int turnSinceLastApple;
 
 	public GameEngine(long loopTime)
 	{
@@ -55,6 +56,7 @@ public class GameEngine
 	{
 		turn = 1;
 		score = 0;
+		turnSinceLastApple = 0;
 		snakeAlive = true;
 		while (running && snakeAlive)
 		{
@@ -112,10 +114,15 @@ public class GameEngine
 				}
 				break;
 			}
+			turnSinceLastApple++;
 			if (fieldState == Spielfeld.state.APPLE)
 			{
 				spielfeld.placeApple();
 				score++;
+				turnSinceLastApple=0;
+			}
+			if(turnSinceLastApple>500){
+				snakeAlive=false;
 			}
 			gui.repaint();
 			try

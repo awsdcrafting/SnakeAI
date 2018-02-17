@@ -18,4 +18,9 @@ public class RandomUtils
 		return random.nextInt(max - min) + min;
 	}
 
+	public static double randomDouble()
+	{
+		return random.nextDouble();
+	}
+
 }
