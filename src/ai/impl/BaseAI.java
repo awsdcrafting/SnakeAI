@@ -5,6 +5,8 @@ import org.neuroph.util.NeuralNetworkFactory;
 import org.neuroph.util.TransferFunctionType;
 import snake.spielfeld.Spielfeld;
 import utils.MathUtils;
+
+import java.util.Vector;
 /**
  * Created by scisneromam on 17.02.2018.
  */
@@ -27,6 +29,14 @@ public class BaseAI extends AI
 		neuralNetwork = NeuralNetworkFactory.createMLPerceptron("24 16 4", TransferFunctionType.SIGMOID);
 		neuralNetwork.randomizeWeights();
 		neuralNetwork.setLearningRule(new BackPropagation());
+	}
+
+	public BaseAI(Spielfeld spielfeld, NeuralNetwork neuralNetwork)
+	{
+		super(spielfeld);
+		name = "BaseAI";
+		baseName = "BaseAI";
+		this.neuralNetwork = neuralNetwork;
 	}
 
 	@Override
@@ -100,42 +110,64 @@ public class BaseAI extends AI
 									spielfeld.getDistance(Spielfeld.state.BODYSOUTHWEST, Spielfeld.direction.NORTHWEST));
 		neuralNetwork.setInput(in1, in2, in3, in4, in5, in6, in7, in8, in9, in10, in11, in12, in13, in14, in15, in16, in17, in18, in19, in20, in21, in22, in23, in24);
 		neuralNetwork.calculate();
-		double[] output = neuralNetwork.getOutput();
+		Vector output = neuralNetwork.getOutput();
 
-		String out = "North: " + output[0] + " East: " + output[1] + " South: " + output[2] + " West: " + output[3];
+		String out = "Left: " + output.get(0) + " Forward: " + output.get(1) + " Right: " + output.get(2);
 		int choice = -1;
 		double best = 0;
-		for (int i = 0; i < output.length; i++)
+		for (int i = 0; i < output.size(); i++)
 		{
-			if (output[i] > best)
+			if ((double) output.get(i) > best)
 			{
 				choice = i;
-				best = output[i];
+				best = (double) output.get(i);
 			}
+		}
+		Spielfeld.direction left = Spielfeld.direction.EAST;
+		Spielfeld.direction forward = Spielfeld.direction.EAST;
+		Spielfeld.direction right = Spielfeld.direction.EAST;
+		switch (spielfeld.getMoveDirection())
+		{
+		case NORTH:
+			left = Spielfeld.direction.WEST;
+			forward = Spielfeld.direction.NORTH;
+			right = Spielfeld.direction.EAST;
+			break;
+		case SOUTH:
+			left = Spielfeld.direction.EAST;
+			forward = Spielfeld.direction.SOUTH;
+			right = Spielfeld.direction.WEST;
+			break;
+		case EAST:
+			left = Spielfeld.direction.NORTH;
+			forward = Spielfeld.direction.EAST;
+			right = Spielfeld.direction.SOUTH;
+			break;
+		case WEST:
+			left = Spielfeld.direction.SOUTH;
+			forward = Spielfeld.direction.WEST;
+			right = Spielfeld.direction.NORTH;
+			break;
 		}
 		switch (choice)
 		{
 		case 0:
-			spielfeld.setMoveDirection(Spielfeld.direction.NORTH);
-			out = out + " Choice: " + Spielfeld.direction.NORTH;
+			spielfeld.setMoveDirection(left);
+			out = out + " Choice: left";
 			break;
 		case 1:
-			spielfeld.setMoveDirection(Spielfeld.direction.EAST);
-			out = out + " Choice: " + Spielfeld.direction.EAST;
+			spielfeld.setMoveDirection(forward);
+			out = out + " Choice: forward";
 			break;
 		case 2:
-			spielfeld.setMoveDirection(Spielfeld.direction.SOUTH);
-			out = out + " Choice: " + Spielfeld.direction.SOUTH;
-			break;
-		case 3:
-			spielfeld.setMoveDirection(Spielfeld.direction.WEST);
-			out = out + " Choice: " + Spielfeld.direction.WEST;
+			spielfeld.setMoveDirection(right);
+			out = out + " Choice: right";
 			break;
 		}
 		out = out + " Going to: " + spielfeld.getMoveDirection();
 		System.out.println(out);
-
 	}
+
 	@Override
 	public void reset()
 	{

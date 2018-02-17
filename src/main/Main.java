@@ -2,6 +2,7 @@ package main;
 import ai.impl.BaseAI;
 import ai.impl.BaseAI2;
 import ai.impl.RandomAI;
+import org.neuroph.contrib.neat.gen.persistence.PersistenceException;
 import snake.engine.GameEngine;
 import snake.gui.Gui;
 import snake.gui.SpielfeldGui;
@@ -20,18 +21,28 @@ public class Main
 	public static void main(String[] args) throws InterruptedException
 	{
 		long loopTime = 50;
+		long generations;
+		int population;
 		if (args.length > 0)
 		{
 			try
 			{
 				loopTime = Long.parseLong(args[0]);
+				if(args.length>1){
+					generations = Long.parseLong(args[1]);
+					if(args.length>2)
+					{
+						population = Integer.parseInt(args[2]);
+					}
+				}
 			} catch (NumberFormatException nfe)
 			{
 				System.out.println("Ignoriere " + args[0] + " da keine zahl");
 			}
 		}
 		GameEngine gameEngine = new GameEngine(loopTime);
-		GameMaster gameMaster = new GameMaster(null, null, null);
+		//GameMaster gameMaster = new GameMaster(null, null, null);
+		EvolutionMaster evolutionMaster = new EvolutionMaster(null,null,null);
 
 		try
 		{
@@ -52,46 +63,22 @@ public class Main
 					gui.repaint();
 					gui.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 					gameEngine.setGui(gui);
-					gameMaster.setGameEngine(gameEngine);
-					gameMaster.setGui(gui);
-					gameMaster.setSpielfeld(spielfeld);
-					setupAIs(gameMaster, spielfeld);
+					evolutionMaster.setGameEngine(gameEngine);
+					evolutionMaster.setGui(gui);
+					evolutionMaster.setSpielfeld(spielfeld);
+
 				}
 			});
 		} catch (InvocationTargetException e)
 		{
 			e.printStackTrace();
 		}
-		boolean beendet = false;
-		Scanner scanner = new Scanner(System.in);
-		while (!beendet)
+		try
 		{
-			gameMaster.testAIs();
-			boolean restartPrompt = true;
-			while (restartPrompt)
-			{
-				System.out.println("Advance gen? Y/n");
-				String restart = scanner.nextLine();
-				if (restart.equalsIgnoreCase("y") || restart.equalsIgnoreCase("yes") || restart.equalsIgnoreCase("ja") || restart.equalsIgnoreCase("j"))
-				{
-					beendet = false;
-					restartPrompt = false;
-				} else if (restart.equalsIgnoreCase("n") || restart.equalsIgnoreCase("no") || restart.equalsIgnoreCase("nein"))
-				{
-					beendet = true;
-					restartPrompt = false;
-				} else if (restart.isEmpty() || restart.equalsIgnoreCase(""))
-				{
-					beendet = false;
-					restartPrompt = false;
-				} else
-				{
-					System.out.println("only no/n and yes/y accepted!");
-					restartPrompt = true;
-				}
-			}
-			gameMaster.advanceGen();
-
+			evolutionMaster.evolve();
+		} catch (PersistenceException e)
+		{
+			e.printStackTrace();
 		}
 
 	}

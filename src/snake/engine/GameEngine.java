@@ -121,7 +121,7 @@ public class GameEngine
 				score++;
 				turnSinceLastApple=0;
 			}
-			if(turnSinceLastApple>500){
+			if(turnSinceLastApple>(500+50*score)){
 				snakeAlive=false;
 			}
 			gui.repaint();
