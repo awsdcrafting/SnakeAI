@@ -141,8 +141,8 @@ public class Spielfeld
 			}
 		}
 
-		int x = RandomUtils.randomInt(width / 4, width - width / 4);
-		int y = RandomUtils.randomInt(height / 4, height - height / 4);
+		int x = 35;
+		int y = 35;
 		field[x][y] = state.HEADEAST;
 		for (int i = 1; i <= 3; i++)
 		{
