@@ -13,7 +13,13 @@ import java.util.Vector;
 public class BaseAI extends AI
 {
 
-	NeuralNetwork neuralNetwork;
+	private NeuralNetwork neuralNetwork;
+	private boolean log;
+
+	public void setLog(boolean log)
+	{
+		this.log = log;
+	}
 
 	public void save()
 	{
@@ -165,7 +171,10 @@ public class BaseAI extends AI
 			break;
 		}
 		out = out + " Going to: " + spielfeld.getMoveDirection();
-		System.out.println(out);
+		if (log)
+		{
+			System.out.println(out);
+		}
 	}
 
 	@Override

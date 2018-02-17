@@ -16,6 +16,8 @@ public class GameEngine
 	private boolean paused;
 	private long loopTime = 50;
 
+	private boolean log = true;
+
 	private int turn;
 	private int score;
 	private int turnSinceLastApple;
@@ -37,6 +39,11 @@ public class GameEngine
 	public int getScore()
 	{
 		return score;
+	}
+
+	public void setLog(boolean log)
+	{
+		this.log = log;
 	}
 
 	public void setSpielfeld(Spielfeld spielfeld)
@@ -63,7 +70,10 @@ public class GameEngine
 			long time = System.currentTimeMillis();
 			if (ai != null)
 			{
-				System.out.println("Ai turn: " + turn++);
+				if (log)
+				{
+					System.out.println("Ai turn: " + turn++);
+				}
 				ai.zug();
 			}
 			//doing things
@@ -119,12 +129,16 @@ public class GameEngine
 			{
 				spielfeld.placeApple();
 				score++;
-				turnSinceLastApple=0;
+				turnSinceLastApple = 0;
 			}
-			if(turnSinceLastApple>(500+50*score)){
-				snakeAlive=false;
+			if (turnSinceLastApple > (500 + 50 * score))
+			{
+				snakeAlive = false;
 			}
-			gui.repaint();
+			if (gui != null)
+			{
+				gui.repaint();
+			}
 			try
 			{
 				//idling
@@ -134,7 +148,10 @@ public class GameEngine
 					Thread.sleep(waitTime);
 				} else
 				{
-					System.out.println("We are " + (-waitTime) + "ms behind!");
+					if (log)
+					{
+						System.out.println("We are " + (-waitTime) + "ms behind!");
+					}
 				}
 			} catch (InterruptedException e)
 			{
@@ -151,7 +168,10 @@ public class GameEngine
 					System.out.println(spielfeld.getState(x, y) + "@x:" + x + " y:" + y);
 				}
 			}*/
-			System.out.println("Snake survived " + turn + " turns and achieved a score of " + score + ".");
+			if (log)
+			{
+				System.out.println("Snake survived " + turn + " turns and achieved a score of " + score + ".");
+			}
 		}
 	}
 

@@ -11,28 +11,28 @@ import snake.spielfeld.Spielfeld;
 public class SnakeFitnessFunction extends AbstractFitnessFunction
 {
 
-
 	Spielfeld spielfeld;
 	GameEngine gameEngine;
 	Gui gui;
+	private boolean log = true;
 
-	public SnakeFitnessFunction(Spielfeld spielfeld, GameEngine gameEngine, Gui gui)
+	public SnakeFitnessFunction(Spielfeld spielfeld, GameEngine gameEngine, Gui gui, boolean log)
 	{
 		this.spielfeld = spielfeld;
 		this.gameEngine = gameEngine;
 		this.gui = gui;
+		this.log = log;
 	}
-
 
 	@Override
 	protected double evaluate(Organism organism, NeuralNetwork neuralNetwork)
 	{
-		gameEngine.setAi(new BaseAI(spielfeld,neuralNetwork));
-		spielfeld.setUp(77,77);
+		BaseAI baseAI = new BaseAI(spielfeld, neuralNetwork);
+		baseAI.setLog(log);
+		gameEngine.setAi(baseAI);
+		spielfeld.setUp(77, 77);
 		gameEngine.run();
-		return gameEngine.getTurn() + gameEngine.getScore() * 100;
+		return gameEngine.getTurn() + gameEngine.getScore() * 1000;
 	}
-
-
 
 }

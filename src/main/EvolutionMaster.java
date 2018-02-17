@@ -30,6 +30,8 @@ public class EvolutionMaster
 	GameEngine gameEngine;
 	Gui gui;
 
+	private boolean log = true;
+
 	private long generations = 100;
 	private int population = 25;
 
@@ -53,6 +55,11 @@ public class EvolutionMaster
 		this.gui = gui;
 	}
 
+	public void setLog(boolean log)
+	{
+		this.log = log;
+	}
+
 	public void setGenerations(long generations)
 	{
 		this.generations = generations;
@@ -66,7 +73,7 @@ public class EvolutionMaster
 	public void evolve() throws PersistenceException
 	{
 		SimpleNeatParameters simpleNeatParameters = new SimpleNeatParameters();
-		simpleNeatParameters.setFitnessFunction(new SnakeFitnessFunction(spielfeld, gameEngine, gui));
+		simpleNeatParameters.setFitnessFunction(new SnakeFitnessFunction(spielfeld, gameEngine, gui, log));
 		simpleNeatParameters.setPopulationSize(25);
 		simpleNeatParameters.setMaximumGenerations(100L);
 		WeightMutationOperation weightMutationOperation = ((WeightMutationOperation) simpleNeatParameters.getMutationOperators().get(2));

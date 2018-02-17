@@ -10,6 +10,7 @@ import snake.spielfeld.Spielfeld;
 
 import javax.swing.*;
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Scanner;
 /**
@@ -18,11 +19,16 @@ import java.util.Scanner;
 public class Main
 {
 
+	private static boolean bGui = true;
+	private static boolean bLog = true;
+
 	public static void main(String[] args) throws InterruptedException
 	{
 		long loopTime = 50;
 		long generations;
 		int population;
+
+
 		if (args.length > 0)
 		{
 			try
@@ -33,6 +39,12 @@ public class Main
 					if(args.length>2)
 					{
 						population = Integer.parseInt(args[2]);
+						if(args.length>3){
+							if(args[3].equalsIgnoreCase("speed")||args[3].equalsIgnoreCase("fast")||args[3].equalsIgnoreCase("speedevolve")||args[3].equalsIgnoreCase("fastevolve")){
+								bGui = false;
+								bLog = false;
+							}
+						}
 					}
 				}
 			} catch (NumberFormatException nfe)
@@ -54,17 +66,21 @@ public class Main
 
 					Spielfeld spielfeld = new Spielfeld(75, 75);
 					gameEngine.setSpielfeld(spielfeld);
-					Gui gui = new Gui("SNAKE", 800, 800);
-					SpielfeldGui spielfeldGui = new SpielfeldGui();
-					spielfeldGui.setBounds(15, 15, 770, 770);
-					spielfeldGui.setSpielfeld(spielfeld);
-					gui.addToContentPane(spielfeldGui);
-					gui.initialize();
-					gui.repaint();
-					gui.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-					gameEngine.setGui(gui);
+					if(bGui)
+					{
+						Gui gui = new Gui("SNAKE", 800, 800);
+						SpielfeldGui spielfeldGui = new SpielfeldGui();
+						spielfeldGui.setBounds(15, 15, 770, 770);
+						spielfeldGui.setSpielfeld(spielfeld);
+						gui.addToContentPane(spielfeldGui);
+						gui.initialize();
+						gui.repaint();
+						gui.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+						gameEngine.setGui(gui);
+						evolutionMaster.setGui(gui);
+					}
+					gameEngine.setLog(bLog);
 					evolutionMaster.setGameEngine(gameEngine);
-					evolutionMaster.setGui(gui);
 					evolutionMaster.setSpielfeld(spielfeld);
 
 				}
