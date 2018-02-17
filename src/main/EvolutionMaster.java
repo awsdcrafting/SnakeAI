@@ -83,7 +83,7 @@ public class EvolutionMaster
 		naturalSelectionOrganismSelector.setKillUnproductiveSpecies(true);
 		simpleNeatParameters.setOrganismSelector(naturalSelectionOrganismSelector);
 		DynamicThresholdSpeciator dynamicThresholdSpeciator = new DynamicThresholdSpeciator();
-		dynamicThresholdSpeciator.setMaxSpecies(4);
+		dynamicThresholdSpeciator.setMaxSpecies(population/10*4);
 		simpleNeatParameters.setSpeciator(dynamicThresholdSpeciator);
 		ArrayList<NeuronGene> inputGenes = new ArrayList<>();
 		for (int i = 0; i < 24; i++)
