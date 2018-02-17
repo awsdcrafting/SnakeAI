@@ -62,13 +62,16 @@ public class GameMaster
 	{
 		for (AI ai : aiArrayList)
 		{
+			long time = System.currentTimeMillis();
 			System.out.println("----------");
+			ai.reset();
 			gameEngine.setAi(ai);
 			spielfeld.setUp(77, 77);
 			gui.repaint();
 			System.out.println(ai.getName() + " is Controlling the run!");
 			gameEngine.run();
-			System.out.println(ai.getName() + " finished its run with " + gameEngine.getTurn() + " turns and a score of " + gameEngine.getScore()+".");
+			System.out.println(ai.getName() + " finished its run with " + gameEngine.getTurn() + " turns and a score of " + gameEngine.getScore() + ".");
+			System.out.println(ai.getName() + " took " + (System.currentTimeMillis() - time));
 			outComes.add(ai.getName() + ": Turns: " + gameEngine.getTurn() + " Score: " + gameEngine.getScore());
 			System.out.println("----------");
 
@@ -82,7 +85,8 @@ public class GameMaster
 
 		}
 
-		for(int i = 0;i<3;i++){
+		for (int i = 0; i < 3; i++)
+		{
 			System.out.println("----------");
 		}
 

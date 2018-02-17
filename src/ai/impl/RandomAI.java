@@ -9,8 +9,18 @@ public class RandomAI implements AI
 
 	Spielfeld spielfeld;
 	private int failSaves = 777;
+	private int maxFailSaves = 777;
 
 
+	public void reset(){
+		failSaves = maxFailSaves;
+	}
+
+	public RandomAI(Spielfeld spielfeld, int maxFailSaves){
+		this.spielfeld = spielfeld;
+		this.maxFailSaves = maxFailSaves;
+		failSaves = maxFailSaves;
+	}
 
 	public RandomAI(Spielfeld spielfeld)
 	{

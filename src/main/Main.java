@@ -64,8 +64,8 @@ public class Main
 		Scanner scanner = new Scanner(System.in);
 		while (!beendet)
 		{
-			boolean restartPrompt = true;
 			gameMaster.testAIs();
+			boolean restartPrompt = true;
 			while (restartPrompt)
 			{
 				System.out.println("Restart? Y/n");

@@ -9,4 +9,6 @@ public interface AI
 	
 	public void zug();
 
+	public void reset();
+
 }
