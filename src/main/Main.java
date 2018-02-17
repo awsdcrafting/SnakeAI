@@ -24,6 +24,8 @@ public class Main
 
 	public static void main(String[] args) throws InterruptedException
 	{
+		long time = System.currentTimeMillis();
+
 		long loopTime = 50;
 		long generations = 100;
 		int population = 25;
@@ -104,6 +106,7 @@ public class Main
 		{
 			e.printStackTrace();
 		}
+		System.out.println("Did " + generations + " generations with a population of " + population + " in " + (System.currentTimeMillis()-time) + "ms.");
 
 	}
 
