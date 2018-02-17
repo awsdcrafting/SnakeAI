@@ -1,5 +1,6 @@
 package main;
 import ai.impl.AI;
+import org.neuroph.nnet.learning.BackPropagation;
 import snake.engine.GameEngine;
 import snake.gui.Gui;
 import snake.spielfeld.Spielfeld;
@@ -72,7 +73,7 @@ public class GameMaster
 			long time = System.currentTimeMillis();
 			System.out.println("----------");
 			ai.reset();
-			ai.setName(ai.getBaseName() + "@Gen: " + gen + " number: " + n);
+			ai.setName(ai.getBaseName() + "_Gen-" + gen + "_number-" + n);
 			ai.save();
 			try
 			{
@@ -128,6 +129,17 @@ public class GameMaster
 	public void advanceGen()
 	{
 		Collections.sort(aiArrayList);
+		ArrayList<AI> workingList = new ArrayList<>();
+		for(int i = 0;i<4;i++){
+			workingList.add(aiArrayList.get(i));
+		}
+
+		ArrayList<AI> nextGen = new ArrayList<>();
+		nextGen.add(workingList.get(0));
+		nextGen.add(workingList.get(1));
+
+
+
 	}
 
 }

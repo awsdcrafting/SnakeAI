@@ -15,6 +15,7 @@ public class BaseAI extends AI
 
 	public void save()
 	{
+		System.out.println(name);
 		neuralNetwork.save(name);
 	}
 
@@ -22,8 +23,10 @@ public class BaseAI extends AI
 	{
 		super(spielfeld);
 		name = "BaseAI";
+		baseName = "BaseAI";
 		neuralNetwork = NeuralNetworkFactory.createMLPerceptron("24 16 4", TransferFunctionType.SIGMOID);
 		neuralNetwork.randomizeWeights();
+		neuralNetwork.setLearningRule(new BackPropagation());
 	}
 
 	@Override
