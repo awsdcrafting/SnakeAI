@@ -74,8 +74,8 @@ public class EvolutionMaster
 	{
 		SimpleNeatParameters simpleNeatParameters = new SimpleNeatParameters();
 		simpleNeatParameters.setFitnessFunction(new SnakeFitnessFunction(spielfeld, gameEngine, gui, log));
-		simpleNeatParameters.setPopulationSize(25);
-		simpleNeatParameters.setMaximumGenerations(100L);
+		simpleNeatParameters.setPopulationSize(population);
+		simpleNeatParameters.setMaximumGenerations(generations);
 		WeightMutationOperation weightMutationOperation = ((WeightMutationOperation) simpleNeatParameters.getMutationOperators().get(2));
 		weightMutationOperation.setMaxWeightPertubation(weightMutationOperation.getMaxWeightPertubation() * 2);
 		weightMutationOperation.setProbabilityOfNewWeight(weightMutationOperation.getProbabilityOfNewWeight() * 2);
