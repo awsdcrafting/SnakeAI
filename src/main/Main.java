@@ -81,6 +81,7 @@ public class Main
 						evolutionMaster.setGui(gui);
 					}
 					gameEngine.setLog(bLog);
+					evolutionMaster.setLog(bLog);
 					evolutionMaster.setGameEngine(gameEngine);
 					evolutionMaster.setSpielfeld(spielfeld);
 

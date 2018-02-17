@@ -23,7 +23,6 @@ public class BaseAI extends AI
 
 	public void save()
 	{
-		System.out.println(name);
 		neuralNetwork.save(name);
 	}
 
