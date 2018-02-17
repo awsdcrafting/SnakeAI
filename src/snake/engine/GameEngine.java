@@ -63,7 +63,7 @@ public class GameEngine
 			long time = System.currentTimeMillis();
 			if (ai != null)
 			{
-				System.out.println("AI turn: " + turn++);
+				System.out.println("Ai turn: " + turn++);
 				ai.zug();
 			}
 			//doing things
@@ -144,7 +144,6 @@ public class GameEngine
 		}
 		if (!snakeAlive)
 		{
-			System.out.println("Snake died!");
 			/*for (int x = 0; x < 77; x++)
 			{
 				for (int y = 0; y < 77; y++)
