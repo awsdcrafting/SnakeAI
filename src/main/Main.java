@@ -95,9 +95,9 @@ public class Main
 
 	private static void setupAIs(GameMaster gameMaster, Spielfeld spielfeld)
 	{
-		gameMaster.addAI(new RandomAI(spielfeld));
-		gameMaster.addAI(new RandomAI(spielfeld));
-		gameMaster.addAI(new RandomAI(spielfeld));
+		gameMaster.addAI(new RandomAI(spielfeld,777));
+		gameMaster.addAI(new RandomAI(spielfeld,77));
+		gameMaster.addAI(new RandomAI(spielfeld,7));
 	}
 
 }
