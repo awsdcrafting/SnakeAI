@@ -105,7 +105,7 @@ public class EvolutionMaster
 				.getMinute() + "_" + localDateTime.getSecond();
 		NeuralNetwork neuralNetwork = simpleNeatParameters.getNeuralNetworkBuilder().createNeuralNetwork(organism);
 		neuralNetwork.save("Winner_" + generations + "_" + population + "-" + time);
-		
+
 	}
 
 }
