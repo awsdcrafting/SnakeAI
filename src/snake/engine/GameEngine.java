@@ -73,6 +73,8 @@ public class GameEngine
 				if (log)
 				{
 					System.out.println("Ai turn: " + turn++);
+				}else{
+					turn++;
 				}
 				ai.zug();
 			}
