@@ -16,6 +16,7 @@ import snake.gui.Gui;
 import snake.spielfeld.Spielfeld;
 
 import java.io.File;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.logging.Logger;
@@ -83,7 +84,7 @@ public class EvolutionMaster
 		naturalSelectionOrganismSelector.setKillUnproductiveSpecies(true);
 		simpleNeatParameters.setOrganismSelector(naturalSelectionOrganismSelector);
 		DynamicThresholdSpeciator dynamicThresholdSpeciator = new DynamicThresholdSpeciator();
-		dynamicThresholdSpeciator.setMaxSpecies(population/10*4);
+		dynamicThresholdSpeciator.setMaxSpecies(population / 10 * 4);
 		simpleNeatParameters.setSpeciator(dynamicThresholdSpeciator);
 		ArrayList<NeuronGene> inputGenes = new ArrayList<>();
 		for (int i = 0; i < 24; i++)
@@ -98,8 +99,11 @@ public class EvolutionMaster
 		Evolver evolver = Evolver.createNew(simpleNeatParameters, inputGenes, outputGenes);
 		Organism organism = evolver.evolve();
 		s_log.info("Winning organism is " + organism.getInnovationId());
+		LocalDateTime localDateTime = LocalDateTime.now();
+		String time = localDateTime.getDayOfMonth() + "_" + localDateTime.getMonthValue() + "_" + localDateTime.getYear() + "-" + localDateTime.getHour() + "_" + localDateTime
+				.getMinute() + "_" + localDateTime.getSecond();
 		NeuralNetwork neuralNetwork = simpleNeatParameters.getNeuralNetworkBuilder().createNeuralNetwork(organism);
-		neuralNetwork.save("Winner");
+		neuralNetwork.save("Winner_" + generations + "_" + population + "-" + time);
 	}
 
 }
