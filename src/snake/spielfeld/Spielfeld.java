@@ -65,7 +65,8 @@ public class Spielfeld
 		}
 	}
 
-	public boolean validMoveDirection(direction moveDirection){
+	public boolean validMoveDirection(direction moveDirection)
+	{
 		switch (field[headX][headY])
 		{
 		case HEADSOUTH:
@@ -146,7 +147,7 @@ public class Spielfeld
 		tailY = y;
 		field[tailX][tailY] = state.TAILEAST;
 		moveDirection = direction.EAST;
-		emptyPlaces = 75*75 - 5;
+		emptyPlaces = 75 * 75 - 5;
 		placeApple();
 
 		/*field[2][2] = state.BODYNORTHEAST;
@@ -158,7 +159,7 @@ public class Spielfeld
 
 	public void placeApple()
 	{
-		if((emptyPlaces--)>0)
+		if ((emptyPlaces--) > 0)
 		{
 			int width = field.length;
 			int height = field[0].length;
@@ -174,6 +175,57 @@ public class Spielfeld
 			field[x][y] = state.APPLE;
 			System.out.println("Placed the apple after " + tries + " tries");
 		}
+	}
+
+	public int getDistance(state desiredState, direction moveDirection)
+	{
+		int end = -1;
+		int x = headX;
+		int y = headY;
+		try
+		{
+			while (field[x][y] != desiredState)
+			{
+				end++;
+				switch (moveDirection)
+				{
+				case NORTH:
+					y--;
+					break;
+				case NORTHEAST:
+					y--;
+					x++;
+					break;
+				case NORTHWEST:
+					y--;
+					x--;
+					break;
+				case SOUTH:
+					y++;
+					break;
+				case SOUTHEAST:
+					y++;
+					x++;
+					break;
+				case SOUTHWEST:
+					y++;
+					x--;
+					break;
+				case EAST:
+					x++;
+					break;
+				case WEST:
+					x--;
+					break;
+				}
+			}
+		} catch (ArrayIndexOutOfBoundsException e)
+		{
+			//nicht vorhanden
+			return -1;
+		}
+
+		return end;
 	}
 
 	public boolean willDie(direction moveDirection)
@@ -451,7 +503,11 @@ public class Spielfeld
 		NORTH,
 		SOUTH,
 		EAST,
-		WEST
+		WEST,
+		NORTHEAST,
+		NORTHWEST,
+		SOUTHEAST,
+		SOUTHWEST,
 	}
 
 }

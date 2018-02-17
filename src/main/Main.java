@@ -1,4 +1,6 @@
 package main;
+import ai.impl.BaseAI;
+import ai.impl.BaseAI2;
 import ai.impl.RandomAI;
 import snake.engine.GameEngine;
 import snake.gui.Gui;
@@ -68,7 +70,7 @@ public class Main
 			boolean restartPrompt = true;
 			while (restartPrompt)
 			{
-				System.out.println("Restart? Y/n");
+				System.out.println("Advance gen? Y/n");
 				String restart = scanner.nextLine();
 				if (restart.equalsIgnoreCase("y") || restart.equalsIgnoreCase("yes") || restart.equalsIgnoreCase("ja") || restart.equalsIgnoreCase("j"))
 				{
@@ -84,10 +86,11 @@ public class Main
 					restartPrompt = false;
 				} else
 				{
-					System.out.println("onley no/n and yes/y accepted!");
+					System.out.println("only no/n and yes/y accepted!");
 					restartPrompt = true;
 				}
 			}
+			gameMaster.advanceGen();
 
 		}
 
@@ -95,9 +98,13 @@ public class Main
 
 	private static void setupAIs(GameMaster gameMaster, Spielfeld spielfeld)
 	{
-		gameMaster.addAI(new RandomAI(spielfeld,777));
-		gameMaster.addAI(new RandomAI(spielfeld,77));
-		gameMaster.addAI(new RandomAI(spielfeld,7));
+		//gameMaster.addAI(new RandomAI(spielfeld,77));
+		for(int i = 0;i<5;i++)
+		{
+			gameMaster.addAI(new BaseAI(spielfeld));
+			gameMaster.addAI(new BaseAI2(spielfeld));
+		}
+
 	}
 
 }

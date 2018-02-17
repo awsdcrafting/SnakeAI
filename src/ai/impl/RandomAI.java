@@ -6,26 +6,25 @@ import utils.RandomUtils;
  */
 public class RandomAI extends AI
 {
-
-	Spielfeld spielfeld;
 	private int failSaves = 777;
 	private int maxFailSaves = 777;
 
-
-	public void reset(){
+	public void reset()
+	{
 		failSaves = maxFailSaves;
 	}
 
-	public RandomAI(Spielfeld spielfeld, int maxFailSaves){
-		this.spielfeld = spielfeld;
+	public void save()
+	{
+
+	}
+
+	public RandomAI(Spielfeld spielfeld, int maxFailSaves)
+	{
+		super(spielfeld);
 		this.maxFailSaves = maxFailSaves;
 		failSaves = maxFailSaves;
 		this.name = "Random'AI'";
-	}
-
-	public RandomAI(Spielfeld spielfeld)
-	{
-		this.spielfeld = spielfeld;
 	}
 
 	@Override

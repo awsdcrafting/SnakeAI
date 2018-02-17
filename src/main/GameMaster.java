@@ -7,6 +7,7 @@ import snake.spielfeld.Spielfeld;
 import javax.swing.*;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Collections;
 /**
  * Created by scisneromam on 17.02.2018.
  */
@@ -19,11 +20,7 @@ public class GameMaster
 	ArrayList<AI> aiArrayList;
 	ArrayList<String> outComes;
 
-	private void fitnessFunction(AI ai){
-		//(turns - (turns/(score+1)))
-	}
-
-	private int starts = 1;
+	private int gen = 1;
 
 	public GameMaster()
 	{
@@ -68,11 +65,15 @@ public class GameMaster
 
 	public void testAIs()
 	{
+		int n = 0;
 		for (AI ai : aiArrayList)
 		{
+			n++;
 			long time = System.currentTimeMillis();
 			System.out.println("----------");
 			ai.reset();
+			ai.setName(ai.getBaseName() + "@Gen: " + gen + " number: " + n);
+			ai.save();
 			try
 			{
 				SwingUtilities.invokeAndWait(new Runnable()
@@ -96,7 +97,9 @@ public class GameMaster
 			gameEngine.run();
 			System.out.println(ai.getName() + " finished its run with " + gameEngine.getTurn() + " turns and a score of " + gameEngine.getScore() + ".");
 			System.out.println(ai.getName() + " took " + (System.currentTimeMillis() - time));
-			outComes.add(ai.getName() + ": Turns: " + gameEngine.getTurn() + " Score: " + gameEngine.getScore());
+
+			ai.setFitness(gameEngine.getTurn() + gameEngine.getScore() * 100);
+			outComes.add(ai.getName() + ": Turns: " + gameEngine.getTurn() + " Score: " + gameEngine.getScore() + " Fitness: " + ai.getFitness());
 			System.out.println("----------");
 
 			try
@@ -118,8 +121,13 @@ public class GameMaster
 		{
 			System.out.println(s);
 		}
-		outComes.add("-----"+(starts++));
+		outComes.add("Gen: " + (gen++));
 
+	}
+
+	public void advanceGen()
+	{
+		Collections.sort(aiArrayList);
 	}
 
 }
