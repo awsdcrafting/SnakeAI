@@ -43,11 +43,12 @@ public class GameEngine
 			int headX = spielfeld.getHeadX();
 			int headY = spielfeld.getHeadY();
 			Spielfeld.state fieldState = Spielfeld.state.EMPTY;
+			boolean willSurvive = !spielfeld.willDie(spielfeld.getMoveDirection());
 			switch (spielfeld.getMoveDirection())
 			{
 			case EAST:
 				fieldState = spielfeld.getState(++headX, headY);
-				if (fieldState == Spielfeld.state.APPLE || fieldState == Spielfeld.state.EMPTY)
+				if (willSurvive)
 				{
 					spielfeld.updateSnake(fieldState == Spielfeld.state.APPLE);
 				} else
@@ -57,7 +58,7 @@ public class GameEngine
 				break;
 			case WEST:
 				fieldState = spielfeld.getState(--headX, headY);
-				if (fieldState == Spielfeld.state.APPLE || fieldState == Spielfeld.state.EMPTY)
+				if (willSurvive)
 				{
 					spielfeld.updateSnake(fieldState == Spielfeld.state.APPLE);
 				} else
@@ -67,7 +68,7 @@ public class GameEngine
 				break;
 			case NORTH:
 				fieldState = spielfeld.getState(headX, --headY);
-				if (fieldState == Spielfeld.state.APPLE || fieldState == Spielfeld.state.EMPTY)
+				if (willSurvive)
 				{
 					spielfeld.updateSnake(fieldState == Spielfeld.state.APPLE);
 				} else
@@ -77,7 +78,7 @@ public class GameEngine
 				break;
 			case SOUTH:
 				fieldState = spielfeld.getState(headX, ++headY);
-				if (fieldState == Spielfeld.state.APPLE || fieldState == Spielfeld.state.EMPTY)
+				if (willSurvive)
 				{
 					spielfeld.updateSnake(fieldState == Spielfeld.state.APPLE);
 				} else

@@ -43,6 +43,7 @@ public class Main
 			e.printStackTrace();
 		}
 		gameEngine.run();
+		System.out.println("Snake dead");
 	}
 
 }

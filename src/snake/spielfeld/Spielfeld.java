@@ -1,5 +1,6 @@
 package snake.spielfeld;
 import utils.RandomUtils;
+
 /**
  * Created by scisneromam on 15.02.2018.
  */
@@ -136,6 +137,30 @@ public class Spielfeld
 		}
 		field[x][y] = state.APPLE;
 		System.out.println("Placed the apple after " + tries + " tries");
+	}
+
+	public boolean willDie(direction moveDirection)
+	{
+		int moveX = headX;
+		int moveY = headY;
+
+		switch (moveDirection)
+		{
+		case EAST:
+			moveX++;
+			break;
+		case WEST:
+			moveX--;
+			break;
+		case NORTH:
+			moveY--;
+			break;
+		case SOUTH:
+			moveY++;
+			break;
+		}
+		state s = field[moveX][moveY];
+		return !(s == state.APPLE || s == state.EMPTY || s == state.TAILEAST || s == state.TAILNORTH || s == state.TAILSOUTH || s == state.TAILWEST);
 	}
 
 	public void updateSnake(boolean apple)

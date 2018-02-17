@@ -59,7 +59,7 @@ public class RandomAI implements AI
 				headX++;
 				break;
 			}
-			if (spielfeld.getState(headX, headY) != Spielfeld.state.APPLE && spielfeld.getState(headX, headY) != Spielfeld.state.EMPTY)
+			if (spielfeld.willDie(dir))
 			{
 				if (failSaves > 0)
 				{
@@ -69,7 +69,8 @@ public class RandomAI implements AI
 					System.out.println("Will crash into " + spielfeld.getState(headX, headY) + " no failsave left to avoid death :(");
 					accepted = true;
 				}
-			}else{
+			} else
+			{
 				accepted = true;
 			}
 
