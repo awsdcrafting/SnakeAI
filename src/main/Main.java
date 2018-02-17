@@ -30,7 +30,7 @@ public class Main
 	{
 		long time = System.currentTimeMillis();
 
-		long loopTime = 50;
+		long loopTime = 150;
 		long generations = 100;
 		int population = 25;
 
