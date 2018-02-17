@@ -82,6 +82,7 @@ public class EvolutionMaster
 		weightMutationOperation.setProbabilityOfNewWeight(weightMutationOperation.getProbabilityOfNewWeight() * 2);
 		NaturalSelectionOrganismSelector naturalSelectionOrganismSelector = new NaturalSelectionOrganismSelector();
 		naturalSelectionOrganismSelector.setKillUnproductiveSpecies(true);
+		naturalSelectionOrganismSelector.setElitismEnabled(true);
 		simpleNeatParameters.setOrganismSelector(naturalSelectionOrganismSelector);
 		DynamicThresholdSpeciator dynamicThresholdSpeciator = new DynamicThresholdSpeciator();
 		dynamicThresholdSpeciator.setMaxSpecies(population / 10 > 4 ? population / 10 : 4);
@@ -104,6 +105,7 @@ public class EvolutionMaster
 				.getMinute() + "_" + localDateTime.getSecond();
 		NeuralNetwork neuralNetwork = simpleNeatParameters.getNeuralNetworkBuilder().createNeuralNetwork(organism);
 		neuralNetwork.save("Winner_" + generations + "_" + population + "-" + time);
+		
 	}
 
 }
