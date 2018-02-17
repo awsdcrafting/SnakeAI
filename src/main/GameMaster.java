@@ -17,6 +17,8 @@ public class GameMaster
 	ArrayList<AI> aiArrayList;
 	ArrayList<String> outComes;
 
+	private int starts = 1;
+
 	public GameMaster()
 	{
 		aiArrayList = new ArrayList<>();
@@ -77,7 +79,7 @@ public class GameMaster
 
 			try
 			{
-				Thread.sleep(250);
+				Thread.sleep(2500);
 			} catch (InterruptedException e)
 			{
 				e.printStackTrace();
@@ -94,6 +96,7 @@ public class GameMaster
 		{
 			System.out.println(s);
 		}
+		outComes.add("-----"+(starts++));
 
 	}
 
