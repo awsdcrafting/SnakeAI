@@ -43,6 +43,7 @@ public class Main
 							if(args[3].equalsIgnoreCase("speed")||args[3].equalsIgnoreCase("fast")||args[3].equalsIgnoreCase("speedevolve")||args[3].equalsIgnoreCase("fastevolve")){
 								bGui = false;
 								bLog = false;
+								loopTime = 0;
 							}
 						}
 					}
