@@ -13,8 +13,8 @@ import java.util.Vector;
 public class BaseAI extends AI
 {
 
-	private NeuralNetwork neuralNetwork;
-	private boolean log;
+	protected NeuralNetwork neuralNetwork;
+	protected boolean log;
 
 	public void setLog(boolean log)
 	{
