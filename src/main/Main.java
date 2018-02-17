@@ -33,7 +33,7 @@ public class Main
 		long loopTime = 50;
 		long generations = 100;
 		int population = 25;
-		
+
 
 		if (args.length > 0)
 		{

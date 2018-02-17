@@ -14,7 +14,7 @@ public class BaseAI extends AI
 {
 
 	protected NeuralNetwork neuralNetwork;
-	protected boolean log;
+	protected boolean log = true;
 
 	public void setLog(boolean log)
 	{
