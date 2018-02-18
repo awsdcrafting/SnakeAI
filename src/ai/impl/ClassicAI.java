@@ -5,6 +5,9 @@ import snake.spielfeld.Spielfeld;
 public class ClassicAI extends AI
 {
     
+    private AIDataModel dataModel;
+    private AIStateModel stateModel;
+    
     public ClassicAI(Spielfeld spielfeld)
     {
         super(spielfeld);
@@ -34,4 +37,19 @@ public class ClassicAI extends AI
         
     }
     
+    
+    private Spielfeld.state[][] getStates(Spielfeld sf)
+    {
+        int x = spielfeld.getWidth();
+        int y = spielfeld.getHeight();
+        Spielfeld.state[][] states = new Spielfeld.state[x][y];
+        for(int i = 0; i < x; i++)
+        {
+            for(int j = 0; j < y; j++)
+            {
+                states[i][j] = spielfeld.getState(i, j);
+            }
+        }
+        return states;
+    }
 }
