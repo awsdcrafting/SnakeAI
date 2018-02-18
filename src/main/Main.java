@@ -110,18 +110,23 @@ public class Main
 		evolutionMaster.setPopulation(population);
 		evolutionMaster.setFitness(fitness);
 
-		try
+		Spielfeld spielfeld = new Spielfeld(75, 75);
+		gameEngine.setSpielfeld(spielfeld);
+		gameEngine.setLog(bLog);
+		evolutionMaster.setLog(bLog);
+		spielfeld.setLog(bLog);
+		evolutionMaster.setGameEngine(gameEngine);
+		evolutionMaster.setSpielfeld(spielfeld);
+		if (bGui)
 		{
-			SwingUtilities.invokeAndWait(new Runnable()
+			try
 			{
-				@Override
-				public void run()
+				SwingUtilities.invokeAndWait(new Runnable()
 				{
-
-					Spielfeld spielfeld = new Spielfeld(75, 75);
-					gameEngine.setSpielfeld(spielfeld);
-					if (bGui)
+					@Override
+					public void run()
 					{
+
 						Gui gui = new Gui("SNAKE", 800, 800);
 						SpielfeldGui spielfeldGui = new SpielfeldGui();
 						spielfeldGui.setBounds(15, 15, 770, 770);
@@ -132,23 +137,19 @@ public class Main
 						gui.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 						gameEngine.setGui(gui);
 						evolutionMaster.setGui(gui);
-					}
-					if (runSaved)
-					{
-						baseAI = new BaseAI(spielfeld, NeuralNetwork.load(path));
-					}
-					gameEngine.setLog(bLog);
-					evolutionMaster.setLog(bLog);
-					spielfeld.setLog(bLog);
-					evolutionMaster.setGameEngine(gameEngine);
-					evolutionMaster.setSpielfeld(spielfeld);
 
-				}
-			});
-		} catch (InvocationTargetException e)
-		{
-			e.printStackTrace();
+					}
+				});
+			} catch (InvocationTargetException e)
+			{
+				e.printStackTrace();
+			}
 		}
+		if (runSaved)
+		{
+			baseAI = new BaseAI(spielfeld, NeuralNetwork.load(path));
+		}
+
 		if (!runSaved)
 		{
 			try
