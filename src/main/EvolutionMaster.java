@@ -116,7 +116,7 @@ public class EvolutionMaster
 		simpleNeatParameters.setPersistence((Persistence) new DirectoryOutputPersistence("path", (SerializationDelegate) new JavaSerializationDelegate(false)));
 
 		ArrayList<NeuronGene> inputGenes = new ArrayList<>();
-		for (int i = 0; i < 24; i++)
+		for (int i = 0; i < 8; i++)
 		{
 			inputGenes.add(new NeuronGene(NeuronType.INPUT, simpleNeatParameters));
 		}

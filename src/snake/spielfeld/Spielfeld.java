@@ -18,6 +18,9 @@ public class Spielfeld
 	private int tailX;
 	private int tailY;
 
+	private int appleX;
+	private int appleY;
+
 	private int emptyPlaces;
 
 	private direction moveDirection;
@@ -117,6 +120,22 @@ public class Spielfeld
 	{
 		return headY;
 	}
+	public int getTailX()
+	{
+		return tailX;
+	}
+	public int getTailY()
+	{
+		return tailY;
+	}
+	public int getAppleX()
+	{
+		return appleX;
+	}
+	public int getAppleY()
+	{
+		return appleY;
+	}
 	public Spielfeld(int width, int height)
 	{
 		this.width = width + 2;
@@ -179,12 +198,22 @@ public class Spielfeld
 				y = RandomUtils.randomInt(1, height);
 				tries++;
 			}
+			appleX = x;
+			appleY = y;
 			field[x][y] = state.APPLE;
-			if(log)
+			if (log)
 			{
 				System.out.println("Placed the apple after " + tries + " tries");
 			}
 		}
+	}
+
+	public int[] getDistanceToApple()
+	{
+		int x = appleX - headX;
+		int y = appleY - headY;
+
+		return new int[]{x, y};
 	}
 
 	public int getDistance(state desiredState, direction moveDirection)
@@ -202,24 +231,8 @@ public class Spielfeld
 				case NORTH:
 					y--;
 					break;
-				case NORTHEAST:
-					y--;
-					x++;
-					break;
-				case NORTHWEST:
-					y--;
-					x--;
-					break;
 				case SOUTH:
 					y++;
-					break;
-				case SOUTHEAST:
-					y++;
-					x++;
-					break;
-				case SOUTHWEST:
-					y++;
-					x--;
 					break;
 				case EAST:
 					x++;
@@ -228,6 +241,10 @@ public class Spielfeld
 					x--;
 					break;
 				}
+			}
+			if (x < headX || y < headY)
+			{
+				end = -end;
 			}
 		} catch (ArrayIndexOutOfBoundsException e)
 		{
@@ -514,10 +531,6 @@ public class Spielfeld
 		SOUTH,
 		EAST,
 		WEST,
-		NORTHEAST,
-		NORTHWEST,
-		SOUTHEAST,
-		SOUTHWEST,
 	}
 
 }
