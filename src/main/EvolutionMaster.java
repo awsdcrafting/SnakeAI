@@ -113,7 +113,7 @@ public class EvolutionMaster
 		{
 			path = fitness + "_" + population + "-" + time;
 		}
-		simpleNeatParameters.setPersistence((Persistence) new DirectoryOutputPersistence("path", (SerializationDelegate) new JavaSerializationDelegate(false)));
+		simpleNeatParameters.setPersistence((Persistence) new DirectoryOutputPersistence(path, (SerializationDelegate) new JavaSerializationDelegate(false)));
 
 		ArrayList<NeuronGene> inputGenes = new ArrayList<>();
 		for (int i = 0; i < 8; i++)
