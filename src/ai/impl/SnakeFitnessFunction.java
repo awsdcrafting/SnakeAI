@@ -32,7 +32,7 @@ public class SnakeFitnessFunction extends AbstractFitnessFunction
 		gameEngine.setAi(baseAI);
 		spielfeld.setUp(77, 77);
 		gameEngine.run();
-		return gameEngine.getTurn() + gameEngine.getScore() * 5625 * 1.5;
+		return gameEngine.getTurn() + gameEngine.getScore() * 5625 * 0.5;
 	}
 
 }
