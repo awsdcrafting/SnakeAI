@@ -33,7 +33,7 @@ public class Main
 		long loopTime = 150;
 		long generations = 100;
 		int population = 25;
-
+		double fitness = -1;
 
 		if (args.length > 0)
 		{
@@ -47,14 +47,13 @@ public class Main
 				{
 					path = "Winner";
 				}
-			} else
+			} else if (args[0].equalsIgnoreCase("fitness"))
 			{
 				try
 				{
-					loopTime = Long.parseLong(args[0]);
 					if (args.length > 1)
 					{
-						generations = Long.parseLong(args[1]);
+						fitness = Double.parseDouble(args[1]);
 						if (args.length > 2)
 						{
 							population = Integer.parseInt(args[2]);
@@ -72,7 +71,35 @@ public class Main
 					}
 				} catch (NumberFormatException nfe)
 				{
-					System.out.println("Ignoriere " + args[0] + " da keine zahl");
+					System.out.println("Ignoriere " + args[1] + " da keine zahl");
+				}
+			} else
+			{
+				int t = 0;
+				try
+				{
+					loopTime = Long.parseLong(args[t++]);
+					if (args.length > 1)
+					{
+						generations = Long.parseLong(args[t++]);
+						if (args.length > 2)
+						{
+							population = Integer.parseInt(args[t++]);
+							if (args.length > 3)
+							{
+								if (args[3].equalsIgnoreCase("speed") || args[3].equalsIgnoreCase("fast") || args[3].equalsIgnoreCase("speedevolve") || args[3]
+										.equalsIgnoreCase("fastevolve"))
+								{
+									bGui = false;
+									bLog = false;
+									loopTime = 0;
+								}
+							}
+						}
+					}
+				} catch (NumberFormatException nfe)
+				{
+					System.out.println("Ignoriere " + args[t] + " da keine zahl");
 				}
 			}
 		}
@@ -81,6 +108,7 @@ public class Main
 		EvolutionMaster evolutionMaster = new EvolutionMaster(null, null, null);
 		evolutionMaster.setGenerations(generations);
 		evolutionMaster.setPopulation(population);
+		evolutionMaster.setFitness(fitness);
 
 		try
 		{
