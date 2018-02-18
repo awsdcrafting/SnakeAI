@@ -13,7 +13,7 @@ public class BaseAI2 extends BaseAI
 		super(spielfeld);
 		name = "BaseAI2";
 		baseName = "BaseAI2";
-		neuralNetwork = NeuralNetworkFactory.createMLPerceptron("24 12 3 1 4", TransferFunctionType.SIGMOID);
+		neuralNetwork = NeuralNetworkFactory.createMLPerceptron("24 12 3 1 3", TransferFunctionType.SIGMOID);
 		neuralNetwork.randomizeWeights();
 	}
 }

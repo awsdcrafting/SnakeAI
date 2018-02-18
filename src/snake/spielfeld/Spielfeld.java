@@ -189,7 +189,7 @@ public class Spielfeld
 
 	public int getDistance(state desiredState, direction moveDirection)
 	{
-		int end = -1;
+		int end = 0;
 		int x = headX;
 		int y = headY;
 		try
@@ -232,7 +232,7 @@ public class Spielfeld
 		} catch (ArrayIndexOutOfBoundsException e)
 		{
 			//nicht vorhanden
-			return -1;
+			return -999;
 		}
 
 		return end;
