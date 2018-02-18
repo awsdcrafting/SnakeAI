@@ -114,7 +114,12 @@ public class EvolutionMaster
 		String time = localDateTime.getDayOfMonth() + "_" + localDateTime.getMonthValue() + "_" + localDateTime.getYear() + "-" + localDateTime.getHour() + "_" + localDateTime
 				.getMinute() + "_" + localDateTime.getSecond();
 		NeuralNetwork neuralNetwork = simpleNeatParameters.getNeuralNetworkBuilder().createNeuralNetwork(organism);
-		neuralNetwork.save("Winner_" + generations + "_" + population + "-" + time);
+		if(fitness==-1)
+		{
+			neuralNetwork.save("Winner_" + generations + "_" + population + "-" + time);
+		}else{
+			neuralNetwork.save("Winner_fitness_" + fitness + "_" + population + "-" + time);
+		}
 
 	}
 
