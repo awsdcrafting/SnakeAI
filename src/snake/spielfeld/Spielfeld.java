@@ -242,10 +242,6 @@ public class Spielfeld
 					break;
 				}
 			}
-			if (x < headX || y < headY)
-			{
-				end = -end;
-			}
 		} catch (ArrayIndexOutOfBoundsException e)
 		{
 			//nicht vorhanden
