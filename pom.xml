@@ -8,18 +8,18 @@
     <artifactId>SnakeAI</artifactId>
     <version>1.0-SNAPSHOT</version>
 
-   <!-- <repositories>
-        <repository>
+   <repositories>
+       <!-- <repository>
             <id>neuroph.sourceforge.net</id>
             <url>http://neuroph.sourceforge.net/maven2/</url>
-        </repository>
-    </repositories>-->
+        </repository>  -->
+    </repositories>
     <dependencies>
-       <!-- <dependency>
+		<!-- <dependency>
             <groupId>org.neuroph</groupId>
             <artifactId>neuroph-core</artifactId>
-            <version>2.94</version>
-        </dependency>-->
+            <version>2.3</version>
+        </dependency> -->
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-configuration2</artifactId>
