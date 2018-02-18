@@ -133,7 +133,7 @@ public class GameEngine
 				score++;
 				turnSinceLastApple = 0;
 			}
-			if (turnSinceLastApple > (1250 + 125 * score))
+			if (turnSinceLastApple > (5625 + 562.5 * score))
 			{
 				snakeAlive = false;
 			}
