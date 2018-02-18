@@ -7,8 +7,10 @@ import org.neuroph.contrib.neat.gen.impl.SimpleNeatParameters;
 import org.neuroph.contrib.neat.gen.operations.mutation.WeightMutationOperation;
 import org.neuroph.contrib.neat.gen.operations.selector.NaturalSelectionOrganismSelector;
 import org.neuroph.contrib.neat.gen.operations.speciator.DynamicThresholdSpeciator;
+import org.neuroph.contrib.neat.gen.persistence.Persistence;
 import org.neuroph.contrib.neat.gen.persistence.PersistenceException;
 import org.neuroph.contrib.neat.gen.persistence.impl.DirectoryOutputPersistence;
+import org.neuroph.contrib.neat.gen.persistence.impl.SerializationDelegate;
 import org.neuroph.contrib.neat.gen.persistence.impl.serialize.JavaSerializationDelegate;
 import org.neuroph.core.NeuralNetwork;
 import snake.engine.GameEngine;
@@ -72,18 +74,23 @@ public class EvolutionMaster
 		this.population = population;
 	}
 
-	public void setFitness(double fitness){
+	public void setFitness(double fitness)
+	{
 		this.fitness = fitness;
 	}
 
 	public void evolve() throws PersistenceException
 	{
+		LocalDateTime localDateTime = LocalDateTime.now();
+		String time = localDateTime.getDayOfMonth() + "_" + localDateTime.getMonthValue() + "_" + localDateTime.getYear() + "-" + localDateTime.getHour() + "_" + localDateTime
+				.getMinute() + "_" + localDateTime.getSecond();
 		SimpleNeatParameters simpleNeatParameters = new SimpleNeatParameters();
 		simpleNeatParameters.setFitnessFunction(new SnakeFitnessFunction(spielfeld, gameEngine, gui, log));
 		simpleNeatParameters.setPopulationSize(population);
-		if(fitness!=-1){
+		if (fitness != -1)
+		{
 			simpleNeatParameters.setMaximumFitness(fitness);
-		}else
+		} else
 		{
 			simpleNeatParameters.setMaximumGenerations(generations);
 		}
@@ -97,6 +104,17 @@ public class EvolutionMaster
 		DynamicThresholdSpeciator dynamicThresholdSpeciator = new DynamicThresholdSpeciator();
 		dynamicThresholdSpeciator.setMaxSpecies(population / 5 > 4 ? population / 5 : 4);
 		simpleNeatParameters.setSpeciator(dynamicThresholdSpeciator);
+
+		String path = "";
+		if (fitness == -1)
+		{
+			path = generations + "_" + population + "-" + time;
+		} else
+		{
+			path = fitness + "_" + population + "-" + time;
+		}
+		simpleNeatParameters.setPersistence((Persistence) new DirectoryOutputPersistence("path", (SerializationDelegate) new JavaSerializationDelegate(false)));
+
 		ArrayList<NeuronGene> inputGenes = new ArrayList<>();
 		for (int i = 0; i < 24; i++)
 		{
@@ -107,20 +125,13 @@ public class EvolutionMaster
 		{
 			outputGenes.add(new NeuronGene(NeuronType.OUTPUT, simpleNeatParameters));
 		}
+
 		Evolver evolver = Evolver.createNew(simpleNeatParameters, inputGenes, outputGenes);
 		Organism organism = evolver.evolve();
 		s_log.info("Winning organism is " + organism.getInnovationId());
-		LocalDateTime localDateTime = LocalDateTime.now();
-		String time = localDateTime.getDayOfMonth() + "_" + localDateTime.getMonthValue() + "_" + localDateTime.getYear() + "-" + localDateTime.getHour() + "_" + localDateTime
-				.getMinute() + "_" + localDateTime.getSecond();
-		NeuralNetwork neuralNetwork = simpleNeatParameters.getNeuralNetworkBuilder().createNeuralNetwork(organism);
-		if(fitness==-1)
-		{
-			neuralNetwork.save("Winner_" + generations + "_" + population + "-" + time);
-		}else{
-			neuralNetwork.save("Winner_fitness_" + fitness + "_" + population + "-" + time);
-		}
 
+		NeuralNetwork neuralNetwork = simpleNeatParameters.getNeuralNetworkBuilder().createNeuralNetwork(organism);
+		neuralNetwork.save("Winner_" + path);
 	}
 
 }
