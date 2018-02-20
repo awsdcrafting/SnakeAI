@@ -83,7 +83,7 @@ public class BaseAI extends AI
 		int in4 = spielfeld.getDistance(Spielfeld.state.WALL, forward);
 		int in5 = spielfeld.getDistance(Spielfeld.state.WALL, right);
 
-		int in6 =-MathUtils.getMin(spielfeld.getDistance(Spielfeld.state.BODYHORIZONTAL, left),
+		int in6 = MathUtils.getMin(spielfeld.getDistance(Spielfeld.state.BODYHORIZONTAL, left),
 									 spielfeld.getDistance(Spielfeld.state.BODYVERTICAL, left),
 									 spielfeld.getDistance(Spielfeld.state.BODYNORTHEAST, left),
 									 spielfeld.getDistance(Spielfeld.state.BODYNORTHWEST, left),
