@@ -242,6 +242,8 @@ public class BaseAI extends AI
 			}
 		}
 
+		System.out.println(in1 + " " + in2);
+
 		int in3 = spielfeld.getDistance(Spielfeld.state.WALL, left);
 		int in4 = spielfeld.getDistance(Spielfeld.state.WALL, forward);
 		int in5 = spielfeld.getDistance(Spielfeld.state.WALL, right);
