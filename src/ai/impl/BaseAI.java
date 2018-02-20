@@ -51,7 +51,9 @@ public class BaseAI extends AI
 		Spielfeld.direction forward = Spielfeld.direction.EAST;
 		Spielfeld.direction right = Spielfeld.direction.EAST;
 
-		switch (spielfeld.getMoveDirection())
+		Spielfeld.direction moveDir = spielfeld.getMoveDirection();
+
+		switch (moveDir)
 		{
 		case NORTH:
 			left = Spielfeld.direction.WEST;
@@ -76,31 +78,183 @@ public class BaseAI extends AI
 		}
 
 		int[] in0 = spielfeld.getDistanceToApple();
-		int in1 = in0[0];
-		int in2 = in0[1];
+		int in1 = 0;
+		int in2 = 0;
+		if (in0[0] < 0)
+		{
+			switch (moveDir)
+			{
+			case NORTH:
+				in1 = -5;
+				break;
+			case SOUTH:
+				in1 = 5;
+				break;
+			case EAST:
+				in1 = -5;
+				break;
+			case WEST:
+				in1 = 0;
+				break;
+			}
+		} else if (in0[0] == 0)
+		{
+			switch (moveDir)
+			{
+			case NORTH:
+				if (in0[1] < 0)
+				{
+					in1 = 0;
+				}
+				if (in0[1] > 0)
+				{
+					in1 = -5;
+				}
+				break;
+			case SOUTH:
+				if (in0[1] < 0)
+				{
+					in1 = -5;
+				}
+				if (in0[1] > 0)
+				{
+					in1 = 0;
+				}
+				break;
+			case EAST:
+				if (in0[1] < 0)
+				{
+					in1 = -5;
+				}
+				if (in0[1] > 0)
+				{
+					in1 = 5;
+				}
+				break;
+			case WEST:
+				if (in0[1] < 0)
+				{
+					in1 = 5;
+				}
+				if (in0[1] > 0)
+				{
+					in1 = -5;
+				}
+				break;
+			}
+		} else
+		{
+			switch (moveDir)
+			{
+			case NORTH:
+				in1 = 5;
+				break;
+			case SOUTH:
+				in1 = -5;
+				break;
+			case EAST:
+				in1 = 0;
+				break;
+			case WEST:
+				in1 = -5;
+				break;
+			}
+		}
+
+		if (in0[1] < 0)
+		{
+			switch (moveDir)
+			{
+			case NORTH:
+				in2 = 0;
+				break;
+			case SOUTH:
+				in2 = -5;
+				break;
+			case EAST:
+				in2 = -5;
+				break;
+			case WEST:
+				in2 = 5;
+				break;
+			}
+		} else if (in0[1] == 0)
+		{
+			switch (moveDir)
+			{
+			case NORTH:
+				if (in0[0] < 0)
+				{
+					in2 = -5;
+				}
+				if (in0[0] > 0)
+				{
+					in2 = 5;
+				}
+				break;
+			case SOUTH:
+				if (in0[0] < 0)
+				{
+					in2 = 5;
+				}
+				if (in0[0] > 0)
+				{
+					in2 = -5;
+				}
+				break;
+			case EAST:
+				if (in0[0] < 0)
+				{
+					in2 = -5;
+				}
+				if (in0[0] > 0)
+				{
+					in2 = 0;
+				}
+				break;
+			case WEST:
+				if (in0[0] < 0)
+				{
+					in2 = 0;
+				}
+				if (in0[0] > 0)
+				{
+					in2 = -5;
+				}
+				break;
+			}
+		} else
+		{
+			switch (moveDir)
+			{
+			case NORTH:
+				in2 = 5;
+				break;
+			case SOUTH:
+				in2 = -5;
+				break;
+			case EAST:
+				in2 = 0;
+				break;
+			case WEST:
+				in2 = -5;
+				break;
+			}
+		}
 
 		int in3 = spielfeld.getDistance(Spielfeld.state.WALL, left);
 		int in4 = spielfeld.getDistance(Spielfeld.state.WALL, forward);
 		int in5 = spielfeld.getDistance(Spielfeld.state.WALL, right);
 
-		int in6 = MathUtils.getMin(spielfeld.getDistance(Spielfeld.state.BODYHORIZONTAL, left),
-									 spielfeld.getDistance(Spielfeld.state.BODYVERTICAL, left),
-									 spielfeld.getDistance(Spielfeld.state.BODYNORTHEAST, left),
-									 spielfeld.getDistance(Spielfeld.state.BODYNORTHWEST, left),
-									 spielfeld.getDistance(Spielfeld.state.BODYSOUTHEAST, left),
-									 spielfeld.getDistance(Spielfeld.state.BODYSOUTHWEST, left));
-		int in7 = MathUtils.getMin(spielfeld.getDistance(Spielfeld.state.BODYHORIZONTAL, forward),
-									 spielfeld.getDistance(Spielfeld.state.BODYVERTICAL, forward),
-									 spielfeld.getDistance(Spielfeld.state.BODYNORTHEAST, forward),
-									 spielfeld.getDistance(Spielfeld.state.BODYNORTHWEST, forward),
-									 spielfeld.getDistance(Spielfeld.state.BODYSOUTHEAST, forward),
-									 spielfeld.getDistance(Spielfeld.state.BODYSOUTHWEST, forward));
-		int in8 = MathUtils.getMin(spielfeld.getDistance(Spielfeld.state.BODYHORIZONTAL, right),
-									 spielfeld.getDistance(Spielfeld.state.BODYVERTICAL, right),
-									 spielfeld.getDistance(Spielfeld.state.BODYNORTHEAST, right),
-									 spielfeld.getDistance(Spielfeld.state.BODYNORTHWEST, right),
-									 spielfeld.getDistance(Spielfeld.state.BODYSOUTHEAST, right),
-									 spielfeld.getDistance(Spielfeld.state.BODYSOUTHWEST, right));
+		int in6 = MathUtils.getMin(spielfeld.getDistance(Spielfeld.state.BODYHORIZONTAL, left), spielfeld.getDistance(Spielfeld.state.BODYVERTICAL, left),
+								   spielfeld.getDistance(Spielfeld.state.BODYNORTHEAST, left), spielfeld.getDistance(Spielfeld.state.BODYNORTHWEST, left),
+								   spielfeld.getDistance(Spielfeld.state.BODYSOUTHEAST, left), spielfeld.getDistance(Spielfeld.state.BODYSOUTHWEST, left));
+		int in7 = MathUtils.getMin(spielfeld.getDistance(Spielfeld.state.BODYHORIZONTAL, forward), spielfeld.getDistance(Spielfeld.state.BODYVERTICAL, forward),
+								   spielfeld.getDistance(Spielfeld.state.BODYNORTHEAST, forward), spielfeld.getDistance(Spielfeld.state.BODYNORTHWEST, forward),
+								   spielfeld.getDistance(Spielfeld.state.BODYSOUTHEAST, forward), spielfeld.getDistance(Spielfeld.state.BODYSOUTHWEST, forward));
+		int in8 = MathUtils.getMin(spielfeld.getDistance(Spielfeld.state.BODYHORIZONTAL, right), spielfeld.getDistance(Spielfeld.state.BODYVERTICAL, right),
+								   spielfeld.getDistance(Spielfeld.state.BODYNORTHEAST, right), spielfeld.getDistance(Spielfeld.state.BODYNORTHWEST, right),
+								   spielfeld.getDistance(Spielfeld.state.BODYSOUTHEAST, right), spielfeld.getDistance(Spielfeld.state.BODYSOUTHWEST, right));
 		neuralNetwork.setInput(in1, in2, in3, in4, in5, in6, in7, in8);
 		neuralNetwork.calculate();
 		Vector output = neuralNetwork.getOutput();
