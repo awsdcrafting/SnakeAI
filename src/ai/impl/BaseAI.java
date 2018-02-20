@@ -241,8 +241,11 @@ public class BaseAI extends AI
 				break;
 			}
 		}
-
-		System.out.println(in1 + " " + in2);
+		
+		if (log)
+		{
+			System.out.println(in1 + " " + in2);
+		}
 
 		int in3 = spielfeld.getDistance(Spielfeld.state.WALL, left);
 		int in4 = spielfeld.getDistance(Spielfeld.state.WALL, forward);
