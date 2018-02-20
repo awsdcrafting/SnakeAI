@@ -36,7 +36,7 @@ public class SnakeFitnessFunction extends AbstractFitnessFunction
 		int maxTurns = 5625;
 		int turns = gameEngine.getTurn();
 		double baseAppleValue = gameEngine.getScore() * maxTurns;
-		double appleMod = 2.0;
+		double appleMod = 2.5;
 		double appleValue = baseAppleValue * appleMod;
 		appleValue /= (maxTurns + 1 - turns);
 
