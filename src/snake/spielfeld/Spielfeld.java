@@ -199,11 +199,11 @@ public class Spielfeld
 	    int x = 0;//column
 	    int y = 0;//row
 	    int yRand = RandomUtils.randomInt(freeRows);
-	    if(freeRows == 75)y = yRand;
-	    else y = freeRowToRealRow(yRand);
+	    if(freeRows == 75){y = yRand;}
+	    else{ y = freeRowToRealRow(yRand);}
             int xRand = RandomUtils.randomInt(freeSpacesInRow[y]);
-            if(freeSpacesInRow[y] == 75)x = xRand;
-            else x = freeSpaceInRowToRealSpaceInRow(y, xRand);
+            if(freeSpacesInRow[y] == 75){x = xRand;}
+            else{ x = freeSpaceInRowToRealSpaceInRow(y, xRand);}
             appleX = x;
             appleY = y;
             field[x][y] = state.APPLE;
@@ -416,7 +416,7 @@ public class Spielfeld
 				}
 				break;
 			}
-			if((--freeSpacesInRow[headX])==0)freeRows--;
+			if((--freeSpacesInRow[headY])==0){freeRows--;}
 		} else
 		{
 			state prevTailState = field[tailX][tailY];
@@ -552,9 +552,9 @@ public class Spielfeld
 				}
 				break;
 			}
-			if(headX==tailX)return;
-                        if((--freeSpacesInRow[headX])==0)freeRows--;
-                        if((++freeSpacesInRow[tailX])==1)freeRows++;
+			if(headX==tailX){return;}
+                        if((--freeSpacesInRow[headY])==0){freeRows--;}
+                        if((++freeSpacesInRow[tailY])==1){freeRows++;}
 		}
 	}
 
