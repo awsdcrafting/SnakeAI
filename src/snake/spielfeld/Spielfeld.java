@@ -182,7 +182,7 @@ public class Spielfeld
 			freeSpacesInRow[i] = 75;
 		}
 		freeSpacesInRow[35] = 70;
-		for (int i = 37; i < 76; i++)
+		for (int i = 36; i < 76; i++)
 		{
 			freeSpacesInRow[i] = 75;
 		}
@@ -320,6 +320,44 @@ public class Spielfeld
 
 	public boolean willDie(direction moveDirection)
 	{
+		return willDie(headX, headY, moveDirection);
+	}
+
+	public boolean willDie(int x, int y, direction moveDirection)
+	{
+		int moveX = x;
+		int moveY = y;
+
+		switch (moveDirection)
+		{
+		case EAST:
+			moveX++;
+			break;
+		case WEST:
+			moveX--;
+			break;
+		case NORTH:
+			moveY--;
+			break;
+		case SOUTH:
+			moveY++;
+			break;
+		}
+		if (moveX < 0 || moveX > 76 || moveY < 0 || moveY > 76)
+		{
+			return false;
+		}
+		state s = field[moveX][moveY];
+		return isDeadly(s);
+	}
+
+	public boolean isDeadly(state s)
+	{
+		return !(s == state.APPLE || s == state.EMPTY || s == state.TAILEAST || s == state.TAILNORTH || s == state.TAILSOUTH || s == state.TAILWEST);
+	}
+
+	public int[] posInMoveDirection(direction moveDirection)
+	{
 		int moveX = headX;
 		int moveY = headY;
 
@@ -338,8 +376,7 @@ public class Spielfeld
 			moveY++;
 			break;
 		}
-		state s = field[moveX][moveY];
-		return !(s == state.APPLE || s == state.EMPTY || s == state.TAILEAST || s == state.TAILNORTH || s == state.TAILSOUTH || s == state.TAILWEST);
+		return new int[]{moveX, moveY};
 	}
 
 	public void updateSnake(boolean apple)
@@ -426,6 +463,7 @@ public class Spielfeld
 			}
 		} else
 		{
+			int prevTailY = tailY;
 			state prevTailState = field[tailX][tailY];
 			field[tailX][tailY] = state.EMPTY;
 			switch (prevTailState)
@@ -559,7 +597,7 @@ public class Spielfeld
 				}
 				break;
 			}
-			if (headX == tailX)
+			if (headY == prevTailY)
 			{
 				return;
 			}
@@ -567,7 +605,7 @@ public class Spielfeld
 			{
 				freeRows--;
 			}
-			if ((++freeSpacesInRow[tailY]) == 1)
+			if ((++freeSpacesInRow[prevTailY]) == 1)
 			{
 				freeRows++;
 			}

@@ -12,8 +12,8 @@ public class SnakeBot extends AI
 	public SnakeBot(Spielfeld spielfeld)
 	{
 		super(spielfeld);
-		name = "BaseAI";
-		baseName = "BaseAI";
+		name = "SnakeBot";
+		baseName = "SnakeBot";
 	}
 
 	@Override
@@ -78,37 +78,13 @@ public class SnakeBot extends AI
 
 		System.out.println(in6 + " " + in7 + " " + in8);
 
-		int nearestDist = 3;
-		boolean near1 = Math.abs(in1) <= 3;
-		boolean near2 = Math.abs(in2) <= 3;
-		if (near1 && near2)
-		{
-			if ((Math.abs(in1) >= 1 && Math.abs(in2) >= 1) || Math.abs(in1) == 0 || Math.abs(in2) == 0)
-			{
-				nearestDist = 1;
-			}
-		} else
-		{
-				nearestDist = 3;
-		}
-
 		double leftMod = 1.0;
 		double forwardMod = 1.0;
 		double rightMod = 1.0;
 
-		leftAllowed = !((in3 <= nearestDist && in3 != -999) || (in6 <= nearestDist && in6 != -999) || spielfeld.willDie(left));
-		forwardAllowed = !((in4 <= nearestDist && in4 != -999) || (in7 <= nearestDist && in7 != -999) || spielfeld.willDie(forward));
-		rightAllowed = !((in5 <= nearestDist && in5 != -999) || (in8 <= nearestDist && in8 != -999) || spielfeld.willDie(right));
-
-		int prevNearDist = nearestDist;
-		while (!leftAllowed && !forwardAllowed && !rightAllowed && nearestDist > 1)
-		{
-			nearestDist--;
-			leftAllowed = !((in3 <= nearestDist && in3 != -999) || (in6 <= nearestDist && in6 != -999) || spielfeld.willDie(left));
-			forwardAllowed = !((in4 <= nearestDist && in4 != -999) || (in7 <= nearestDist && in7 != -999) || spielfeld.willDie(forward));
-			rightAllowed = !((in5 <= nearestDist && in5 != -999) || (in8 <= nearestDist && in8 != -999) || spielfeld.willDie(right));
-		}
-		nearestDist = prevNearDist;
+		leftAllowed = !(spielfeld.willDie(left) /*|| willBeDeadEnd(left)*/);
+		forwardAllowed = !(spielfeld.willDie(forward) /*|| willBeDeadEnd(forward)*/);
+		rightAllowed = !(spielfeld.willDie(right) /*|| willBeDeadEnd(right)*/);
 
 		int min = in3;
 		if (in6 < in3 && in6 != -999)
@@ -342,7 +318,7 @@ public class SnakeBot extends AI
 			}
 		}
 		System.out.println("left: " + leftMod + " forward: " + forwardMod + " right: " + rightMod);
-		System.out.println(min1 + " " + leftAllowed + " " + min2 + " " + forwardAllowed + " " + min3 + " " + rightAllowed);
+		System.out.println(willBeDeadEnd(left) + " " + leftAllowed + " " + willBeDeadEnd(forward) + " " + forwardAllowed + " " + willBeDeadEnd(right) + " " + rightAllowed);
 
 		Spielfeld.direction choice = decide(leftMod, forwardMod, rightMod, leftAllowed, forwardAllowed, rightAllowed, left, forward, right, appleXDir, appleYDir, in1, in2);
 
@@ -503,6 +479,50 @@ public class SnakeBot extends AI
 		}
 
 		return choice;
+	}
+
+	private boolean willBeDeadEnd(Spielfeld.direction moveDirection)
+	{
+
+		int x = spielfeld.posInMoveDirection(moveDirection)[0];
+		int y = spielfeld.posInMoveDirection(moveDirection)[0];
+
+		Spielfeld.direction left = Spielfeld.direction.EAST;
+		Spielfeld.direction forward = Spielfeld.direction.EAST;
+		Spielfeld.direction right = Spielfeld.direction.EAST;
+
+		switch (moveDirection)
+		{
+		case NORTH:
+			left = Spielfeld.direction.WEST;
+			forward = Spielfeld.direction.NORTH;
+			right = Spielfeld.direction.EAST;
+			break;
+		case SOUTH:
+			left = Spielfeld.direction.EAST;
+			forward = Spielfeld.direction.SOUTH;
+			right = Spielfeld.direction.WEST;
+			break;
+		case EAST:
+			left = Spielfeld.direction.NORTH;
+			forward = Spielfeld.direction.EAST;
+			right = Spielfeld.direction.SOUTH;
+			break;
+		case WEST:
+			left = Spielfeld.direction.SOUTH;
+			forward = Spielfeld.direction.WEST;
+			right = Spielfeld.direction.NORTH;
+			break;
+		}
+
+		boolean dead1 = spielfeld.willDie(x,y,left);
+		boolean dead2 = spielfeld.willDie(x,y,forward);
+		boolean dead3 = spielfeld.willDie(x,y,right);
+
+
+
+		return dead1 && dead2 && dead3;
+
 	}
 
 }
