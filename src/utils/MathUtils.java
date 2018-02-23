@@ -13,4 +13,12 @@ public class MathUtils
 		return Collections.min(list);
 	}
 
+	public static int getMinWO(int withOut,Integer... ints){
+		List<Integer> list = Arrays.asList(ints);
+		while(list.contains(withOut)){
+			list.remove(new Integer(withOut));
+		}
+		return Collections.min(list);
+	}
+
 }
