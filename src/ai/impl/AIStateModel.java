@@ -1,6 +1,6 @@
 package ai.impl;
 
-public interface AIStateModel
+public class AIStateModel
 {   
     
 }

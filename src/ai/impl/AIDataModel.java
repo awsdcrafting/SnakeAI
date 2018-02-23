@@ -1,6 +1,6 @@
 package ai.impl;
 
-public interface AIDataModel
+public class AIDataModel
 {   
     
 }
