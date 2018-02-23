@@ -174,6 +174,16 @@ public class Spielfeld
 		field[tailX][tailY] = state.TAILEAST;
 		moveDirection = direction.EAST;
 		emptyPlaces = 75 * 75 - 5;
+		freeRows = 75;
+		for(int i = 0; i < 35; i++)
+		{
+		    freeSpacesInRow[i] = 75;
+		}
+		freeSpacesInRow[35] = 70;
+		for(int i = 37; i < 75; i++)
+                {
+                    freeSpacesInRow[i] = 75;
+                }
 		placeApple();
 
 		/*field[2][2] = state.BODYNORTHEAST;
@@ -182,8 +192,60 @@ public class Spielfeld
 		field[2][8] = state.BODYSOUTHWEST;*/
 
 	}
-
+	
 	public void placeApple()
+	{
+	    int x = 0;//column
+	    int y = 0;//row
+	    int yRand = RandomUtils.randomInt(freeRows);
+	    if(freeRows == 75)y = yRand;
+	    else y = freeRowToRealRow(yRand);
+            int xRand = RandomUtils.randomInt(freeSpacesInRow[y]);
+            if(freeSpacesInRow[y] == 75)x = xRand;
+            else x = freeSpaceInRowToRealSpaceInRow(y, xRand);
+            appleX = x;
+            appleY = y;
+            field[x][y] = state.APPLE;
+	}
+	
+	private int freeRows;
+	private int[] freeSpacesInRow;
+	
+	private int freeRowToRealRow(int freeRowY)
+	{
+	    int realY = 0;
+	    int fakeY = 0;
+	    for(int i = 0; i < 75; i++)
+	    {
+	        if(freeSpacesInRow[realY]==0)
+	        {
+	            realY++; continue;
+	        }
+	        if(fakeY==freeRowY)break;
+	        fakeY++;
+	        realY++;
+	    }
+	    return realY;
+	}
+	
+	private int freeSpaceInRowToRealSpaceInRow(int rowY, int freeSpaceX)
+        {
+            int realX = 0;
+            int fakeX = 0;
+            for(int i = 0; i < 75; i++)
+            {
+                if(field[realX][rowY]!=state.EMPTY)
+                {
+                    realX++; continue;
+                }
+                if(fakeX==freeSpaceX)break;
+                fakeX++;
+                realX++;
+            }
+            return realX;
+        }
+	
+	public void placeAppleLegacy()
 	{
 		if ((emptyPlaces--) > 0)
 		{
@@ -353,6 +415,7 @@ public class Spielfeld
 				}
 				break;
 			}
+			if((--freeSpacesInRow[headX])==0)freeRows--;
 		} else
 		{
 			state prevTailState = field[tailX][tailY];
@@ -488,6 +551,9 @@ public class Spielfeld
 				}
 				break;
 			}
+			if(headX==tailX)return;
+                        if((--freeSpacesInRow[headX])==0)freeRows--;
+                        if((++freeSpacesInRow[tailX])==1)freeRows++;
 		}
 	}
 
