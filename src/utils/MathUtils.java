@@ -1,4 +1,5 @@
 package utils;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -14,11 +15,16 @@ public class MathUtils
 	}
 
 	public static int getMinWO(int withOut,Integer... ints){
-		List<Integer> list = Arrays.asList(ints);
+		ArrayList<Integer> list = new ArrayList<>(Arrays.asList(ints));
 		while(list.contains(withOut)){
 			list.remove(new Integer(withOut));
 		}
-		return Collections.min(list);
+		if(list.size()>0)
+		{
+			return Collections.min(list);
+		}else{
+			return withOut;
+		}
 	}
 
 }
