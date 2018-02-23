@@ -2,6 +2,8 @@ package ai.impl;
 import snake.spielfeld.Spielfeld;
 import utils.MathUtils;
 import utils.RandomUtils;
+
+import java.util.Random;
 /**
  * Created by scisneromam on 20.02.2018.
  */
@@ -144,21 +146,27 @@ public class SnakeBot extends AI
 
 		double modMod = 0.5;
 
+		Spielfeld.direction appleXDir = null;
+		Spielfeld.direction appleYDir = null;
+
 		if (in1 < 0)
 		{
 			switch (moveDir)
 			{
 			case NORTH:
 				leftMod += modMod * -in1;
+				appleXDir = left;
 				break;
 			case SOUTH:
 				rightMod += modMod * -in1;
+				appleXDir = right;
 				break;
 			case EAST:
 				forwardMod -= modMod * -in1;
 				break;
 			case WEST:
 				forwardMod += modMod * -in1;
+				appleXDir = forward;
 				break;
 			}
 		} else if (in1 == 0)
@@ -169,6 +177,7 @@ public class SnakeBot extends AI
 				if (in2 < 0)
 				{
 					forwardMod += modMod * 10;
+					appleXDir = forward;
 				}
 				if (in2 > 0)
 				{
@@ -183,26 +192,31 @@ public class SnakeBot extends AI
 				if (in2 > 0)
 				{
 					forwardMod += modMod * 10;
+					appleXDir = forward;
 				}
 				break;
 			case EAST:
 				if (in2 < 0)
 				{
 					leftMod += modMod * 10;
+					appleXDir = left;
 				}
 				if (in2 > 0)
 				{
 					rightMod += modMod * 10;
+					appleXDir = right;
 				}
 				break;
 			case WEST:
 				if (in2 < 0)
 				{
 					rightMod += modMod * 10;
+					appleXDir = right;
 				}
 				if (in2 > 0)
 				{
 					leftMod += modMod * 10;
+					appleXDir = left;
 				}
 				break;
 			}
@@ -212,12 +226,15 @@ public class SnakeBot extends AI
 			{
 			case NORTH:
 				rightMod += modMod * in1;
+				appleXDir = right;
 				break;
 			case SOUTH:
 				leftMod += modMod * in1;
+				appleXDir = left;
 				break;
 			case EAST:
 				forwardMod += modMod * in1;
+				appleXDir = forward;
 				break;
 			case WEST:
 				forwardMod -= modMod * in1;
@@ -231,15 +248,18 @@ public class SnakeBot extends AI
 			{
 			case NORTH:
 				forwardMod += modMod * -in2;
+				appleYDir = forward;
 				break;
 			case SOUTH:
 				forwardMod -= modMod * -in2;
 				break;
 			case EAST:
 				leftMod += modMod * -in2;
+				appleYDir = left;
 				break;
 			case WEST:
 				rightMod += modMod * -in2;
+				appleYDir = right;
 				break;
 			}
 		} else if (in2 == 0)
@@ -250,20 +270,24 @@ public class SnakeBot extends AI
 				if (in1 < 0)
 				{
 					leftMod += modMod * 10;
+					appleYDir = left;
 				}
 				if (in1 > 0)
 				{
 					rightMod += modMod * 10;
+					appleYDir = right;
 				}
 				break;
 			case SOUTH:
 				if (in1 < 0)
 				{
 					rightMod += modMod * 10;
+					appleYDir = right;
 				}
 				if (in1 > 0)
 				{
 					leftMod += modMod * 10;
+					appleYDir = left;
 				}
 				break;
 			case EAST:
@@ -274,12 +298,14 @@ public class SnakeBot extends AI
 				if (in1 > 0)
 				{
 					forwardMod += modMod * 10;
+					appleYDir = forward;
 				}
 				break;
 			case WEST:
 				if (in1 < 0)
 				{
 					forwardMod += modMod * 10;
+					appleYDir = forward;
 				}
 				if (in1 > 0)
 				{
@@ -296,12 +322,15 @@ public class SnakeBot extends AI
 				break;
 			case SOUTH:
 				forwardMod += modMod * in2;
+				appleYDir = forward;
 				break;
 			case EAST:
 				rightMod += modMod * in2;
+				appleYDir = right;
 				break;
 			case WEST:
-				leftMod -= modMod * in2;
+				leftMod += modMod * in2;
+				appleYDir = left;
 				break;
 			}
 		}
@@ -325,6 +354,49 @@ public class SnakeBot extends AI
 			System.out.println("Choice: right " + right);
 			spielfeld.setMoveDirection(right);
 			return;
+		}
+
+		if (rightMod == leftMod || forwardMod == rightMod || forwardMod == leftMod)
+		{
+			if (appleXDir != null || appleYDir != null)
+			{
+				if (Math.abs(in1) < Math.abs(in2))
+				{
+					System.out.println("Choice: " + appleXDir);
+					spielfeld.setMoveDirection(appleXDir);
+					return;
+				} else if (Math.abs(in1) > Math.abs(in2))
+				{
+					System.out.println("Choice: " + appleYDir);
+					spielfeld.setMoveDirection(appleYDir);
+					return;
+				}
+				boolean b = RandomUtils.randomBoolean();
+				if (b)
+				{
+					System.out.println("Choice: " + appleXDir);
+					spielfeld.setMoveDirection(appleXDir);
+					return;
+				} else
+				{
+					System.out.println("Choice: " + appleYDir);
+					spielfeld.setMoveDirection(appleYDir);
+					return;
+				}
+			} else
+			{
+				if (appleXDir != null)
+				{
+					System.out.println("Choice: " + appleXDir);
+					spielfeld.setMoveDirection(appleXDir);
+					return;
+				} else
+				{
+					System.out.println("Choice: " + appleYDir);
+					spielfeld.setMoveDirection(appleYDir);
+					return;
+				}
+			}
 		}
 
 		if (leftAllowed)

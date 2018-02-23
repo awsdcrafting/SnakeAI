@@ -23,4 +23,9 @@ public class RandomUtils
 		return random.nextDouble();
 	}
 
+	public static boolean randomBoolean()
+	{
+		return random.nextBoolean();
+	}
+
 }
