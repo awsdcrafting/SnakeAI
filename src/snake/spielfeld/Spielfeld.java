@@ -175,6 +175,7 @@ public class Spielfeld
 		moveDirection = direction.EAST;
 		emptyPlaces = 75 * 75 - 5;
 		freeRows = 75;
+		freeSpacesInRow = new int[75];
 		for(int i = 0; i < 35; i++)
 		{
 		    freeSpacesInRow[i] = 75;
