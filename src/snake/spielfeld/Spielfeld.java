@@ -175,16 +175,18 @@ public class Spielfeld
 		moveDirection = direction.EAST;
 		emptyPlaces = 75 * 75 - 5;
 		freeRows = 75;
-		freeSpacesInRow = new int[75];
-		for(int i = 0; i < 35; i++)
+		freeSpacesInRow = new int[77];
+                freeSpacesInRow[0] = 0;
+		for(int i = 1; i < 35; i++)
 		{
 		    freeSpacesInRow[i] = 75;
 		}
 		freeSpacesInRow[35] = 70;
-		for(int i = 37; i < 75; i++)
+		for(int i = 37; i < 76; i++)
                 {
                     freeSpacesInRow[i] = 75;
                 }
+                freeSpacesInRow[76] = 0;
 		placeApple();
 
 		/*field[2][2] = state.BODYNORTHEAST;
@@ -199,11 +201,9 @@ public class Spielfeld
 	    int x = 0;//column
 	    int y = 0;//row
 	    int yRand = RandomUtils.randomInt(freeRows);
-	    if(freeRows == 75){y = yRand;}
-	    else{ y = freeRowToRealRow(yRand);}
+	    y = freeRowToRealRow(yRand);
             int xRand = RandomUtils.randomInt(freeSpacesInRow[y]);
-            if(freeSpacesInRow[y] == 75){x = xRand;}
-            else{ x = freeSpaceInRowToRealSpaceInRow(y, xRand);}
+            x = freeSpaceInRowToRealSpaceInRow(y, xRand);
             appleX = x;
             appleY = y;
             field[x][y] = state.APPLE;
