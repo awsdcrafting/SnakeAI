@@ -241,7 +241,7 @@ public class BaseAI extends AI
 				break;
 			}
 		}
-		
+
 		if (log)
 		{
 			System.out.println(in1 + " " + in2);
