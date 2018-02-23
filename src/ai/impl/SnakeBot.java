@@ -77,12 +77,23 @@ public class SnakeBot extends AI
 								   spielfeld.getDistance(Spielfeld.state.BODYSOUTHEAST, right), spielfeld.getDistance(Spielfeld.state.BODYSOUTHWEST, right));
 
 		int nearestDist = 5;
-		if ((Math.abs(in1) <= nearestDist && Math.abs(in1) >= 1) && (Math.abs(in2) <= nearestDist && Math.abs(in2) >= 1))
+		boolean near1 = Math.abs(in1) <= 3;
+		boolean near2 = Math.abs(in2) <= 3;
+		if (near1 && near2)
 		{
-			nearestDist = 1;
+			if ((Math.abs(in1) >= 1 && Math.abs(in2) >= 1) || Math.abs(in1) == 0 || Math.abs(in2) == 0)
+			{
+				nearestDist = 1;
+			}
 		} else
 		{
-			nearestDist = 5;
+			if (Math.abs(in1) <= nearestDist && Math.abs(in2) <= nearestDist)
+			{
+				nearestDist = 3;
+			} else
+			{
+				nearestDist = 5;
+			}
 		}
 
 		double leftMod = 1.0;
@@ -409,7 +420,10 @@ public class SnakeBot extends AI
 
 		if (rightMod == leftMod || forwardMod == rightMod || forwardMod == leftMod)
 		{
-			decideByApple(appleXDir, appleYDir, in1, in2);
+			if (decideByApple(appleXDir, appleYDir, in1, in2) != null)
+			{
+				return;
+			}
 		}
 
 		if (leftAllowed)
@@ -441,7 +455,7 @@ public class SnakeBot extends AI
 
 	}
 
-	public void decideByApple(Spielfeld.direction appleXDir, Spielfeld.direction appleYDir, int in1, int in2)
+	private Spielfeld.direction decideByApple(Spielfeld.direction appleXDir, Spielfeld.direction appleYDir, int in1, int in2)
 	{
 		if (appleXDir != null && appleYDir != null)
 		{
@@ -449,12 +463,12 @@ public class SnakeBot extends AI
 			{
 				System.out.println("Choice: " + appleXDir);
 				spielfeld.setMoveDirection(appleXDir);
-				return;
+				return appleXDir;
 			} else if (Math.abs(in1) > Math.abs(in2) && !spielfeld.willDie(appleYDir))
 			{
 				System.out.println("Choice: " + appleYDir);
 				spielfeld.setMoveDirection(appleYDir);
-				return;
+				return appleYDir;
 			}
 			boolean b = RandomUtils.randomBoolean();
 			if (b)
@@ -463,7 +477,7 @@ public class SnakeBot extends AI
 				{
 					System.out.println("Choice: " + appleXDir);
 					spielfeld.setMoveDirection(appleXDir);
-					return;
+					return appleXDir;
 				}
 			} else
 			{
@@ -471,7 +485,7 @@ public class SnakeBot extends AI
 				{
 					System.out.println("Choice: " + appleYDir);
 					spielfeld.setMoveDirection(appleYDir);
-					return;
+					return appleYDir;
 				}
 			}
 		} else
@@ -480,16 +494,17 @@ public class SnakeBot extends AI
 			{
 				System.out.println("Choice: " + appleXDir);
 				spielfeld.setMoveDirection(appleXDir);
-				return;
+				return appleXDir;
 			} else
 			{
 				if (appleYDir != null && !spielfeld.willDie(appleYDir))
 				{
 					System.out.println("Choice: " + appleYDir);
 					spielfeld.setMoveDirection(appleYDir);
-					return;
+					return appleYDir;
 				}
 			}
 		}
+		return null;
 	}
 }
