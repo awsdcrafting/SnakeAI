@@ -66,19 +66,19 @@ public class SnakeBot extends AI
 		int in4 = spielfeld.getDistance(Spielfeld.state.WALL, forward);
 		int in5 = spielfeld.getDistance(Spielfeld.state.WALL, right);
 
-		int in6 = MathUtils.getMinWO(-999,spielfeld.getDistance(Spielfeld.state.BODYHORIZONTAL, left), spielfeld.getDistance(Spielfeld.state.BODYVERTICAL, left),
-								   spielfeld.getDistance(Spielfeld.state.BODYNORTHEAST, left), spielfeld.getDistance(Spielfeld.state.BODYNORTHWEST, left),
-								   spielfeld.getDistance(Spielfeld.state.BODYSOUTHEAST, left), spielfeld.getDistance(Spielfeld.state.BODYSOUTHWEST, left));
-		int in7 = MathUtils.getMinWO(-999,spielfeld.getDistance(Spielfeld.state.BODYHORIZONTAL, forward), spielfeld.getDistance(Spielfeld.state.BODYVERTICAL, forward),
-								   spielfeld.getDistance(Spielfeld.state.BODYNORTHEAST, forward), spielfeld.getDistance(Spielfeld.state.BODYNORTHWEST, forward),
-								   spielfeld.getDistance(Spielfeld.state.BODYSOUTHEAST, forward), spielfeld.getDistance(Spielfeld.state.BODYSOUTHWEST, forward));
-		int in8 = MathUtils.getMinWO(-999,spielfeld.getDistance(Spielfeld.state.BODYHORIZONTAL, right), spielfeld.getDistance(Spielfeld.state.BODYVERTICAL, right),
-								   spielfeld.getDistance(Spielfeld.state.BODYNORTHEAST, right), spielfeld.getDistance(Spielfeld.state.BODYNORTHWEST, right),
-								   spielfeld.getDistance(Spielfeld.state.BODYSOUTHEAST, right), spielfeld.getDistance(Spielfeld.state.BODYSOUTHWEST, right));
+		int in6 = MathUtils.getMinWO(-999, spielfeld.getDistance(Spielfeld.state.BODYHORIZONTAL, left), spielfeld.getDistance(Spielfeld.state.BODYVERTICAL, left),
+									 spielfeld.getDistance(Spielfeld.state.BODYNORTHEAST, left), spielfeld.getDistance(Spielfeld.state.BODYNORTHWEST, left),
+									 spielfeld.getDistance(Spielfeld.state.BODYSOUTHEAST, left), spielfeld.getDistance(Spielfeld.state.BODYSOUTHWEST, left));
+		int in7 = MathUtils.getMinWO(-999, spielfeld.getDistance(Spielfeld.state.BODYHORIZONTAL, forward), spielfeld.getDistance(Spielfeld.state.BODYVERTICAL, forward),
+									 spielfeld.getDistance(Spielfeld.state.BODYNORTHEAST, forward), spielfeld.getDistance(Spielfeld.state.BODYNORTHWEST, forward),
+									 spielfeld.getDistance(Spielfeld.state.BODYSOUTHEAST, forward), spielfeld.getDistance(Spielfeld.state.BODYSOUTHWEST, forward));
+		int in8 = MathUtils.getMinWO(-999, spielfeld.getDistance(Spielfeld.state.BODYHORIZONTAL, right), spielfeld.getDistance(Spielfeld.state.BODYVERTICAL, right),
+									 spielfeld.getDistance(Spielfeld.state.BODYNORTHEAST, right), spielfeld.getDistance(Spielfeld.state.BODYNORTHWEST, right),
+									 spielfeld.getDistance(Spielfeld.state.BODYSOUTHEAST, right), spielfeld.getDistance(Spielfeld.state.BODYSOUTHWEST, right));
 
 		System.out.println(in6 + " " + in7 + " " + in8);
 
-		int nearestDist = 5;
+		int nearestDist = 3;
 		boolean near1 = Math.abs(in1) <= 3;
 		boolean near2 = Math.abs(in2) <= 3;
 		if (near1 && near2)
@@ -89,13 +89,7 @@ public class SnakeBot extends AI
 			}
 		} else
 		{
-			if (Math.abs(in1) <= nearestDist && Math.abs(in2) <= nearestDist)
-			{
 				nearestDist = 3;
-			} else
-			{
-				nearestDist = 5;
-			}
 		}
 
 		double leftMod = 1.0;
@@ -350,84 +344,30 @@ public class SnakeBot extends AI
 		System.out.println("left: " + leftMod + " forward: " + forwardMod + " right: " + rightMod);
 		System.out.println(min1 + " " + leftAllowed + " " + min2 + " " + forwardAllowed + " " + min3 + " " + rightAllowed);
 
-		if (leftAllowed)
+		Spielfeld.direction choice = decide(leftMod, forwardMod, rightMod, leftAllowed, forwardAllowed, rightAllowed, left, forward, right, appleXDir, appleYDir, in1, in2);
+
+		if (choice != null)
 		{
-			if ((leftMod > forwardMod && leftMod > rightMod))
+			String out = "";
+			if (choice == left)
 			{
-				System.out.println("Choice: left " + left);
-				spielfeld.setMoveDirection(left);
-				return;
-			} else
-			{
-				if ((leftMod > forwardMod || leftMod == forwardMod) && !forwardAllowed)
-				{
-					System.out.println("Choice: left " + left);
-					spielfeld.setMoveDirection(left);
-					return;
-				}
-				if ((leftMod > rightMod || leftMod == rightMod) && !rightAllowed)
-				{
-					System.out.println("Choice: left " + left);
-					spielfeld.setMoveDirection(left);
-					return;
-				}
+				out = "left";
 			}
-		}
-		if (forwardAllowed)
-		{
-			if ((forwardMod > leftMod && forwardMod > rightMod))
+			if (choice == forward)
 			{
-				System.out.println("Choice: forward " + forward);
-				spielfeld.setMoveDirection(forward);
-				return;
-			} else
-			{
-				if ((forwardMod > leftMod || forwardMod == leftMod) && !leftAllowed)
-				{
-					System.out.println("Choice: forward " + forward);
-					spielfeld.setMoveDirection(forward);
-					return;
-				}
-				if ((forwardMod > rightMod || forwardMod == rightMod) && !rightAllowed)
-				{
-					System.out.println("Choice: forward " + forward);
-					spielfeld.setMoveDirection(forward);
-					return;
-				}
+				out = "forward";
 			}
-		}
-		if (rightAllowed)
-		{
-			if ((rightMod > leftMod && rightMod > forwardMod))
+			if (choice == right)
 			{
-				System.out.println("Choice: right " + right);
-				spielfeld.setMoveDirection(right);
-				return;
-			} else
-			{
-				if ((rightMod > leftMod || rightMod == leftMod) && !leftAllowed)
-				{
-					System.out.println("Choice: right " + right);
-					spielfeld.setMoveDirection(right);
-					return;
-				}
-				if ((rightMod > forwardMod || rightMod == forwardMod) && !forwardAllowed)
-				{
-					System.out.println("Choice: right " + right);
-					spielfeld.setMoveDirection(right);
-					return;
-				}
+				out = "right";
 			}
+
+			System.out.println("Choice: " + out + " - " + choice);
+			spielfeld.setMoveDirection(choice);
+			return;
 		}
 
-		if (rightMod == leftMod || forwardMod == rightMod || forwardMod == leftMod)
-		{
-			if (decideByApple(appleXDir, appleYDir, in1, in2) != null)
-			{
-				return;
-			}
-		}
-
+		System.out.println("well something went wrong?");
 		if (leftAllowed)
 		{
 			System.out.println("Choice: left " + left);
@@ -463,13 +403,9 @@ public class SnakeBot extends AI
 		{
 			if (Math.abs(in1) < Math.abs(in2) && !spielfeld.willDie(appleXDir))
 			{
-				System.out.println("Choice: " + appleXDir);
-				spielfeld.setMoveDirection(appleXDir);
 				return appleXDir;
 			} else if (Math.abs(in1) > Math.abs(in2) && !spielfeld.willDie(appleYDir))
 			{
-				System.out.println("Choice: " + appleYDir);
-				spielfeld.setMoveDirection(appleYDir);
 				return appleYDir;
 			}
 			boolean b = RandomUtils.randomBoolean();
@@ -477,16 +413,12 @@ public class SnakeBot extends AI
 			{
 				if (!spielfeld.willDie(appleXDir))
 				{
-					System.out.println("Choice: " + appleXDir);
-					spielfeld.setMoveDirection(appleXDir);
 					return appleXDir;
 				}
 			} else
 			{
 				if (!spielfeld.willDie(appleYDir))
 				{
-					System.out.println("Choice: " + appleYDir);
-					spielfeld.setMoveDirection(appleYDir);
 					return appleYDir;
 				}
 			}
@@ -494,19 +426,83 @@ public class SnakeBot extends AI
 		{
 			if (appleXDir != null && !spielfeld.willDie(appleXDir))
 			{
-				System.out.println("Choice: " + appleXDir);
-				spielfeld.setMoveDirection(appleXDir);
 				return appleXDir;
 			} else
 			{
 				if (appleYDir != null && !spielfeld.willDie(appleYDir))
 				{
-					System.out.println("Choice: " + appleYDir);
-					spielfeld.setMoveDirection(appleYDir);
 					return appleYDir;
 				}
 			}
 		}
 		return null;
 	}
+
+	private Spielfeld.direction decide(double leftMod, double forwardMod, double rightMod, boolean leftAllowed, boolean forwardAllowed, boolean rightAllowed,
+									   Spielfeld.direction left, Spielfeld.direction forward, Spielfeld.direction right, Spielfeld.direction appleXDir,
+									   Spielfeld.direction appleYDir, int in1, int in2)
+	{
+
+		Spielfeld.direction choice = null;
+		int iChoice = -999;
+		double biggest = -999;
+		boolean doubled = false;
+		if (leftMod > biggest && leftAllowed)
+		{
+			biggest = leftMod;
+			choice = left;
+			iChoice = 1;
+		}
+		if (forwardMod > biggest && forwardAllowed)
+		{
+			biggest = forwardMod;
+			choice = forward;
+			iChoice = 2;
+		} else if (forwardMod == biggest && forwardAllowed)
+		{
+			doubled = true;
+		}
+		if (rightMod > biggest && rightAllowed)
+		{
+			biggest = rightMod;
+			choice = right;
+			iChoice = 3;
+		} else if (rightMod == biggest && rightAllowed)
+		{
+			doubled = true;
+		}
+		if (doubled)
+		{
+			System.out.println("Doubled! deciding by apple");
+			if (appleXDir == left && !leftAllowed)
+			{
+				appleXDir = null;
+			}
+			if (appleXDir == forward && !forwardAllowed)
+			{
+				appleXDir = null;
+			}
+			if (appleXDir == right && !rightAllowed)
+			{
+				appleXDir = null;
+			}
+
+			if (appleYDir == left && !leftAllowed)
+			{
+				appleYDir = null;
+			}
+			if (appleYDir == forward && !forwardAllowed)
+			{
+				appleYDir = null;
+			}
+			if (appleYDir == right && !rightAllowed)
+			{
+				appleYDir = null;
+			}
+			choice = decideByApple(appleXDir, appleYDir, in1, in2);
+		}
+
+		return choice;
+	}
+
 }
