@@ -216,7 +216,7 @@ public class Spielfeld
 	{
 	    int realY = 0;
 	    int fakeY = 0;
-	    for(int i = 0; i < 75; i++)
+	    for(int i = 0; i < 77; i++)
 	    {
 	        if(freeSpacesInRow[realY]==0)
 	        {
@@ -233,7 +233,7 @@ public class Spielfeld
         {
             int realX = 0;
             int fakeX = 0;
-            for(int i = 0; i < 75; i++)
+            for(int i = 0; i < 77; i++)
             {
                 if(field[realX][rowY]!=state.EMPTY)
                 {
