@@ -77,7 +77,7 @@ public class SnakeBot extends AI
 								   spielfeld.getDistance(Spielfeld.state.BODYSOUTHEAST, right), spielfeld.getDistance(Spielfeld.state.BODYSOUTHWEST, right));
 
 		int nearestDist = 5;
-		if ((Math.abs(in1) <= nearestDist && Math.abs(in1) >= 1) || (Math.abs(in2) <= nearestDist && Math.abs(in2) >= 1))
+		if ((Math.abs(in1) <= nearestDist && Math.abs(in1) >= 1) && (Math.abs(in2) <= nearestDist && Math.abs(in2) >= 1))
 		{
 			nearestDist = 1;
 		} else
@@ -337,75 +337,79 @@ public class SnakeBot extends AI
 		System.out.println("left: " + leftMod + " forward: " + forwardMod + " right: " + rightMod);
 		System.out.println(min1 + " " + leftAllowed + " " + min2 + " " + forwardAllowed + " " + min3 + " " + rightAllowed);
 
-		if (leftAllowed && (leftMod > forwardMod && leftMod > rightMod))
+		if (leftAllowed)
 		{
-			System.out.println("Choice: left " + left);
-			spielfeld.setMoveDirection(left);
-			return;
+			if ((leftMod > forwardMod && leftMod > rightMod))
+			{
+				System.out.println("Choice: left " + left);
+				spielfeld.setMoveDirection(left);
+				return;
+			} else
+			{
+				if ((leftMod > forwardMod || leftMod == forwardMod) && !forwardAllowed)
+				{
+					System.out.println("Choice: left " + left);
+					spielfeld.setMoveDirection(left);
+					return;
+				}
+				if ((leftMod > rightMod || leftMod == rightMod) && !rightAllowed)
+				{
+					System.out.println("Choice: left " + left);
+					spielfeld.setMoveDirection(left);
+					return;
+				}
+			}
 		}
-		if (forwardAllowed && (forwardMod > leftMod && forwardMod > rightMod))
+		if (forwardAllowed)
 		{
-			System.out.println("Choice: forward " + forward);
-			spielfeld.setMoveDirection(forward);
-			return;
+			if ((forwardMod > leftMod && forwardMod > rightMod))
+			{
+				System.out.println("Choice: forward " + forward);
+				spielfeld.setMoveDirection(forward);
+				return;
+			} else
+			{
+				if ((forwardMod > leftMod || forwardMod == leftMod) && !leftAllowed)
+				{
+					System.out.println("Choice: forward " + forward);
+					spielfeld.setMoveDirection(forward);
+					return;
+				}
+				if ((forwardMod > rightMod || forwardMod == rightMod) && !rightAllowed)
+				{
+					System.out.println("Choice: forward " + forward);
+					spielfeld.setMoveDirection(forward);
+					return;
+				}
+			}
 		}
-		if (rightAllowed && (rightMod > leftMod && rightMod > forwardMod))
+		if (rightAllowed)
 		{
-			System.out.println("Choice: right " + right);
-			spielfeld.setMoveDirection(right);
-			return;
+			if ((rightMod > leftMod && rightMod > forwardMod))
+			{
+				System.out.println("Choice: right " + right);
+				spielfeld.setMoveDirection(right);
+				return;
+			} else
+			{
+				if ((rightMod > leftMod || rightMod == leftMod) && !leftAllowed)
+				{
+					System.out.println("Choice: right " + right);
+					spielfeld.setMoveDirection(right);
+					return;
+				}
+				if ((rightMod > forwardMod || rightMod == forwardMod) && !forwardAllowed)
+				{
+					System.out.println("Choice: right " + right);
+					spielfeld.setMoveDirection(right);
+					return;
+				}
+			}
 		}
 
 		if (rightMod == leftMod || forwardMod == rightMod || forwardMod == leftMod)
 		{
-			if (appleXDir != null && appleYDir != null)
-			{
-				if (Math.abs(in1) < Math.abs(in2) && !spielfeld.willDie(appleXDir))
-				{
-					System.out.println("Choice: " + appleXDir);
-					spielfeld.setMoveDirection(appleXDir);
-					return;
-				} else if (Math.abs(in1) > Math.abs(in2) && !spielfeld.willDie(appleYDir))
-				{
-					System.out.println("Choice: " + appleYDir);
-					spielfeld.setMoveDirection(appleYDir);
-					return;
-				}
-				boolean b = RandomUtils.randomBoolean();
-				if (b)
-				{
-					if (!spielfeld.willDie(appleXDir))
-					{
-						System.out.println("Choice: " + appleXDir);
-						spielfeld.setMoveDirection(appleXDir);
-						return;
-					}
-				} else
-				{
-					if (!spielfeld.willDie(appleYDir))
-					{
-						System.out.println("Choice: " + appleYDir);
-						spielfeld.setMoveDirection(appleYDir);
-						return;
-					}
-				}
-			} else
-			{
-				if (appleXDir != null && !spielfeld.willDie(appleXDir))
-				{
-					System.out.println("Choice: " + appleXDir);
-					spielfeld.setMoveDirection(appleXDir);
-					return;
-				} else
-				{
-					if (!spielfeld.willDie(appleYDir))
-					{
-						System.out.println("Choice: " + appleYDir);
-						spielfeld.setMoveDirection(appleYDir);
-						return;
-					}
-				}
-			}
+			decideByApple(appleXDir, appleYDir, in1, in2);
 		}
 
 		if (leftAllowed)
@@ -437,4 +441,55 @@ public class SnakeBot extends AI
 
 	}
 
+	public void decideByApple(Spielfeld.direction appleXDir, Spielfeld.direction appleYDir, int in1, int in2)
+	{
+		if (appleXDir != null && appleYDir != null)
+		{
+			if (Math.abs(in1) < Math.abs(in2) && !spielfeld.willDie(appleXDir))
+			{
+				System.out.println("Choice: " + appleXDir);
+				spielfeld.setMoveDirection(appleXDir);
+				return;
+			} else if (Math.abs(in1) > Math.abs(in2) && !spielfeld.willDie(appleYDir))
+			{
+				System.out.println("Choice: " + appleYDir);
+				spielfeld.setMoveDirection(appleYDir);
+				return;
+			}
+			boolean b = RandomUtils.randomBoolean();
+			if (b)
+			{
+				if (!spielfeld.willDie(appleXDir))
+				{
+					System.out.println("Choice: " + appleXDir);
+					spielfeld.setMoveDirection(appleXDir);
+					return;
+				}
+			} else
+			{
+				if (!spielfeld.willDie(appleYDir))
+				{
+					System.out.println("Choice: " + appleYDir);
+					spielfeld.setMoveDirection(appleYDir);
+					return;
+				}
+			}
+		} else
+		{
+			if (appleXDir != null && !spielfeld.willDie(appleXDir))
+			{
+				System.out.println("Choice: " + appleXDir);
+				spielfeld.setMoveDirection(appleXDir);
+				return;
+			} else
+			{
+				if (appleYDir != null && !spielfeld.willDie(appleYDir))
+				{
+					System.out.println("Choice: " + appleYDir);
+					spielfeld.setMoveDirection(appleYDir);
+					return;
+				}
+			}
+		}
+	}
 }
