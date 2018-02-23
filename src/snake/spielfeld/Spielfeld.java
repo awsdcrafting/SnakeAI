@@ -176,17 +176,17 @@ public class Spielfeld
 		emptyPlaces = 75 * 75 - 5;
 		freeRows = 75;
 		freeSpacesInRow = new int[77];
-                freeSpacesInRow[0] = 0;
-		for(int i = 1; i < 35; i++)
+		freeSpacesInRow[0] = 0;
+		for (int i = 1; i < 35; i++)
 		{
-		    freeSpacesInRow[i] = 75;
+			freeSpacesInRow[i] = 75;
 		}
 		freeSpacesInRow[35] = 70;
-		for(int i = 37; i < 76; i++)
-                {
-                    freeSpacesInRow[i] = 75;
-                }
-                freeSpacesInRow[76] = 0;
+		for (int i = 37; i < 76; i++)
+		{
+			freeSpacesInRow[i] = 75;
+		}
+		freeSpacesInRow[76] = 0;
 		placeApple();
 
 		/*field[2][2] = state.BODYNORTHEAST;
@@ -195,57 +195,61 @@ public class Spielfeld
 		field[2][8] = state.BODYSOUTHWEST;*/
 
 	}
-	
+
 	public void placeApple()
 	{
-	    int x = 0;//column
-	    int y = 0;//row
-	    int yRand = RandomUtils.randomInt(freeRows);
-	    y = freeRowToRealRow(yRand);
-            int xRand = RandomUtils.randomInt(freeSpacesInRow[y]);
-            x = freeSpaceInRowToRealSpaceInRow(y, xRand);
-            appleX = x;
-            appleY = y;
-            field[x][y] = state.APPLE;
+		int x = 0;//column
+		int y = 0;//row
+		int yRand = RandomUtils.randomInt(freeRows);
+		y = freeRowToRealRow(yRand);
+		int xRand = RandomUtils.randomInt(freeSpacesInRow[y]);
+		x = freeSpaceInRowToRealSpaceInRow(y, xRand);
+		appleX = x;
+		appleY = y;
+		field[x][y] = state.APPLE;
 	}
-	
+
 	private int freeRows;
 	private int[] freeSpacesInRow;
-	
+
 	private int freeRowToRealRow(int freeRowY)
 	{
-	    int realY = 0;
-	    int fakeY = 0;
-	    for(int i = 0; i < 77; i++)
-	    {
-	        if(freeSpacesInRow[realY]==0)
-	        {
-	            realY++; continue;
-	        }
-	        if(fakeY==freeRowY)break;
-	        fakeY++;
-	        realY++;
-	    }
-	    return realY;
+		int realY = 0;
+		int fakeY = 0;
+		for (int i = 0; i < 77; i++)
+		{
+			if (freeSpacesInRow[realY] == 0)
+			{
+				realY++;
+				continue;
+			}
+			if (fakeY == freeRowY)
+				break;
+			fakeY++;
+			realY++;
+		}
+		return realY;
 	}
-	
+
 	private int freeSpaceInRowToRealSpaceInRow(int rowY, int freeSpaceX)
-        {
-            int realX = 0;
-            int fakeX = 0;
-            for(int i = 0; i < 77; i++)
-            {
-                if(field[realX][rowY]!=state.EMPTY)
-                {
-                    realX++; continue;
-                }
-                if(fakeX==freeSpaceX)break;
-                fakeX++;
-                realX++;
-            }
-            return realX;
-        }
-	
+	{
+		int realX = 0;
+		int fakeX = 0;
+		for (int i = 0; i < 77; i++)
+		{
+			if (field[realX][rowY] != state.EMPTY)
+			{
+				realX++;
+				continue;
+			}
+			if (fakeX == freeSpaceX)
+				break;
+			fakeX++;
+			realX++;
+		}
+		return realX;
+	}
+
 	public void placeAppleLegacy()
 	{
 		if ((emptyPlaces--) > 0)
@@ -416,7 +420,10 @@ public class Spielfeld
 				}
 				break;
 			}
-			if((--freeSpacesInRow[headY])==0){freeRows--;}
+			if ((--freeSpacesInRow[headY]) == 0)
+			{
+				freeRows--;
+			}
 		} else
 		{
 			state prevTailState = field[tailX][tailY];
@@ -552,9 +559,18 @@ public class Spielfeld
 				}
 				break;
 			}
-			if(headX==tailX){return;}
-                        if((--freeSpacesInRow[headY])==0){freeRows--;}
-                        if((++freeSpacesInRow[tailY])==1){freeRows++;}
+			if (headX == tailX)
+			{
+				return;
+			}
+			if ((--freeSpacesInRow[headY]) == 0)
+			{
+				freeRows--;
+			}
+			if ((++freeSpacesInRow[tailY]) == 1)
+			{
+				freeRows++;
+			}
 		}
 	}
 
