@@ -1,6 +1,7 @@
 package ai.impl;
 import snake.spielfeld.Spielfeld;
 import utils.MathUtils;
+import utils.RandomUtils;
 /**
  * Created by scisneromam on 20.02.2018.
  */
@@ -73,30 +74,73 @@ public class SnakeBot extends AI
 								   spielfeld.getDistance(Spielfeld.state.BODYNORTHEAST, right), spielfeld.getDistance(Spielfeld.state.BODYNORTHWEST, right),
 								   spielfeld.getDistance(Spielfeld.state.BODYSOUTHEAST, right), spielfeld.getDistance(Spielfeld.state.BODYSOUTHWEST, right));
 
-		int nearestDist = 1;
+		int nearestDist = 5;
+		if ((Math.abs(in1) <= nearestDist && Math.abs(in1) >= 1) || (Math.abs(in2) <= nearestDist && Math.abs(in2) >= 1))
+		{
+			nearestDist = 1;
+		} else
+		{
+			nearestDist = 5;
+		}
 
-		if (in3 <= nearestDist || in6 <= nearestDist)
-		{
-			leftAllowed = false;
-		}
-		if (in4 <= nearestDist || in7 <= nearestDist)
-		{
-			forwardAllowed = false;
-		}
-		if (in5 <= nearestDist || in8 <= nearestDist)
-		{
-			rightAllowed = false;
-		}
 		double leftMod = 1.0;
 		double forwardMod = 1.0;
 		double rightMod = 1.0;
 
-		leftMod -= 1 / in3;
-		leftMod -= 1 / in6;
-		forwardMod -= 1 / in4;
-		forwardMod -= 1 / in7;
-		rightMod -= 1 / in5;
-		rightMod -= 1 / in8;
+		leftAllowed = !((in3 <= nearestDist && in3 != -999) || (in6 <= nearestDist && in6 != -999) || spielfeld.willDie(left));
+		forwardAllowed = !((in4 <= nearestDist && in4 != -999) || (in7 <= nearestDist && in7 != -999) || spielfeld.willDie(forward));
+		rightAllowed = !((in5 <= nearestDist && in5 != -999) || (in8 <= nearestDist && in8 != -999) || spielfeld.willDie(right));
+
+		int prevNearDist = nearestDist;
+		while (!leftAllowed && !forwardAllowed && !rightAllowed && nearestDist > 1)
+		{
+			nearestDist--;
+			leftAllowed = !((in3 <= nearestDist && in3 != -999) || (in6 <= nearestDist && in6 != -999) || spielfeld.willDie(left));
+			forwardAllowed = !((in4 <= nearestDist && in4 != -999) || (in7 <= nearestDist && in7 != -999) || spielfeld.willDie(forward));
+			rightAllowed = !((in5 <= nearestDist && in5 != -999) || (in8 <= nearestDist && in8 != -999) || spielfeld.willDie(right));
+		}
+		nearestDist = prevNearDist;
+
+		int min = in3;
+		if (in6 < in3 && in6 != -999)
+		{
+			min = in6;
+		}
+		int min1 = min;
+		double mod = min / 10;
+		if (mod > 1 || mod == -99)
+		{
+			mod = 1;
+		}
+		leftMod -= (1 - mod);
+
+		min = in4;
+		if (in7 < in4 && in7 != -999)
+		{
+			min = in7;
+		}
+		int min2 = min;
+		mod = min / 10;
+		if (mod > 1 || mod == -99)
+		{
+			mod = 1;
+		}
+		forwardMod -= (1 - mod);
+
+		min = in5;
+		if (in8 < in5 && in8 != -999)
+		{
+			min = in8;
+		}
+		int min3 = min;
+		mod = min / 10;
+		if (mod > 1 || mod == -99)
+		{
+			mod = 1;
+		}
+		rightMod -= (1 - mod);
+
+		System.out.println(in1 + " " + in2 + " " + leftMod + " " + forwardMod + " " + rightMod);
 
 		double modMod = 0.5;
 
@@ -105,16 +149,16 @@ public class SnakeBot extends AI
 			switch (moveDir)
 			{
 			case NORTH:
-				leftMod += modMod;
+				leftMod += modMod * -in1;
 				break;
 			case SOUTH:
-				rightMod += modMod;
+				rightMod += modMod * -in1;
 				break;
 			case EAST:
-				forwardMod -= modMod;
+				forwardMod -= modMod * -in1;
 				break;
 			case WEST:
-				forwardMod += modMod;
+				forwardMod += modMod * -in1;
 				break;
 			}
 		} else if (in1 == 0)
@@ -124,41 +168,41 @@ public class SnakeBot extends AI
 			case NORTH:
 				if (in2 < 0)
 				{
-					forwardMod += modMod;
+					forwardMod += modMod * 10;
 				}
 				if (in2 > 0)
 				{
-					forwardMod -= modMod;
+					forwardMod -= modMod * 10;
 				}
 				break;
 			case SOUTH:
 				if (in2 < 0)
 				{
-					forwardMod -= modMod;
+					forwardMod -= modMod * 10;
 				}
 				if (in2 > 0)
 				{
-					forwardMod += modMod;
+					forwardMod += modMod * 10;
 				}
 				break;
 			case EAST:
 				if (in2 < 0)
 				{
-					leftMod += modMod;
+					leftMod += modMod * 10;
 				}
 				if (in2 > 0)
 				{
-					rightMod += modMod;
+					rightMod += modMod * 10;
 				}
 				break;
 			case WEST:
 				if (in2 < 0)
 				{
-					rightMod += modMod;
+					rightMod += modMod * 10;
 				}
 				if (in2 > 0)
 				{
-					leftMod += modMod;
+					leftMod += modMod * 10;
 				}
 				break;
 			}
@@ -167,16 +211,16 @@ public class SnakeBot extends AI
 			switch (moveDir)
 			{
 			case NORTH:
-				rightMod += modMod;
+				rightMod += modMod * in1;
 				break;
 			case SOUTH:
-				leftMod += modMod;
+				leftMod += modMod * in1;
 				break;
 			case EAST:
-				forwardMod += modMod;
+				forwardMod += modMod * in1;
 				break;
 			case WEST:
-				forwardMod -= modMod;
+				forwardMod -= modMod * in1;
 				break;
 			}
 		}
@@ -186,16 +230,16 @@ public class SnakeBot extends AI
 			switch (moveDir)
 			{
 			case NORTH:
-				forwardMod += modMod;
+				forwardMod += modMod * -in2;
 				break;
 			case SOUTH:
-				forwardMod -= modMod;
+				forwardMod -= modMod * -in2;
 				break;
 			case EAST:
-				leftMod += modMod;
+				leftMod += modMod * -in2;
 				break;
 			case WEST:
-				rightMod += modMod;
+				rightMod += modMod * -in2;
 				break;
 			}
 		} else if (in2 == 0)
@@ -205,41 +249,41 @@ public class SnakeBot extends AI
 			case NORTH:
 				if (in1 < 0)
 				{
-					leftMod += modMod;
+					leftMod += modMod * 10;
 				}
 				if (in1 > 0)
 				{
-					rightMod += modMod;
+					rightMod += modMod * 10;
 				}
 				break;
 			case SOUTH:
 				if (in1 < 0)
 				{
-					rightMod += modMod;
+					rightMod += modMod * 10;
 				}
 				if (in1 > 0)
 				{
-					leftMod += modMod;
+					leftMod += modMod * 10;
 				}
 				break;
 			case EAST:
 				if (in1 < 0)
 				{
-					forwardMod -= modMod;
+					forwardMod -= modMod * 10;
 				}
 				if (in1 > 0)
 				{
-					forwardMod += modMod;
+					forwardMod += modMod * 10;
 				}
 				break;
 			case WEST:
 				if (in1 < 0)
 				{
-					forwardMod += modMod;
+					forwardMod += modMod * 10;
 				}
 				if (in1 > 0)
 				{
-					forwardMod -= modMod;
+					forwardMod -= modMod * 10;
 				}
 				break;
 			}
@@ -248,36 +292,61 @@ public class SnakeBot extends AI
 			switch (moveDir)
 			{
 			case NORTH:
-				rightMod += modMod;
+				forwardMod -= modMod * in2;
 				break;
 			case SOUTH:
-				leftMod += modMod;
+				forwardMod += modMod * in2;
 				break;
 			case EAST:
-				forwardMod += modMod;
+				rightMod += modMod * in2;
 				break;
 			case WEST:
-				forwardMod -= modMod;
+				leftMod -= modMod * in2;
 				break;
 			}
 		}
+		System.out.println("left: " + leftMod + " forward: " + forwardMod + " right: " + rightMod);
+		System.out.println(min1 + " " + leftAllowed + " " + min2 + " " + forwardAllowed + " " + min3 + " " + rightAllowed);
 
-		if (leftAllowed && (leftMod >= forwardMod && leftMod >= rightMod))
+		if (leftAllowed && (leftMod > forwardMod && leftMod > rightMod))
 		{
+			System.out.println("Choice: left " + left);
 			spielfeld.setMoveDirection(left);
 			return;
 		}
-		if (forwardAllowed && (forwardMod >= leftMod && forwardMod >= rightMod))
+		if (forwardAllowed && (forwardMod > leftMod && forwardMod > rightMod))
 		{
+			System.out.println("Choice: forward " + forward);
 			spielfeld.setMoveDirection(forward);
 			return;
 		}
-		if (rightAllowed && (rightMod >= leftMod && rightMod >= forwardMod))
+		if (rightAllowed && (rightMod > leftMod && rightMod > forwardMod))
 		{
+			System.out.println("Choice: right " + right);
+			spielfeld.setMoveDirection(right);
+			return;
+		}
+
+		if (leftAllowed)
+		{
+			System.out.println("Choice: left " + left);
+			spielfeld.setMoveDirection(left);
+			return;
+		}
+		if (forwardAllowed)
+		{
+			System.out.println("Choice: forward " + forward);
+			spielfeld.setMoveDirection(forward);
+			return;
+		}
+		if (rightAllowed)
+		{
+			System.out.println("Choice: right " + right);
 			spielfeld.setMoveDirection(right);
 			return;
 		}
 		System.out.println("looool");
+
 		spielfeld.setMoveDirection(forward);
 
 	}

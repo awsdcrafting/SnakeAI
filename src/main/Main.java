@@ -1,7 +1,5 @@
 package main;
-import ai.impl.BaseAI;
-import ai.impl.BaseAI2;
-import ai.impl.RandomAI;
+import ai.impl.*;
 import org.neuroph.contrib.neat.gen.persistence.PersistenceException;
 import org.neuroph.core.NeuralNetwork;
 import snake.engine.GameEngine;
@@ -23,7 +21,7 @@ public class Main
 	private static boolean bGui = true;
 	private static boolean bLog = true;
 	private static boolean runSaved = false;
-	private static BaseAI baseAI = null;
+	private static AI ai = null;
 	private static String path = "Winner";
 
 	public static void main(String[] args) throws InterruptedException
@@ -34,7 +32,6 @@ public class Main
 		long generations = 100;
 		int population = 25;
 		double fitness = -1;
-
 		if (args.length > 0)
 		{
 			if (args[0].equalsIgnoreCase("run"))
@@ -147,7 +144,13 @@ public class Main
 		}
 		if (runSaved)
 		{
-			baseAI = new BaseAI(spielfeld, NeuralNetwork.load(path));
+			if (path.equalsIgnoreCase("snakebot"))
+			{
+				ai = new SnakeBot(spielfeld);
+			} else
+			{
+				ai = new BaseAI(spielfeld, NeuralNetwork.load(path));
+			}
 		}
 
 		if (!runSaved)
@@ -162,7 +165,7 @@ public class Main
 			System.out.println("Did " + generations + " generations with a population of " + population + " in " + (System.currentTimeMillis() - time) + "ms.");
 		} else
 		{
-			gameEngine.setAi(baseAI);
+			gameEngine.setAi(ai);
 			gameEngine.run();
 		}
 
