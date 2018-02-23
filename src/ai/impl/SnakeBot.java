@@ -358,14 +358,14 @@ public class SnakeBot extends AI
 
 		if (rightMod == leftMod || forwardMod == rightMod || forwardMod == leftMod)
 		{
-			if (appleXDir != null || appleYDir != null)
+			if (appleXDir != null && appleYDir != null)
 			{
-				if (Math.abs(in1) < Math.abs(in2))
+				if (Math.abs(in1) < Math.abs(in2) && !spielfeld.willDie(appleXDir))
 				{
 					System.out.println("Choice: " + appleXDir);
 					spielfeld.setMoveDirection(appleXDir);
 					return;
-				} else if (Math.abs(in1) > Math.abs(in2))
+				} else if (Math.abs(in1) > Math.abs(in2) && !spielfeld.willDie(appleYDir))
 				{
 					System.out.println("Choice: " + appleYDir);
 					spielfeld.setMoveDirection(appleYDir);
@@ -374,27 +374,36 @@ public class SnakeBot extends AI
 				boolean b = RandomUtils.randomBoolean();
 				if (b)
 				{
-					System.out.println("Choice: " + appleXDir);
-					spielfeld.setMoveDirection(appleXDir);
-					return;
+					if (!spielfeld.willDie(appleXDir))
+					{
+						System.out.println("Choice: " + appleXDir);
+						spielfeld.setMoveDirection(appleXDir);
+						return;
+					}
 				} else
 				{
-					System.out.println("Choice: " + appleYDir);
-					spielfeld.setMoveDirection(appleYDir);
-					return;
+					if (!spielfeld.willDie(appleYDir))
+					{
+						System.out.println("Choice: " + appleYDir);
+						spielfeld.setMoveDirection(appleYDir);
+						return;
+					}
 				}
 			} else
 			{
-				if (appleXDir != null)
+				if (appleXDir != null && !spielfeld.willDie(appleXDir))
 				{
 					System.out.println("Choice: " + appleXDir);
 					spielfeld.setMoveDirection(appleXDir);
 					return;
 				} else
 				{
-					System.out.println("Choice: " + appleYDir);
-					spielfeld.setMoveDirection(appleYDir);
-					return;
+					if (!spielfeld.willDie(appleYDir))
+					{
+						System.out.println("Choice: " + appleYDir);
+						spielfeld.setMoveDirection(appleYDir);
+						return;
+					}
 				}
 			}
 		}
