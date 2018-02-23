@@ -1,6 +1,8 @@
 package ai.impl;
 
-public interface AIDataModel
+import snake.spielfeld.Spielfeld;
+
+public class AIDataModel
 {   
     
 }

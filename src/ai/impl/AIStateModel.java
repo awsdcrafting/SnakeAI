@@ -1,6 +1,8 @@
 package ai.impl;
 
-public interface AIStateModel
+import snake.spielfeld.Spielfeld;
+
+public class AIStateModel
 {   
     
 }
