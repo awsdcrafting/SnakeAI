@@ -31,15 +31,18 @@ public class SnakePathFindingBot extends AI
 		if (path.size() > 0)
 		{
 			p = path.remove(path.size() - 1);
+			if (path.size() > 0)
+			{
+				while (p.x == spielfeld.getHeadX() && p.y == spielfeld.getHeadY())
+				{
+					p = path.remove(path.size() - 1);
+				}
+			}
 		} else
 		{
 			p = spielfeld.getNode(spielfeld.getHeadX(), spielfeld.getHeadY());
 		}
 
-		while (p.x == spielfeld.getHeadX() && p.y == spielfeld.getHeadY())
-		{
-			p = path.remove(path.size() - 1);
-		}
 		int dx = p.x - spielfeld.getHeadX();
 		int dy = p.y - spielfeld.getHeadY();
 
