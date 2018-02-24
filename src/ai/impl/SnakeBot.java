@@ -82,9 +82,9 @@ public class SnakeBot extends AI
 		double forwardMod = 1.0;
 		double rightMod = 1.0;
 
-		leftAllowed = !(spielfeld.willDie(left) /*|| willBeDeadEnd(left)*/);
-		forwardAllowed = !(spielfeld.willDie(forward) /*|| willBeDeadEnd(forward)*/);
-		rightAllowed = !(spielfeld.willDie(right) /*|| willBeDeadEnd(right)*/);
+		leftAllowed = !(spielfeld.willDie(left) || willBeDeadEnd(left));
+		forwardAllowed = !(spielfeld.willDie(forward) || willBeDeadEnd(forward));
+		rightAllowed = !(spielfeld.willDie(right) || willBeDeadEnd(right));
 
 		int min = in3;
 		if (in6 < in3 && in6 != -999)
@@ -317,6 +317,7 @@ public class SnakeBot extends AI
 				break;
 			}
 		}
+		System.out.println(moveDir + " " + left + " " + forward + " " + right);
 		System.out.println("left: " + leftMod + " forward: " + forwardMod + " right: " + rightMod);
 		System.out.println(willBeDeadEnd(left) + " " + leftAllowed + " " + willBeDeadEnd(forward) + " " + forwardAllowed + " " + willBeDeadEnd(right) + " " + rightAllowed);
 
@@ -484,8 +485,10 @@ public class SnakeBot extends AI
 	private boolean willBeDeadEnd(Spielfeld.direction moveDirection)
 	{
 
-		int x = spielfeld.posInMoveDirection(moveDirection)[0];
-		int y = spielfeld.posInMoveDirection(moveDirection)[0];
+		int[] pos = spielfeld.posInMoveDirection(moveDirection);
+
+		int x = pos[0];
+		int y = pos[1];
 
 		Spielfeld.direction left = Spielfeld.direction.EAST;
 		Spielfeld.direction forward = Spielfeld.direction.EAST;
@@ -515,11 +518,9 @@ public class SnakeBot extends AI
 			break;
 		}
 
-		boolean dead1 = spielfeld.willDie(x,y,left);
-		boolean dead2 = spielfeld.willDie(x,y,forward);
-		boolean dead3 = spielfeld.willDie(x,y,right);
-
-
+		boolean dead1 = spielfeld.willDie(x, y, left);
+		boolean dead2 = spielfeld.willDie(x, y, forward);
+		boolean dead3 = spielfeld.willDie(x, y, right);
 
 		return dead1 && dead2 && dead3;
 
