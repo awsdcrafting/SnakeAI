@@ -22,7 +22,7 @@ public class SpielfeldGui extends JPanel
 		Graphics2D g2d = (Graphics2D) g;
 		g2d.setColor(Color.ORANGE);
 		g2d.fillRect(0, 0, 770, 770);
-		g2d.setColor(Color.GRAY);
+		g2d.setColor(Color.GREEN);
 		g2d.fillRect(10, 10, 750, 750);
 
 		if (spielfeld != null)
@@ -56,7 +56,7 @@ public class SpielfeldGui extends JPanel
 			g2d.fillRect(xPos, yPos, 10, 10);
 			break;
 		case EMPTY: //equals default
-			g2d.setColor(Color.GRAY);
+			g2d.setColor(new Color(25,125,25));
 			g2d.fillRect(xPos, yPos, 10, 10);
 			break;
 

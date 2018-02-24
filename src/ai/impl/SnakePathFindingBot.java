@@ -23,48 +23,6 @@ public class SnakePathFindingBot extends AI
 
 	}
 
-	//bruteForceHeuristic
-	public void getBiggestDistance()
-	{
-
-		HashMap<Integer, ArrayList<Integer>> forbiddenMap = new HashMap<>();
-		while (path.size() == 0)
-		{
-			int best = 0;
-			int bestX = 0;
-			int bestY = 0;
-			for (int x = 1; x < 76; x++)
-			{
-				ArrayList<Integer> forbiddenY = forbiddenMap.get(x);
-				for (int y = 1; y < 76; y++)
-				{
-					boolean allowed = true;
-					if (forbiddenY != null && forbiddenY.contains(y))
-					{
-						allowed = false;
-					}
-					if (heuristic(spielfeld.getHeadX(), spielfeld.getHeadY(), x, y) > best && allowed)
-					{
-						bestX = x;
-						bestY = y;
-						best = heuristic(spielfeld.getHeadX(), spielfeld.getHeadY(), x, y);
-					}
-				}
-			}
-			pathfinding(bestX, bestY);
-			ArrayList<Integer> forbiddenY = forbiddenMap.get(bestX);
-			if (forbiddenY != null)
-			{
-				forbiddenY.add(bestY);
-			} else
-			{
-				forbiddenY = new ArrayList<>();
-				forbiddenY.add(bestY);
-				forbiddenMap.put(bestX, forbiddenY);
-			}
-		}
-	}
-
 	@Override
 	public void zug()
 	{
@@ -75,9 +33,9 @@ public class SnakePathFindingBot extends AI
 			p = path.remove(path.size() - 1);
 		} else
 		{
-			getBiggestDistance();
-			p = path.remove(path.size() - 1);
+			p = spielfeld.getNode(spielfeld.getHeadX(), spielfeld.getHeadY());
 		}
+
 		while (p.x == spielfeld.getHeadX() && p.y == spielfeld.getHeadY())
 		{
 			p = path.remove(path.size() - 1);
@@ -85,7 +43,7 @@ public class SnakePathFindingBot extends AI
 		int dx = p.x - spielfeld.getHeadX();
 		int dy = p.y - spielfeld.getHeadY();
 
-		Spielfeld.direction choice = Spielfeld.direction.EAST;
+		Spielfeld.direction choice = spielfeld.getMoveDirection();
 		if (dx == -1)
 		{
 			choice = Spielfeld.direction.WEST;
@@ -198,6 +156,18 @@ public class SnakePathFindingBot extends AI
 			closedList.add(currentNode);
 
 			expandNode(currentNode, end);
+
+			if (openList.size() == 0)
+			{
+				Node temp = currentNode;
+				path.add(temp);
+				while (temp.previous != null)
+				{
+					temp = temp.previous;
+					path.add(temp);
+				}
+				return false;
+			}
 		}
 		return false;
 	}
