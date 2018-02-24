@@ -317,7 +317,6 @@ public class SnakeBot extends AI
 				break;
 			}
 		}
-		System.out.println(moveDir + " " + left + " " + forward + " " + right);
 		System.out.println("left: " + leftMod + " forward: " + forwardMod + " right: " + rightMod);
 		System.out.println(willBeDeadEnd(left) + " " + leftAllowed + " " + willBeDeadEnd(forward) + " " + forwardAllowed + " " + willBeDeadEnd(right) + " " + rightAllowed);
 

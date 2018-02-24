@@ -61,9 +61,9 @@ public class SnakeFitnessFunction extends AbstractFitnessFunction
 		double appleMod = 5;
 		double appleValue = baseAppleValue * appleMod;
 		int appleTurns = maxTurns;
-		while (appleTurns < turns)
+		if(appleTurns < turns)
 		{
-			appleTurns += maxTurns;
+			appleTurns = turns;
 		}
 		appleValue /= (appleTurns + 1 - turns);
 
