@@ -28,19 +28,15 @@ public class SnakePathFindingBot extends AI
 	public void zug()
 	{
 		System.out.println(turn);
-		if (turn == 5)
-		{
-			turn = 1;
-			pathfinding();
-		}
+		pathfinding();
 		Node p = path.remove(path.size() - 1);
-		while(p.x==spielfeld.getHeadX()&&p.y==spielfeld.getHeadY()){
-			p = path.remove(path.size()-1);
+		while (p.x == spielfeld.getHeadX() && p.y == spielfeld.getHeadY())
+		{
+			p = path.remove(path.size() - 1);
 		}
 		turn++;
 		int dx = p.x - spielfeld.getHeadX();
 		int dy = p.y - spielfeld.getHeadY();
-		System.out.println("x: "+p.x + " " + spielfeld.getHeadX() + " y: " + p.y + " " + spielfeld.getHeadY());
 
 		Spielfeld.direction choice = Spielfeld.direction.EAST;
 		if (dx == -1)
@@ -136,9 +132,9 @@ public class SnakePathFindingBot extends AI
 		Node start = spielfeld.getNode(spielfeld.getHeadX(), spielfeld.getHeadY());
 		Node end = spielfeld.getNode(spielfeld.getAppleX(), spielfeld.getAppleY());
 		openList.add(start);
-		Collections.sort(openList);
 		while (!openList.isEmpty())
 		{
+			Collections.sort(openList);
 			Node currentNode = openList.remove(0);
 			if (currentNode.x == end.x && currentNode.y == end.y)
 			{
