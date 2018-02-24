@@ -1,11 +1,14 @@
 package ai.impl;
+import snake.spielfeld.Node;
 import snake.spielfeld.Spielfeld;
 /**
  * Created by scisneromam on 23.02.2018.
  */
-public class SnakePathFinding extends AI
+public class SnakePathFindingBot extends AI
 {
-	public SnakePathFinding(Spielfeld spielfeld)
+
+	Node[][] grid;
+	public SnakePathFindingBot(Spielfeld spielfeld)
 	{
 		super(spielfeld);
 		baseName = "SnakePathFindingBot";
@@ -14,7 +17,7 @@ public class SnakePathFinding extends AI
 	@Override
 	public void save()
 	{
-
+		//depth first
 	}
 	@Override
 	public void zug()
@@ -27,16 +30,16 @@ public class SnakePathFinding extends AI
 
 	}
 
-	private int schaetze(int x, int y, int headX, int headY)
+	private void generateGrid()
 	{
-		int out = Math.abs(x - headX) - 1 + Math.abs(y - headY) - 1;
-		if (out < 0)
+		for (int x = 1; x < 76; x++)
 		{
-			out = 0;
+			for (int y = 1; y < 76; y++)
+			{
+
+			}
 		}
-		return out;
 	}
 
-
-
 }
+

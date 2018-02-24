@@ -76,8 +76,6 @@ public class SnakeBot extends AI
 									 spielfeld.getDistance(Spielfeld.state.BODYNORTHEAST, right), spielfeld.getDistance(Spielfeld.state.BODYNORTHWEST, right),
 									 spielfeld.getDistance(Spielfeld.state.BODYSOUTHEAST, right), spielfeld.getDistance(Spielfeld.state.BODYSOUTHWEST, right));
 
-		System.out.println(in6 + " " + in7 + " " + in8);
-
 		double leftMod = 1.0;
 		double forwardMod = 1.0;
 		double rightMod = 1.0;
@@ -124,8 +122,6 @@ public class SnakeBot extends AI
 			mod = 1;
 		}
 		rightMod -= (1 - mod);
-
-		System.out.println(in1 + " " + in2 + " " + leftMod + " " + forwardMod + " " + rightMod);
 
 		double modMod = 0.5;
 

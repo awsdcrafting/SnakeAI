@@ -8,6 +8,7 @@ public class Spielfeld
 {
 
 	private state[][] field;
+	private Node[][] grid;
 	private int width;
 	private int height;
 
@@ -146,6 +147,7 @@ public class Spielfeld
 	public void setUp(int width, int height)
 	{
 		field = new state[width][height];
+		grid = new Node[width][height];
 		for (int x = 0; x < width; x++)
 		{
 			for (int y = 0; y < height; y++)
@@ -153,19 +155,23 @@ public class Spielfeld
 				if (x == 0 || y == 0 || y == height - 1 || x == width - 1)
 				{
 					field[x][y] = state.WALL;
+					grid[x][y] = new Node(x, y, false, false);
 				} else
 				{
 					field[x][y] = state.EMPTY;
+					grid[x][y] = new Node(x, y, true, false);
 				}
 			}
 		}
-
+		connectNodes();
 		int x = 35;
 		int y = 35;
 		field[x][y] = state.HEADEAST;
+		grid[x][y].passable = false;
 		for (int i = 1; i <= 3; i++)
 		{
 			field[x - i][y] = state.BODYHORIZONTAL;
+			grid[x - i][y].passable = false;
 		}
 		headX = x;
 		headY = y;
@@ -196,6 +202,60 @@ public class Spielfeld
 
 	}
 
+	private void connectNodes()
+	{
+		for (int x = 0; x < 77; x++)
+		{
+			for (int y = 0; y < 77; y++)
+			{
+				boolean north = true;
+				boolean east = true;
+				boolean south = true;
+				boolean west = true;
+				if (x == 0)
+				{
+					west = false;
+				}
+				if (x == 76)
+				{
+					east = false;
+				}
+				if (y == 0)
+				{
+					north = false;
+				}
+				if (y == 76)
+				{
+					south = false;
+				}
+				Node nodeNorth = null;
+				Node nodeEast = null;
+				Node nodeSouth = null;
+				Node nodeWest = null;
+				if (north)
+				{
+					nodeNorth = grid[x][y - 1];
+				}
+				if (east)
+				{
+					nodeEast = grid[x + 1][y];
+				}
+				if (south)
+				{
+					nodeSouth = grid[x][y + 1];
+				}
+				if (west)
+				{
+					nodeWest = grid[x - 1][y];
+				}
+				grid[x][y].north = nodeNorth;
+				grid[x][y].east = nodeEast;
+				grid[x][y].south = nodeSouth;
+				grid[x][y].west = nodeWest;
+			}
+		}
+	}
+
 	public void placeApple()
 	{
 		int x = 0;//column
@@ -207,6 +267,8 @@ public class Spielfeld
 		appleX = x;
 		appleY = y;
 		field[x][y] = state.APPLE;
+		grid[x][y].passable = true;
+		grid[x][y].appleField = true;
 	}
 
 	private int freeRows;
@@ -462,6 +524,7 @@ public class Spielfeld
 				}
 				break;
 			}
+			grid[headX][headY].passable = false;
 			if ((--freeSpacesInRow[headY]) == 0)
 			{
 				freeRows--;
@@ -471,6 +534,7 @@ public class Spielfeld
 			int prevTailY = tailY;
 			state prevTailState = field[tailX][tailY];
 			field[tailX][tailY] = state.EMPTY;
+			grid[tailX][tailY].passable = true;
 			switch (prevTailState)
 			{
 			case TAILSOUTH:
@@ -530,6 +594,7 @@ public class Spielfeld
 				}
 				break;
 			}
+			grid[tailX][tailY].passable = true;
 			switch (headDir)
 			{
 			case HEADNORTH:
@@ -602,6 +667,7 @@ public class Spielfeld
 				}
 				break;
 			}
+			grid[headX][headY].passable = false;
 			if (headY == prevTailY)
 			{
 				return;

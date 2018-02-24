@@ -147,6 +147,9 @@ public class Main
 			if (path.equalsIgnoreCase("snakebot"))
 			{
 				ai = new SnakeBot(spielfeld);
+			} else if (path.equalsIgnoreCase("snakepathfindingbot"))
+			{
+				ai = new SnakePathFindingBot(spielfeld);
 			} else
 			{
 				ai = new BaseAI(spielfeld, NeuralNetwork.load(path));
