@@ -4,6 +4,7 @@ import snake.spielfeld.Spielfeld;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 /**
  * Created by scisneromam on 23.02.2018.
  */
@@ -21,20 +22,66 @@ public class SnakePathFindingBot extends AI
 	{
 
 	}
-	//alle 5 zuege path neu finden
-	int turn = 5;
+
+	//bruteForceHeuristic
+	public void getBiggestDistance()
+	{
+
+		HashMap<Integer, ArrayList<Integer>> forbiddenMap = new HashMap<>();
+		while (path.size() == 0)
+		{
+			int best = 0;
+			int bestX = 0;
+			int bestY = 0;
+			for (int x = 1; x < 76; x++)
+			{
+				ArrayList<Integer> forbiddenY = forbiddenMap.get(x);
+				for (int y = 1; y < 76; y++)
+				{
+					boolean allowed = true;
+					if (forbiddenY != null && forbiddenY.contains(y))
+					{
+						allowed = false;
+					}
+					if (heuristic(spielfeld.getHeadX(), spielfeld.getHeadY(), x, y) > best && allowed)
+					{
+						bestX = x;
+						bestY = y;
+						best = heuristic(spielfeld.getHeadX(), spielfeld.getHeadY(), x, y);
+					}
+				}
+			}
+			pathfinding(bestX, bestY);
+			ArrayList<Integer> forbiddenY = forbiddenMap.get(bestX);
+			if (forbiddenY != null)
+			{
+				forbiddenY.add(bestY);
+			} else
+			{
+				forbiddenY = new ArrayList<>();
+				forbiddenY.add(bestY);
+				forbiddenMap.put(bestX, forbiddenY);
+			}
+		}
+	}
 
 	@Override
 	public void zug()
 	{
-		System.out.println(turn);
-		pathfinding();
-		Node p = path.remove(path.size() - 1);
+		pathfinding(spielfeld.getAppleX(), spielfeld.getAppleY());
+		Node p = null;
+		if (path.size() > 0)
+		{
+			p = path.remove(path.size() - 1);
+		} else
+		{
+			getBiggestDistance();
+			p = path.remove(path.size() - 1);
+		}
 		while (p.x == spielfeld.getHeadX() && p.y == spielfeld.getHeadY())
 		{
 			p = path.remove(path.size() - 1);
 		}
-		turn++;
 		int dx = p.x - spielfeld.getHeadX();
 		int dy = p.y - spielfeld.getHeadY();
 
@@ -122,7 +169,7 @@ public class SnakePathFindingBot extends AI
 	/**
 	 * A* pathfinding
 	 */
-	private boolean pathfinding()
+	private boolean pathfinding(int endX, int endY)
 	{
 		System.out.println("pathfinding");
 		spielfeld.resetGrid();
@@ -130,7 +177,7 @@ public class SnakePathFindingBot extends AI
 		closedList = new ArrayList<>();
 		path = new ArrayList<>();
 		Node start = spielfeld.getNode(spielfeld.getHeadX(), spielfeld.getHeadY());
-		Node end = spielfeld.getNode(spielfeld.getAppleX(), spielfeld.getAppleY());
+		Node end = spielfeld.getNode(endX, endY);
 		openList.add(start);
 		while (!openList.isEmpty())
 		{
