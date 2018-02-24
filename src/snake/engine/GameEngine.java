@@ -1,5 +1,7 @@
 package snake.engine;
 import ai.impl.AI;
+import ai.impl.SnakeFitnessFunction;
+import org.neuroph.contrib.neat.gen.operations.FitnessFunction;
 import snake.gui.Gui;
 import snake.spielfeld.Spielfeld;
 /**
@@ -73,7 +75,8 @@ public class GameEngine
 				if (log)
 				{
 					System.out.println("Ai turn: " + turn++);
-				}else{
+				} else
+				{
 					turn++;
 				}
 				ai.zug();
@@ -173,6 +176,7 @@ public class GameEngine
 			if (log)
 			{
 				System.out.println("Snake survived " + turn + " turns and achieved a score of " + score + ".");
+				System.out.println("This equals a fitnes of: " + SnakeFitnessFunction.getFitness(turn, score) + ".");
 			}
 		}
 	}

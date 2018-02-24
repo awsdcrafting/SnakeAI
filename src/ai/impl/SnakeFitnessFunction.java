@@ -33,7 +33,7 @@ public class SnakeFitnessFunction extends AbstractFitnessFunction
 		gameEngine.setAi(baseAI);
 		spielfeld.setUp(77, 77);
 		gameEngine.run();
-		int maxTurns = 5625;
+		/*int maxTurns = 5625;
 		int turns = gameEngine.getTurn();
 		double baseAppleValue = gameEngine.getScore() * maxTurns;
 		double appleMod = 5;
@@ -44,12 +44,30 @@ public class SnakeFitnessFunction extends AbstractFitnessFunction
 		}
 		appleValue /= (appleTurns + 1 - turns);
 
-		double fitness = turns + appleValue;
+		double fitness = turns + appleValue;*/
+		double fitness = getFitness(gameEngine.getTurn(), gameEngine.getScore());
 		if (log)
 		{
 			System.out.println(
-					"Snake " + (++snakeID) + " survived " + turns + " turns and achieved a score of " + gameEngine.getScore() + " and has a fitness of: " + fitness);
+					"Snake " + (++snakeID) + " survived " + gameEngine.getTurn() + " turns and achieved a score of " + gameEngine.getScore() + " and has a fitness of: " + fitness);
 		}
+		return fitness;
+	}
+
+	public static double getFitness(int turns, int score)
+	{
+		int maxTurns = 5625;
+		double baseAppleValue = score * maxTurns;
+		double appleMod = 5;
+		double appleValue = baseAppleValue * appleMod;
+		int appleTurns = maxTurns;
+		while (appleTurns < turns)
+		{
+			appleTurns += maxTurns;
+		}
+		appleValue /= (appleTurns + 1 - turns);
+
+		double fitness = turns + appleValue;
 		return fitness;
 	}
 
