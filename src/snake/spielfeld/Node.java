@@ -13,6 +13,7 @@ public class Node implements Comparable<Node>
 	public Node east;
 	public Node south;
 	public Node west;
+	public Node previous;
 	public boolean passable;
 	public boolean appleField;
 	public boolean finished;

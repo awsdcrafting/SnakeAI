@@ -50,12 +50,23 @@ public class Spielfeld
 		return grid[x][y];
 	}
 
-	public void resetGrid(){
-		for(int x = 0;x<77;x++){
-			for(int y = 0;y<77;y++){
+	public void resetGrid()
+	{
+		for (int x = 0; x < 77; x++)
+		{
+			for (int y = 0; y < 77; y++)
+			{
 				grid[x][y].g = 0;
 				grid[x][y].h = 0;
 				grid[x][y].f = 0;
+				grid[x][y].previous = null;
+				if (isDeadly(field[x][y]))
+				{
+					grid[x][y].passable = false;
+				} else
+				{
+					grid[x][y].passable = true;
+				}
 			}
 		}
 	}
