@@ -45,6 +45,21 @@ public class Spielfeld
 		return field[x][y];
 	}
 
+	public Node getNode(int x, int y)
+	{
+		return grid[x][y];
+	}
+
+	public void resetGrid(){
+		for(int x = 0;x<77;x++){
+			for(int y = 0;y<77;y++){
+				grid[x][y].g = 0;
+				grid[x][y].h = 0;
+				grid[x][y].f = 0;
+			}
+		}
+	}
+
 	public void setMoveDirection(direction moveDirection)
 	{
 		switch (field[headX][headY])

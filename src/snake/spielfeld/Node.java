@@ -2,10 +2,13 @@ package snake.spielfeld;
 /**
  * Created by scisneromam on 24.02.2018.
  */
-public class Node
+public class Node implements Comparable<Node>
 {
 	public int x;
 	public int y;
+	public int g;
+	public int h;
+	public int f;
 	public Node north;
 	public Node east;
 	public Node south;
@@ -38,6 +41,12 @@ public class Node
 		south = null;
 		west = null;
 		finished = false;
+	}
+
+	@Override
+	public int compareTo(Node node)
+	{
+		return f - node.f;
 	}
 
 }
