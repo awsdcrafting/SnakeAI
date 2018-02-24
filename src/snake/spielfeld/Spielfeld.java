@@ -358,8 +358,13 @@ public class Spielfeld
 
 	public int[] posInMoveDirection(direction moveDirection)
 	{
-		int moveX = headX;
-		int moveY = headY;
+		return posInMoveDirection(headX, headY, moveDirection);
+	}
+
+	public int[] posInMoveDirection(int x, int y, direction moveDirection)
+	{
+		int moveX = x;
+		int moveY = y;
 
 		switch (moveDirection)
 		{
