@@ -34,6 +34,9 @@ public class SnakePathFindingBot extends AI
 			pathfinding();
 		}
 		Node p = path.remove(path.size() - 1);
+		while(p.x==spielfeld.getHeadX()&&p.y==spielfeld.getHeadY()){
+			p = path.remove(path.size()-1);
+		}
 		turn++;
 		int dx = p.x - spielfeld.getHeadX();
 		int dy = p.y - spielfeld.getHeadY();
@@ -146,7 +149,6 @@ public class SnakePathFindingBot extends AI
 					temp = temp.previous;
 					path.add(temp);
 				}
-				path.remove(0);
 				return true;
 			}
 
