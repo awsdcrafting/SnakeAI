@@ -40,7 +40,8 @@ public class SnakePathFindingBot extends AI
 			}
 		} else
 		{
-			p = spielfeld.getNode(spielfeld.getHeadX(), spielfeld.getHeadY());
+
+			p = decide(spielfeld.getMoveDirection());
 		}
 
 		int dx = p.x - spielfeld.getHeadX();
@@ -160,17 +161,6 @@ public class SnakePathFindingBot extends AI
 
 			expandNode(currentNode, end);
 
-			if (openList.size() == 0)
-			{
-				Node temp = currentNode;
-				path.add(temp);
-				while (temp.previous != null)
-				{
-					temp = temp.previous;
-					path.add(temp);
-				}
-				return false;
-			}
 		}
 		return false;
 	}
@@ -290,5 +280,200 @@ public class SnakePathFindingBot extends AI
 
 	}
 
-}
+	public Node decide(Spielfeld.direction moveDirection)
+	{
 
+		Node outputNode = spielfeld.getNode(spielfeld.getHeadX(), spielfeld.getHeadY());
+
+		Spielfeld.direction left = Spielfeld.direction.EAST;
+		Spielfeld.direction forward = Spielfeld.direction.EAST;
+		Spielfeld.direction right = Spielfeld.direction.EAST;
+
+		switch (moveDirection)
+		{
+		case NORTH:
+			left = Spielfeld.direction.WEST;
+			forward = Spielfeld.direction.NORTH;
+			right = Spielfeld.direction.EAST;
+			break;
+		case SOUTH:
+			left = Spielfeld.direction.EAST;
+			forward = Spielfeld.direction.SOUTH;
+			right = Spielfeld.direction.WEST;
+			break;
+		case EAST:
+			left = Spielfeld.direction.NORTH;
+			forward = Spielfeld.direction.EAST;
+			right = Spielfeld.direction.SOUTH;
+			break;
+		case WEST:
+			left = Spielfeld.direction.SOUTH;
+			forward = Spielfeld.direction.WEST;
+			right = Spielfeld.direction.NORTH;
+			break;
+		}
+
+		//11 nodes 4 links 4 rechts 3 vorne
+
+		Node[] leftNodes = new Node[4];
+		Node[] rightNodes = new Node[4];
+		Node[] forwardNodes = new Node[3];
+
+		int x = spielfeld.getHeadX();
+		int y = spielfeld.getHeadY();
+		int forwardX = x;
+		int forwardY = y;
+		int leftX = x;
+		int leftY = y;
+		int rightX = x;
+		int rightY = y;
+
+		switch (left)
+		{
+		case NORTH:
+			leftNodes[0] = spielfeld.getNode(x - 1, y - 2);
+			leftNodes[1] = spielfeld.getNode(x, y - 2);
+			leftNodes[2] = spielfeld.getNode(x + 1, y - 2);
+			leftNodes[3] = spielfeld.getNode(x + 2, y - 2);
+			leftY = y - 1;
+			break;
+		case SOUTH:
+			leftNodes[0] = spielfeld.getNode(x - 1, y + 2);
+			leftNodes[1] = spielfeld.getNode(x, y + 2);
+			leftNodes[2] = spielfeld.getNode(x + 1, y + 2);
+			leftNodes[3] = spielfeld.getNode(x + 2, y + 2);
+			leftY = y + 1;
+			break;
+		case EAST:
+			leftNodes[0] = spielfeld.getNode(x + 2, y - 1);
+			leftNodes[1] = spielfeld.getNode(x + 2, y);
+			leftNodes[2] = spielfeld.getNode(x + 2, y + 1);
+			leftNodes[3] = spielfeld.getNode(x + 2, y + 2);
+			leftX = x + 1;
+			break;
+		case WEST:
+			leftNodes[0] = spielfeld.getNode(x - 2, y - 1);
+			leftNodes[1] = spielfeld.getNode(x - 2, y);
+			leftNodes[2] = spielfeld.getNode(x - 2, y + 1);
+			leftNodes[3] = spielfeld.getNode(x - 2, y + 2);
+			leftX = x - 1;
+			break;
+		}
+
+		switch (right)
+		{
+		case NORTH:
+			rightNodes[0] = spielfeld.getNode(x - 1, y - 2);
+			rightNodes[1] = spielfeld.getNode(x, y - 2);
+			rightNodes[2] = spielfeld.getNode(x + 1, y - 2);
+			rightNodes[3] = spielfeld.getNode(x + 2, y - 2);
+			rightY = y - 1;
+			break;
+		case SOUTH:
+			rightNodes[0] = spielfeld.getNode(x - 1, y + 2);
+			rightNodes[1] = spielfeld.getNode(x, y + 2);
+			rightNodes[2] = spielfeld.getNode(x + 1, y + 2);
+			rightNodes[3] = spielfeld.getNode(x + 2, y + 2);
+			rightY = y + 1;
+			break;
+		case EAST:
+			rightNodes[0] = spielfeld.getNode(x + 2, y - 1);
+			rightNodes[1] = spielfeld.getNode(x + 2, y);
+			rightNodes[2] = spielfeld.getNode(x + 2, y + 1);
+			rightNodes[3] = spielfeld.getNode(x + 2, y + 2);
+			rightX = x + 1;
+			break;
+		case WEST:
+			rightNodes[0] = spielfeld.getNode(x - 2, y - 1);
+			rightNodes[1] = spielfeld.getNode(x - 2, y);
+			rightNodes[2] = spielfeld.getNode(x - 2, y + 1);
+			rightNodes[3] = spielfeld.getNode(x - 2, y + 2);
+			rightX = x - 1;
+			break;
+		}
+
+		switch (forward)
+		{
+		case NORTH:
+			forwardNodes[0] = spielfeld.getNode(x - 1, y - 2);
+			forwardNodes[1] = spielfeld.getNode(x, y - 2);
+			forwardNodes[2] = spielfeld.getNode(x + 1, y - 2);
+			forwardY = y - 1;
+			break;
+		case SOUTH:
+			forwardNodes[0] = spielfeld.getNode(x - 1, y + 2);
+			forwardNodes[1] = spielfeld.getNode(x, y + 2);
+			forwardNodes[2] = spielfeld.getNode(x + 1, y + 2);
+			forwardY = y + 1;
+			break;
+		case EAST:
+			forwardNodes[0] = spielfeld.getNode(x + 2, y - 1);
+			forwardNodes[1] = spielfeld.getNode(x + 2, y);
+			forwardNodes[2] = spielfeld.getNode(x + 2, y + 1);
+			forwardX = x + 1;
+			break;
+		case WEST:
+			forwardNodes[0] = spielfeld.getNode(x - 2, y - 1);
+			forwardNodes[1] = spielfeld.getNode(x - 2, y);
+			forwardNodes[2] = spielfeld.getNode(x - 2, y + 1);
+			forwardX = x - 1;
+			break;
+		}
+
+		boolean forwardAllowed = true;
+		boolean leftAllowed = true;
+		boolean rightAllowed = true;
+		for (int i = 0; i < 4; i++)
+		{
+			if (!leftNodes[i].passable)
+			{
+				leftAllowed = false;
+			}
+		}
+		for (int i = 0; i < 4; i++)
+		{
+			if (!rightNodes[i].passable)
+			{
+				rightAllowed = false;
+			}
+		}
+		for (int i = 0; i < 3; i++)
+		{
+			if (!forwardNodes[i].passable)
+			{
+				forwardAllowed = false;
+			}
+		}
+		if (spielfeld.willDie(x, y, forward))
+		{
+			forwardAllowed = false;
+		}
+		if (spielfeld.willDie(x, y, right))
+		{
+			rightAllowed = false;
+		}
+		if (spielfeld.willDie(x, y, left))
+		{
+			leftAllowed = false;
+		}
+		boolean doMore = true;
+		if (forwardAllowed && doMore)
+		{
+			doMore = false;
+			outputNode = spielfeld.getNode(forwardX, forwardY);
+		}
+		if (leftAllowed && doMore)
+		{
+			doMore = false;
+			outputNode = spielfeld.getNode(leftX, leftY);
+		}
+		if (rightAllowed && doMore)
+		{
+			doMore = false;
+			outputNode = spielfeld.getNode(rightX, rightY);
+		}
+
+		return outputNode;
+	}
+
+}

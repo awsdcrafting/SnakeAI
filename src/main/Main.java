@@ -28,7 +28,7 @@ public class Main
 	{
 		long time = System.currentTimeMillis();
 
-		long loopTime = 25;
+		long loopTime = 5;
 		long generations = 100;
 		int population = 25;
 		double fitness = -1;
