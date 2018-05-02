@@ -4,7 +4,6 @@ import snake.spielfeld.Spielfeld;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 /**
  * Created by scisneromam on 23.02.2018.
  */
@@ -26,21 +25,25 @@ public class SnakePathFindingBot extends AI
 	@Override
 	public void zug()
 	{
-		pathfinding(spielfeld.getAppleX(), spielfeld.getAppleY());
+		boolean worked = pathfinding(spielfeld.getAppleX(), spielfeld.getAppleY(), false);
 		Node p = null;
-		if (path.size() > 0)
+		if (worked)
 		{
-			p = path.remove(path.size() - 1);
 			if (path.size() > 0)
 			{
-				while (p.x == spielfeld.getHeadX() && p.y == spielfeld.getHeadY())
+				p = path.remove(path.size() - 1);
+				if (path.size() > 0)
 				{
-					p = path.remove(path.size() - 1);
+					while (p.x == spielfeld.getHeadX() && p.y == spielfeld.getHeadY() && path.size() > 0)
+					{
+						p = path.remove(path.size() - 1);
+					}
 				}
+
 			}
 		} else
 		{
-
+			System.out.println("Pathfinding didnt work");
 			p = decide(spielfeld.getMoveDirection());
 		}
 
@@ -95,6 +98,26 @@ public class SnakePathFindingBot extends AI
 		String out = "";
 		boolean found = false;
 
+		int tries = 0;
+		while (spielfeld.willDie(spielfeld.getHeadX(), spielfeld.getHeadY(), choice))
+		{
+			if (choice == left)
+			{
+				choice = forward;
+			} else if (choice == forward)
+			{
+				choice = right;
+			} else
+			{
+				choice = left;
+			}
+			tries++;
+			if (tries > 3)
+			{
+				break;
+			}
+		}
+
 		if (choice == left)
 		{
 			out = "left";
@@ -131,7 +154,7 @@ public class SnakePathFindingBot extends AI
 	/**
 	 * A* pathfinding
 	 */
-	private boolean pathfinding(int endX, int endY)
+	private boolean pathfinding(int endX, int endY, boolean ignorePassable)
 	{
 		System.out.println("pathfinding");
 		spielfeld.resetGrid();
@@ -159,18 +182,39 @@ public class SnakePathFindingBot extends AI
 
 			closedList.add(currentNode);
 
-			expandNode(currentNode, end);
+			expandNode(currentNode, end, ignorePassable);
+
+			if (openList.size() == 0)
+			{
+				if (currentNode.x == end.x && currentNode.y == end.y)
+				{
+					Node temp = currentNode;
+					path.add(temp);
+					while (temp.previous != null)
+					{
+						temp = temp.previous;
+						path.add(temp);
+					}
+					return false;
+				}
+			}
 
 		}
 		return false;
 	}
 
-	private void expandNode(Node currentNode, Node end)
+	private boolean isOpposite(Spielfeld.direction moveDir, Spielfeld.direction testDir)
+	{
+		return (moveDir == Spielfeld.direction.NORTH && testDir == Spielfeld.direction.SOUTH) || (moveDir == Spielfeld.direction.EAST && testDir == Spielfeld.direction.WEST) || (
+				moveDir == Spielfeld.direction.SOUTH && testDir == Spielfeld.direction.NORTH) || (moveDir == Spielfeld.direction.WEST && testDir == Spielfeld.direction.EAST);
+	}
+
+	private void expandNode(Node currentNode, Node end, boolean ignorePassable)
 	{
 
 		if (currentNode.north != null)
 		{
-			if (!closedList.contains(currentNode.north) && currentNode.north.passable)
+			if (!closedList.contains(currentNode.north) && currentNode.north.passable || (ignorePassable && !isOpposite(spielfeld.getMoveDirection(), Spielfeld.direction.NORTH)))
 			{
 
 				int tempG = currentNode.g + 1;
@@ -195,7 +239,7 @@ public class SnakePathFindingBot extends AI
 		}
 		if (currentNode.east != null)
 		{
-			if (!closedList.contains(currentNode.east) && currentNode.east.passable)
+			if (!closedList.contains(currentNode.east) && currentNode.east.passable || (ignorePassable && !isOpposite(spielfeld.getMoveDirection(), Spielfeld.direction.EAST)))
 			{
 
 				int tempG = currentNode.g + 1;
@@ -220,7 +264,7 @@ public class SnakePathFindingBot extends AI
 		}
 		if (currentNode.south != null)
 		{
-			if (!closedList.contains(currentNode.south) && currentNode.south.passable)
+			if (!closedList.contains(currentNode.south) && currentNode.south.passable || (ignorePassable && !isOpposite(spielfeld.getMoveDirection(), Spielfeld.direction.SOUTH)))
 			{
 
 				int tempG = currentNode.g + 1;
@@ -245,7 +289,7 @@ public class SnakePathFindingBot extends AI
 		}
 		if (currentNode.west != null)
 		{
-			if (!closedList.contains(currentNode.west) && currentNode.west.passable)
+			if (!closedList.contains(currentNode.west) && currentNode.west.passable || (ignorePassable && !isOpposite(spielfeld.getMoveDirection(), Spielfeld.direction.WEST)))
 			{
 
 				int tempG = currentNode.g + 1;
@@ -280,7 +324,12 @@ public class SnakePathFindingBot extends AI
 
 	}
 
-	public Node decide(Spielfeld.direction moveDirection)
+	private Node fill()
+	{
+		return null;
+	}
+
+	private Node decide(Spielfeld.direction moveDirection)
 	{
 
 		Node outputNode = spielfeld.getNode(spielfeld.getHeadX(), spielfeld.getHeadY());
@@ -331,31 +380,55 @@ public class SnakePathFindingBot extends AI
 		switch (left)
 		{
 		case NORTH:
-			leftNodes[0] = spielfeld.getNode(x - 1, y - 2);
-			leftNodes[1] = spielfeld.getNode(x, y - 2);
-			leftNodes[2] = spielfeld.getNode(x + 1, y - 2);
-			leftNodes[3] = spielfeld.getNode(x + 2, y - 2);
+			if (isValid(y - 2))
+			{
+				for (int i = 0; i < 4; i++)
+				{
+					if (isValid(x + i - 1))
+					{
+						leftNodes[i] = spielfeld.getNode(x + i - 1, y - 2);
+					}
+				}
+			}
 			leftY = y - 1;
 			break;
 		case SOUTH:
-			leftNodes[0] = spielfeld.getNode(x - 1, y + 2);
-			leftNodes[1] = spielfeld.getNode(x, y + 2);
-			leftNodes[2] = spielfeld.getNode(x + 1, y + 2);
-			leftNodes[3] = spielfeld.getNode(x + 2, y + 2);
+			if (isValid(y + 2))
+			{
+				for (int i = 0; i < 4; i++)
+				{
+					if (isValid(x + i - 1))
+					{
+						leftNodes[i] = spielfeld.getNode(x + i - 1, y + 2);
+					}
+				}
+			}
 			leftY = y + 1;
 			break;
 		case EAST:
-			leftNodes[0] = spielfeld.getNode(x + 2, y - 1);
-			leftNodes[1] = spielfeld.getNode(x + 2, y);
-			leftNodes[2] = spielfeld.getNode(x + 2, y + 1);
-			leftNodes[3] = spielfeld.getNode(x + 2, y + 2);
+			if (isValid(x + 2))
+			{
+				for (int i = 0; i < 4; i++)
+				{
+					if (isValid(y + i - 1))
+					{
+						leftNodes[i] = spielfeld.getNode(x + 2, y + i - 1);
+					}
+				}
+			}
 			leftX = x + 1;
 			break;
 		case WEST:
-			leftNodes[0] = spielfeld.getNode(x - 2, y - 1);
-			leftNodes[1] = spielfeld.getNode(x - 2, y);
-			leftNodes[2] = spielfeld.getNode(x - 2, y + 1);
-			leftNodes[3] = spielfeld.getNode(x - 2, y + 2);
+			if (isValid(x - 2))
+			{
+				for (int i = 0; i < 4; i++)
+				{
+					if (isValid(y + i - 1))
+					{
+						leftNodes[i] = spielfeld.getNode(x + 2, y + i - 1);
+					}
+				}
+			}
 			leftX = x - 1;
 			break;
 		}
@@ -363,31 +436,55 @@ public class SnakePathFindingBot extends AI
 		switch (right)
 		{
 		case NORTH:
-			rightNodes[0] = spielfeld.getNode(x - 1, y - 2);
-			rightNodes[1] = spielfeld.getNode(x, y - 2);
-			rightNodes[2] = spielfeld.getNode(x + 1, y - 2);
-			rightNodes[3] = spielfeld.getNode(x + 2, y - 2);
+			if (isValid(y - 2))
+			{
+				for (int i = 0; i < 4; i++)
+				{
+					if (isValid(x + i - 1))
+					{
+						rightNodes[i] = spielfeld.getNode(x + i - 1, y - 2);
+					}
+				}
+			}
 			rightY = y - 1;
 			break;
 		case SOUTH:
-			rightNodes[0] = spielfeld.getNode(x - 1, y + 2);
-			rightNodes[1] = spielfeld.getNode(x, y + 2);
-			rightNodes[2] = spielfeld.getNode(x + 1, y + 2);
-			rightNodes[3] = spielfeld.getNode(x + 2, y + 2);
+			if (isValid(y + 2))
+			{
+				for (int i = 0; i < 4; i++)
+				{
+					if (isValid(x + i - 1))
+					{
+						rightNodes[i] = spielfeld.getNode(x + i - 1, y - 2);
+					}
+				}
+			}
 			rightY = y + 1;
 			break;
 		case EAST:
-			rightNodes[0] = spielfeld.getNode(x + 2, y - 1);
-			rightNodes[1] = spielfeld.getNode(x + 2, y);
-			rightNodes[2] = spielfeld.getNode(x + 2, y + 1);
-			rightNodes[3] = spielfeld.getNode(x + 2, y + 2);
+			if (isValid(x + 2))
+			{
+				for (int i = 0; i < 4; i++)
+				{
+					if (isValid(y + i - 1))
+					{
+						rightNodes[i] = spielfeld.getNode(x + 2, y + i - 1);
+					}
+				}
+			}
 			rightX = x + 1;
 			break;
 		case WEST:
-			rightNodes[0] = spielfeld.getNode(x - 2, y - 1);
-			rightNodes[1] = spielfeld.getNode(x - 2, y);
-			rightNodes[2] = spielfeld.getNode(x - 2, y + 1);
-			rightNodes[3] = spielfeld.getNode(x - 2, y + 2);
+			if (isValid(x - 2))
+			{
+				for (int i = 0; i < 4; i++)
+				{
+					if (isValid(y + i - 1))
+					{
+						rightNodes[i] = spielfeld.getNode(x - 2, y + i - 1);
+					}
+				}
+			}
 			rightX = x - 1;
 			break;
 		}
@@ -395,27 +492,55 @@ public class SnakePathFindingBot extends AI
 		switch (forward)
 		{
 		case NORTH:
-			forwardNodes[0] = spielfeld.getNode(x - 1, y - 2);
-			forwardNodes[1] = spielfeld.getNode(x, y - 2);
-			forwardNodes[2] = spielfeld.getNode(x + 1, y - 2);
+			if (isValid(y - 2))
+			{
+				for (int i = 0; i < 3; i++)
+				{
+					if (isValid(x + i - 1))
+					{
+						forwardNodes[i] = spielfeld.getNode(x + i - 1, y - 2);
+					}
+				}
+			}
 			forwardY = y - 1;
 			break;
 		case SOUTH:
-			forwardNodes[0] = spielfeld.getNode(x - 1, y + 2);
-			forwardNodes[1] = spielfeld.getNode(x, y + 2);
-			forwardNodes[2] = spielfeld.getNode(x + 1, y + 2);
+			if (isValid(y + 2))
+			{
+				for (int i = 0; i < 3; i++)
+				{
+					if (isValid(x + i - 1))
+					{
+						forwardNodes[i] = spielfeld.getNode(x + i - 1, y - 2);
+					}
+				}
+			}
 			forwardY = y + 1;
 			break;
 		case EAST:
-			forwardNodes[0] = spielfeld.getNode(x + 2, y - 1);
-			forwardNodes[1] = spielfeld.getNode(x + 2, y);
-			forwardNodes[2] = spielfeld.getNode(x + 2, y + 1);
+			if (isValid(x + 2))
+			{
+				for (int i = 0; i < 3; i++)
+				{
+					if (isValid(y + i - 1))
+					{
+						forwardNodes[i] = spielfeld.getNode(x + 2, y + i - 1);
+					}
+				}
+			}
 			forwardX = x + 1;
 			break;
 		case WEST:
-			forwardNodes[0] = spielfeld.getNode(x - 2, y - 1);
-			forwardNodes[1] = spielfeld.getNode(x - 2, y);
-			forwardNodes[2] = spielfeld.getNode(x - 2, y + 1);
+			if (isValid(x - 2))
+			{
+				for (int i = 0; i < 3; i++)
+				{
+					if (isValid(y + i - 1))
+					{
+						forwardNodes[i] = spielfeld.getNode(x + 2, y + i - 1);
+					}
+				}
+			}
 			forwardX = x - 1;
 			break;
 		}
@@ -425,34 +550,34 @@ public class SnakePathFindingBot extends AI
 		boolean rightAllowed = true;
 		for (int i = 0; i < 4; i++)
 		{
-			if (!leftNodes[i].passable)
+			if (leftNodes[i] != null && !leftNodes[i].passable)
 			{
 				leftAllowed = false;
 			}
 		}
 		for (int i = 0; i < 4; i++)
 		{
-			if (!rightNodes[i].passable)
+			if (rightNodes[i] != null && !rightNodes[i].passable)
 			{
 				rightAllowed = false;
 			}
 		}
 		for (int i = 0; i < 3; i++)
 		{
-			if (!forwardNodes[i].passable)
+			if (forwardNodes[i] != null && !forwardNodes[i].passable)
 			{
 				forwardAllowed = false;
 			}
 		}
-		if (spielfeld.willDie(x, y, forward))
+		if (spielfeld.willDie(x, y, forward) || spielfeld.isDeadly(spielfeld.getState(forwardX, forwardY)))
 		{
 			forwardAllowed = false;
 		}
-		if (spielfeld.willDie(x, y, right))
+		if (spielfeld.willDie(x, y, right) || spielfeld.isDeadly(spielfeld.getState(rightX, rightY)))
 		{
 			rightAllowed = false;
 		}
-		if (spielfeld.willDie(x, y, left))
+		if (spielfeld.willDie(x, y, left) || spielfeld.isDeadly(spielfeld.getState(leftX, leftY)))
 		{
 			leftAllowed = false;
 		}
@@ -476,4 +601,60 @@ public class SnakePathFindingBot extends AI
 		return outputNode;
 	}
 
+	public boolean isValid(int i)
+	{
+		return i > 0 && i < 77;
+	}
+
+	public boolean floodFillPath(Spielfeld.direction moveDirection)
+	{
+		//determine boundaries
+		Spielfeld.direction left = Spielfeld.direction.EAST;
+		Spielfeld.direction forward = Spielfeld.direction.EAST;
+		Spielfeld.direction right = Spielfeld.direction.EAST;
+
+		switch (moveDirection)
+		{
+		case NORTH:
+			left = Spielfeld.direction.WEST;
+			forward = Spielfeld.direction.NORTH;
+			right = Spielfeld.direction.EAST;
+			break;
+		case SOUTH:
+			left = Spielfeld.direction.EAST;
+			forward = Spielfeld.direction.SOUTH;
+			right = Spielfeld.direction.WEST;
+			break;
+		case EAST:
+			left = Spielfeld.direction.NORTH;
+			forward = Spielfeld.direction.EAST;
+			right = Spielfeld.direction.SOUTH;
+			break;
+		case WEST:
+			left = Spielfeld.direction.SOUTH;
+			forward = Spielfeld.direction.WEST;
+			right = Spielfeld.direction.NORTH;
+			break;
+		}
+		Spielfeld.direction choice = forward;
+
+		int x = spielfeld.getHeadX();
+		int y = spielfeld.getHeadY();
+		if (!spielfeld.willDie(x, y, forward))
+		{
+			choice = forward;
+		} else if (!spielfeld.willDie(x, y, left))
+		{
+			choice = left;
+		} else if (!spielfeld.willDie(x, y, right))
+		{
+			choice = right;
+		} else
+		{
+			//trapped
+			return false;
+		}
+
+		return false;
+	}
 }

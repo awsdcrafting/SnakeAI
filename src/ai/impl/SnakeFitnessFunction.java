@@ -31,6 +31,7 @@ public class SnakeFitnessFunction extends AbstractFitnessFunction
 		BaseAI baseAI = new BaseAI(spielfeld, neuralNetwork);
 		baseAI.setLog(log);
 		gameEngine.setAi(baseAI);
+		spielfeld.setNumber(organism.getInnovationId());
 		spielfeld.setUp(77, 77);
 		gameEngine.run();
 		/*int maxTurns = 5625;
@@ -51,6 +52,7 @@ public class SnakeFitnessFunction extends AbstractFitnessFunction
 			System.out.println(
 					"Snake " + (++snakeID) + " survived " + gameEngine.getTurn() + " turns and achieved a score of " + gameEngine.getScore() + " and has a fitness of: " + fitness);
 		}
+		spielfeld.setLastFitness(fitness);
 		return fitness;
 	}
 
@@ -61,13 +63,17 @@ public class SnakeFitnessFunction extends AbstractFitnessFunction
 		double appleMod = 5;
 		double appleValue = baseAppleValue * appleMod;
 		int appleTurns = maxTurns;
-		if(appleTurns < turns)
+		if (appleTurns < turns)
 		{
 			appleTurns = turns;
 		}
 		appleValue /= (appleTurns + 1 - turns);
 
 		double fitness = turns + appleValue;
+		if (appleValue == 0 && turns > maxTurns)
+		{
+			fitness /= 2;
+		}
 		return fitness;
 	}
 

@@ -1,26 +1,22 @@
 package main;
 import ai.impl.SnakeFitnessFunction;
-import org.neuroph.contrib.neat.experiment.xor.XorExperiment;
-import org.neuroph.contrib.neat.experiment.xor.XorFitnessFunction;
-import org.neuroph.contrib.neat.gen.*;
+import org.neuroph.contrib.neat.gen.Evolver;
+import org.neuroph.contrib.neat.gen.NeuronGene;
+import org.neuroph.contrib.neat.gen.NeuronType;
+import org.neuroph.contrib.neat.gen.Organism;
 import org.neuroph.contrib.neat.gen.impl.SimpleNeatParameters;
 import org.neuroph.contrib.neat.gen.operations.mutation.WeightMutationOperation;
 import org.neuroph.contrib.neat.gen.operations.selector.NaturalSelectionOrganismSelector;
 import org.neuroph.contrib.neat.gen.operations.speciator.DynamicThresholdSpeciator;
-import org.neuroph.contrib.neat.gen.persistence.Persistence;
 import org.neuroph.contrib.neat.gen.persistence.PersistenceException;
-import org.neuroph.contrib.neat.gen.persistence.impl.DirectoryOutputPersistence;
-import org.neuroph.contrib.neat.gen.persistence.impl.SerializationDelegate;
-import org.neuroph.contrib.neat.gen.persistence.impl.serialize.JavaSerializationDelegate;
 import org.neuroph.core.NeuralNetwork;
 import snake.engine.GameEngine;
 import snake.gui.Gui;
 import snake.spielfeld.Spielfeld;
+import utils.RandomUtils;
 
-import java.io.File;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.logging.Logger;
 /**
  * Created by scisneromam on 17.02.2018.
@@ -120,6 +116,7 @@ public class EvolutionMaster
 		{
 			inputGenes.add(new NeuronGene(NeuronType.INPUT, simpleNeatParameters));
 		}
+
 		ArrayList<NeuronGene> outputGenes = new ArrayList<>();
 		for (int i = 0; i < 3; i++)
 		{

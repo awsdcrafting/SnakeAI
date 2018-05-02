@@ -12,6 +12,62 @@ public class Spielfeld
 	private int width;
 	private int height;
 
+	private long seed = 0;
+	private long goal = 0;
+	private long population = 0;
+	private long number = 0;
+	private String mode = "";
+	private double lastFitness = 0;
+
+	public long getSeed()
+	{
+		return seed;
+	}
+	public void setSeed(long seed)
+	{
+		this.seed = seed;
+	}
+	public long getGoal()
+	{
+		return goal;
+	}
+	public void setGoal(long generation)
+	{
+		this.goal = generation;
+	}
+	public long getPopulation()
+	{
+		return population;
+	}
+	public void setPopulation(long population)
+	{
+		this.population = population;
+	}
+	public long getNumber()
+	{
+		return number;
+	}
+	public void setNumber(long number)
+	{
+		this.number = number;
+	}
+	public String getMode()
+	{
+		return mode;
+	}
+	public void setMode(String mode)
+	{
+		this.mode = mode;
+	}
+	public double getLastFitness()
+	{
+		return lastFitness;
+	}
+	public void setLastFitness(double lastFitness)
+	{
+		this.lastFitness = lastFitness;
+	}
+
 	private boolean log = true;
 
 	private int headX;
@@ -163,15 +219,30 @@ public class Spielfeld
 	{
 		return appleY;
 	}
+
 	public Spielfeld(int width, int height)
 	{
+		this(width, height, 0);
+	}
+
+	public Spielfeld(int width, int height, long seed)
+	{
+		this.seed = seed;
 		this.width = width + 2;
 		this.height = height + 2;
+		if (seed != 0)
+		{
+			RandomUtils.setSeed(seed);
+		}
 		setUp(this.width, this.height);
 	}
 
 	public void setUp(int width, int height)
 	{
+		if (seed != 0)
+		{
+			RandomUtils.setSeed(seed);
+		}
 		field = new state[width][height];
 		grid = new Node[width][height];
 		for (int x = 0; x < width; x++)

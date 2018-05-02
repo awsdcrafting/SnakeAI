@@ -18,6 +18,11 @@ public class RandomUtils
 		return random.nextInt(max - min) + min;
 	}
 
+	public static long randomLong()
+	{
+		return random.nextLong();
+	}
+
 	public static double randomDouble()
 	{
 		return random.nextDouble();
@@ -26,6 +31,11 @@ public class RandomUtils
 	public static boolean randomBoolean()
 	{
 		return random.nextBoolean();
+	}
+
+	public static void setSeed(long seed)
+	{
+		random = new Random(seed);
 	}
 
 }

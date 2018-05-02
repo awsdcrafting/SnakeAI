@@ -6,12 +6,10 @@ import snake.engine.GameEngine;
 import snake.gui.Gui;
 import snake.gui.SpielfeldGui;
 import snake.spielfeld.Spielfeld;
+import utils.RandomUtils;
 
 import javax.swing.*;
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Scanner;
 /**
  * Created by scisneromam on 15.02.2018.
  */
@@ -62,13 +60,16 @@ public class Main
 									bGui = false;
 									bLog = false;
 									loopTime = 0;
+								} else
+								{
+									loopTime = Long.parseLong(args[3]);
 								}
 							}
 						}
 					}
 				} catch (NumberFormatException nfe)
 				{
-					System.out.println("Ignoriere " + args[1] + " da keine zahl");
+					System.out.println("Ignoriere " + args[1] + "(oder " + args[3] + ")" + " da keine zahl");
 				}
 			} else
 			{
@@ -107,7 +108,12 @@ public class Main
 		evolutionMaster.setPopulation(population);
 		evolutionMaster.setFitness(fitness);
 
-		Spielfeld spielfeld = new Spielfeld(75, 75);
+		long seed = RandomUtils.randomLong();
+		System.out.println(seed);
+		Spielfeld spielfeld = new Spielfeld(75, 75, seed);
+		spielfeld.setPopulation(population);
+		spielfeld.setSeed(seed);
+
 		gameEngine.setSpielfeld(spielfeld);
 		gameEngine.setLog(bLog);
 		evolutionMaster.setLog(bLog);
@@ -124,7 +130,7 @@ public class Main
 					public void run()
 					{
 
-						Gui gui = new Gui("SNAKE", 800, 800);
+						Gui gui = new Gui("SNAKE - seed: " + seed, 800, 800);
 						SpielfeldGui spielfeldGui = new SpielfeldGui();
 						spielfeldGui.setBounds(15, 15, 770, 770);
 						spielfeldGui.setSpielfeld(spielfeld);
@@ -144,6 +150,7 @@ public class Main
 		}
 		if (runSaved)
 		{
+			spielfeld.setMode("Run saved");
 			if (path.equalsIgnoreCase("snakebot"))
 			{
 				ai = new SnakeBot(spielfeld);
@@ -158,6 +165,15 @@ public class Main
 
 		if (!runSaved)
 		{
+			if (fitness != 0)
+			{
+				spielfeld.setMode("Evolve Fitness");
+				spielfeld.setGoal((long) fitness);
+			} else
+			{
+				spielfeld.setMode("Evolve Generations");
+				spielfeld.setGoal(generations);
+			}
 			try
 			{
 				evolutionMaster.evolve();

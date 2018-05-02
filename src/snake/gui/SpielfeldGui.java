@@ -27,7 +27,6 @@ public class SpielfeldGui extends JPanel
 
 		if (spielfeld != null)
 		{
-
 			for (int x = 1; x < spielfeld.getWidth() - 1; x++)
 			{
 				for (int y = 1; y < spielfeld.getHeight() - 1; y++)
@@ -36,6 +35,18 @@ public class SpielfeldGui extends JPanel
 				}
 			}
 		}
+		g2d.setColor(Color.BLACK);
+		int x = 10;
+		int y = 10;
+		int yMod = 2;
+		g2d.drawString("Seed: " + spielfeld.getSeed(), x, y * yMod++);
+		g2d.drawString("Goal: " + spielfeld.getGoal(), x, y * yMod++);
+		g2d.drawString("OrganismNumber: " + spielfeld.getNumber(), x, y * yMod++);
+		g2d.drawString("Max Population: " + spielfeld.getPopulation(), x, y * yMod++);
+		g2d.drawString("Generation: " + (spielfeld.getNumber() / spielfeld.getPopulation()), x, y * yMod++);
+		g2d.drawString("Number: " + (spielfeld.getNumber() - ((spielfeld.getNumber() / spielfeld.getPopulation()) * spielfeld.getPopulation())), x, y * yMod++);
+		g2d.drawString("Mode: " + spielfeld.getMode(), x, y * yMod++);
+		g2d.drawString("Last fitness: " + spielfeld.getLastFitness(), x, y * yMod++);
 	}
 
 	private void paintField(int x, int y, Graphics2D g2d)
@@ -56,7 +67,7 @@ public class SpielfeldGui extends JPanel
 			g2d.fillRect(xPos, yPos, 10, 10);
 			break;
 		case EMPTY: //equals default
-			g2d.setColor(new Color(25,125,25));
+			g2d.setColor(new Color(25, 125, 25));
 			g2d.fillRect(xPos, yPos, 10, 10);
 			break;
 
@@ -66,7 +77,7 @@ public class SpielfeldGui extends JPanel
 			break;
 		case HEADWEST:
 			g2d.setColor(Color.BLUE);
-			g2d.fillRect(xPos+1, yPos + 1, 9, 8);
+			g2d.fillRect(xPos + 1, yPos + 1, 9, 8);
 			break;
 		case HEADNORTH:
 			g2d.setColor(Color.BLUE);
