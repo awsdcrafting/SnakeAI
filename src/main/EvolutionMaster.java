@@ -5,6 +5,8 @@ import org.neuroph.contrib.neat.gen.NeuronGene;
 import org.neuroph.contrib.neat.gen.NeuronType;
 import org.neuroph.contrib.neat.gen.Organism;
 import org.neuroph.contrib.neat.gen.impl.SimpleNeatParameters;
+import org.neuroph.contrib.neat.gen.operations.mutation.AddConnectionMutationOperation;
+import org.neuroph.contrib.neat.gen.operations.mutation.AddNeuronMutationOperation;
 import org.neuroph.contrib.neat.gen.operations.mutation.WeightMutationOperation;
 import org.neuroph.contrib.neat.gen.operations.selector.NaturalSelectionOrganismSelector;
 import org.neuroph.contrib.neat.gen.operations.speciator.DynamicThresholdSpeciator;
@@ -13,7 +15,6 @@ import org.neuroph.core.NeuralNetwork;
 import snake.engine.GameEngine;
 import snake.gui.Gui;
 import snake.spielfeld.Spielfeld;
-import utils.RandomUtils;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -93,10 +94,12 @@ public class EvolutionMaster
 		WeightMutationOperation weightMutationOperation = ((WeightMutationOperation) simpleNeatParameters.getMutationOperators().get(2));
 		weightMutationOperation.setMaxWeightPertubation(weightMutationOperation.getMaxWeightPertubation() * 2);
 		weightMutationOperation.setProbabilityOfNewWeight(weightMutationOperation.getProbabilityOfNewWeight() * 2);
+
 		NaturalSelectionOrganismSelector naturalSelectionOrganismSelector = new NaturalSelectionOrganismSelector();
 		naturalSelectionOrganismSelector.setKillUnproductiveSpecies(true);
 		naturalSelectionOrganismSelector.setElitismEnabled(true);
 		simpleNeatParameters.setOrganismSelector(naturalSelectionOrganismSelector);
+
 		DynamicThresholdSpeciator dynamicThresholdSpeciator = new DynamicThresholdSpeciator();
 		dynamicThresholdSpeciator.setMaxSpecies(population / 5 > 4 ? population / 5 : 4);
 		simpleNeatParameters.setSpeciator(dynamicThresholdSpeciator);

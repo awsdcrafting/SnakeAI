@@ -70,9 +70,9 @@ public class SnakeFitnessFunction extends AbstractFitnessFunction
 		appleValue /= (appleTurns + 1 - turns);
 
 		double fitness = turns + appleValue;
-		if (appleValue == 0 && turns > maxTurns)
+		if (appleValue == 0 && turns >= maxTurns)
 		{
-			fitness /= 2;
+			fitness /= 4;
 		}
 		return fitness;
 	}

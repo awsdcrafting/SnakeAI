@@ -1,10 +1,8 @@
 package ai.impl;
 import org.neuroph.core.NeuralNetwork;
-import org.neuroph.nnet.learning.BackPropagation;
 import org.neuroph.util.NeuralNetworkFactory;
 import org.neuroph.util.TransferFunctionType;
 import snake.spielfeld.Spielfeld;
-import sun.security.provider.ConfigFile;
 import utils.MathUtils;
 
 import java.util.Vector;
@@ -77,170 +75,9 @@ public class BaseAI extends AI
 			break;
 		}
 
-		int[] in0 = spielfeld.getDistanceToApple();
-		int in1 = 0;
-		int in2 = 0;
-		if (in0[0] < 0)
-		{
-			switch (moveDir)
-			{
-			case NORTH:
-				in1 = -5;
-				break;
-			case SOUTH:
-				in1 = 5;
-				break;
-			case EAST:
-				in1 = -5;
-				break;
-			case WEST:
-				in1 = 0;
-				break;
-			}
-		} else if (in0[0] == 0)
-		{
-			switch (moveDir)
-			{
-			case NORTH:
-				if (in0[1] < 0)
-				{
-					in1 = 0;
-				}
-				if (in0[1] > 0)
-				{
-					in1 = -5;
-				}
-				break;
-			case SOUTH:
-				if (in0[1] < 0)
-				{
-					in1 = -5;
-				}
-				if (in0[1] > 0)
-				{
-					in1 = 0;
-				}
-				break;
-			case EAST:
-				if (in0[1] < 0)
-				{
-					in1 = -5;
-				}
-				if (in0[1] > 0)
-				{
-					in1 = 5;
-				}
-				break;
-			case WEST:
-				if (in0[1] < 0)
-				{
-					in1 = 5;
-				}
-				if (in0[1] > 0)
-				{
-					in1 = -5;
-				}
-				break;
-			}
-		} else
-		{
-			switch (moveDir)
-			{
-			case NORTH:
-				in1 = 5;
-				break;
-			case SOUTH:
-				in1 = -5;
-				break;
-			case EAST:
-				in1 = 0;
-				break;
-			case WEST:
-				in1 = -5;
-				break;
-			}
-		}
-
-		if (in0[1] < 0)
-		{
-			switch (moveDir)
-			{
-			case NORTH:
-				in2 = 0;
-				break;
-			case SOUTH:
-				in2 = -5;
-				break;
-			case EAST:
-				in2 = -5;
-				break;
-			case WEST:
-				in2 = 5;
-				break;
-			}
-		} else if (in0[1] == 0)
-		{
-			switch (moveDir)
-			{
-			case NORTH:
-				if (in0[0] < 0)
-				{
-					in2 = -5;
-				}
-				if (in0[0] > 0)
-				{
-					in2 = 5;
-				}
-				break;
-			case SOUTH:
-				if (in0[0] < 0)
-				{
-					in2 = 5;
-				}
-				if (in0[0] > 0)
-				{
-					in2 = -5;
-				}
-				break;
-			case EAST:
-				if (in0[0] < 0)
-				{
-					in2 = -5;
-				}
-				if (in0[0] > 0)
-				{
-					in2 = 0;
-				}
-				break;
-			case WEST:
-				if (in0[0] < 0)
-				{
-					in2 = 0;
-				}
-				if (in0[0] > 0)
-				{
-					in2 = -5;
-				}
-				break;
-			}
-		} else
-		{
-			switch (moveDir)
-			{
-			case NORTH:
-				in2 = 5;
-				break;
-			case SOUTH:
-				in2 = -5;
-				break;
-			case EAST:
-				in2 = 0;
-				break;
-			case WEST:
-				in2 = -5;
-				break;
-			}
-		}
+		int[] appleIns = getAppleIns(moveDir);
+		int in1 = appleIns[0];
+		int in2 = appleIns[1];
 
 		if (log)
 		{
@@ -301,5 +138,183 @@ public class BaseAI extends AI
 	public void reset()
 	{
 
+	}
+
+	private int[] getAppleIns(Spielfeld.direction moveDir)
+	{
+		int mod = 5;
+		int plus = 0;
+		int[] in0 = spielfeld.getDistanceToApple();
+		int in1 = in0[0] * mod + (in0[0] > 0 ? plus : in0[0] != 0 ? -plus : 0);
+		int in2 = in0[1] * mod + (in0[1] > 0 ? plus : in0[1] != 0 ? -plus : 0);
+		boolean change = true;
+		if (change)
+		{
+			if (in0[0] < 0)
+			{
+				switch (moveDir)
+				{
+				case NORTH:
+					in1 = -5;
+					break;
+				case SOUTH:
+					in1 = 5;
+					break;
+				case EAST:
+					in1 = -5;
+					break;
+				case WEST:
+					in1 = 0;
+					break;
+				}
+			} else if (in0[0] == 0)
+			{
+				switch (moveDir)
+				{
+				case NORTH:
+					if (in0[1] < 0)
+					{
+						in1 = 0;
+					}
+					if (in0[1] > 0)
+					{
+						in1 = -5;
+					}
+					break;
+				case SOUTH:
+					if (in0[1] < 0)
+					{
+						in1 = -5;
+					}
+					if (in0[1] > 0)
+					{
+						in1 = 0;
+					}
+					break;
+				case EAST:
+					if (in0[1] < 0)
+					{
+						in1 = -5;
+					}
+					if (in0[1] > 0)
+					{
+						in1 = 5;
+					}
+					break;
+				case WEST:
+					if (in0[1] < 0)
+					{
+						in1 = 5;
+					}
+					if (in0[1] > 0)
+					{
+						in1 = -5;
+					}
+					break;
+				}
+			} else
+			{
+				switch (moveDir)
+				{
+				case NORTH:
+					in1 = 5;
+					break;
+				case SOUTH:
+					in1 = -5;
+					break;
+				case EAST:
+					in1 = 0;
+					break;
+				case WEST:
+					in1 = -5;
+					break;
+				}
+			}
+
+			if (in0[1] < 0)
+			{
+				switch (moveDir)
+				{
+				case NORTH:
+					in2 = 0;
+					break;
+				case SOUTH:
+					in2 = -5;
+					break;
+				case EAST:
+					in2 = -5;
+					break;
+				case WEST:
+					in2 = 5;
+					break;
+				}
+			} else if (in0[1] == 0)
+			{
+				switch (moveDir)
+				{
+				case NORTH:
+					if (in0[0] < 0)
+					{
+						in2 = -5;
+					}
+					if (in0[0] > 0)
+					{
+						in2 = 5;
+					}
+					break;
+				case SOUTH:
+					if (in0[0] < 0)
+					{
+						in2 = 5;
+					}
+					if (in0[0] > 0)
+					{
+						in2 = -5;
+					}
+					break;
+				case EAST:
+					if (in0[0] < 0)
+					{
+						in2 = -5;
+					}
+					if (in0[0] > 0)
+					{
+						in2 = 0;
+					}
+					break;
+				case WEST:
+					if (in0[0] < 0)
+					{
+						in2 = 0;
+					}
+					if (in0[0] > 0)
+					{
+						in2 = -5;
+					}
+					break;
+				}
+			} else
+			{
+				switch (moveDir)
+				{
+				case NORTH:
+					in2 = 5;
+					break;
+				case SOUTH:
+					in2 = -5;
+					break;
+				case EAST:
+					in2 = 0;
+					break;
+				case WEST:
+					in2 = -5;
+					break;
+				}
+			}
+		}
+
+		in1 = in1 * mod + (in0[0] > 0 ? plus : in0[0] != 0 ? -plus : 0);
+		in2 = in2 * mod + (in0[1] > 0 ? plus : in0[1] != 0 ? -plus : 0);
+		return new int[]{in1, in2};
 	}
 }

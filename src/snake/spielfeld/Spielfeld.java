@@ -11,6 +11,7 @@ public class Spielfeld
 	private Node[][] grid;
 	private int width;
 	private int height;
+	private boolean firstTurn = true;
 
 	private long seed = 0;
 	private long goal = 0;
@@ -290,6 +291,8 @@ public class Spielfeld
 			freeSpacesInRow[i] = 75;
 		}
 		freeSpacesInRow[76] = 0;
+
+		firstTurn = true;
 		placeApple();
 
 		/*field[2][2] = state.BODYNORTHEAST;
@@ -357,15 +360,24 @@ public class Spielfeld
 	{
 		int x = 0;//column
 		int y = 0;//row
-		int yRand = RandomUtils.randomInt(freeRows);
+		int yRand = 55;
+		if (!firstTurn)
+		{
+			yRand = RandomUtils.randomInt(freeRows);
+		}
 		y = freeRowToRealRow(yRand);
-		int xRand = RandomUtils.randomInt(freeSpacesInRow[y]);
+		int xRand = 55;
+		if (!firstTurn)
+		{
+			xRand = RandomUtils.randomInt(freeSpacesInRow[y]);
+		}
 		x = freeSpaceInRowToRealSpaceInRow(y, xRand);
 		appleX = x;
 		appleY = y;
 		field[x][y] = state.APPLE;
 		grid[x][y].passable = true;
 		grid[x][y].appleField = true;
+		firstTurn = false;
 	}
 
 	private int freeRows;
