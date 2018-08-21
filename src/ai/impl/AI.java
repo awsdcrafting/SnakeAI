@@ -1,5 +1,7 @@
 package ai.impl;
 import snake.spielfeld.Spielfeld;
+
+import java.awt.*;
 /**
  * Created by scisneromam on 17.02.2018.
  */

@@ -56,11 +56,24 @@ public class GameEngine
 	{
 		this.gui = gui;
 	}
+
+	public AI getAi()
+	{
+		return ai;
+	}
 	public void setAi(AI ai)
 	{
 		this.ai = ai;
 	}
 
+	public long getLoopTime()
+	{
+		return loopTime;
+	}
+	public void setLoopTime(long loopTime)
+	{
+		this.loopTime = loopTime;
+	}
 	public void run()
 	{
 		turn = 1;

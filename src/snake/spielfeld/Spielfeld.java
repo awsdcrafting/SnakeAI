@@ -1,11 +1,26 @@
 package snake.spielfeld;
+import snake.engine.GameEngine;
 import utils.RandomUtils;
+
+import java.awt.*;
+import java.text.BreakIterator;
 
 /**
  * Created by scisneromam on 15.02.2018.
  */
 public class Spielfeld
 {
+
+	private GameEngine gameEngine;
+
+	public GameEngine getGameEngine()
+	{
+		return gameEngine;
+	}
+	public void setGameEngine(GameEngine gameEngine)
+	{
+		this.gameEngine = gameEngine;
+	}
 
 	private state[][] field;
 	private Node[][] grid;
@@ -76,6 +91,8 @@ public class Spielfeld
 	private int tailX;
 	private int tailY;
 
+	private Color snakeBodyColor = Color.WHITE;
+
 	private int appleX;
 	private int appleY;
 
@@ -97,6 +114,14 @@ public class Spielfeld
 		return height;
 	}
 
+	public Color getSnakeBodyColor()
+	{
+		return snakeBodyColor;
+	}
+	public void setSnakeBodyColor(Color snakeBodyColor)
+	{
+		this.snakeBodyColor = snakeBodyColor;
+	}
 	public state getState(int x, int y)
 	{
 		return field[x][y];
@@ -105,6 +130,41 @@ public class Spielfeld
 	public Node getNode(int x, int y)
 	{
 		return grid[x][y];
+	}
+
+	public Node getNodeIn(direction moveDirection, int step)
+	{
+
+		switch (moveDirection)
+		{
+		case NORTH:
+			return grid[headX][headY - step];
+		case WEST:
+			return grid[headX - step][headY];
+		case EAST:
+			return grid[headX + step][headY];
+		case SOUTH:
+			return grid[headX][headY + step];
+		}
+		return grid[headX][headY];
+
+	}
+
+	public state getStateIn(direction moveDirection, int step)
+	{
+		switch (moveDirection)
+		{
+		case NORTH:
+			return field[headX][headY - step];
+		case WEST:
+			return field[headX - step][headY];
+		case EAST:
+			return field[headX + step][headY];
+		case SOUTH:
+			return field[headX][headY + step];
+		}
+		return field[headX][headY];
+
 	}
 
 	public void resetGrid()

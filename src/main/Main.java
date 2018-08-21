@@ -115,6 +115,7 @@ public class Main
 		spielfeld.setSeed(seed);
 
 		gameEngine.setSpielfeld(spielfeld);
+		spielfeld.setGameEngine(gameEngine);
 		gameEngine.setLog(bLog);
 		evolutionMaster.setLog(bLog);
 		spielfeld.setLog(bLog);

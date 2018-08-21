@@ -39,14 +39,21 @@ public class SpielfeldGui extends JPanel
 		int x = 10;
 		int y = 10;
 		int yMod = 2;
-		g2d.drawString("Seed: " + spielfeld.getSeed(), x, y * yMod++);
-		g2d.drawString("Goal: " + spielfeld.getGoal(), x, y * yMod++);
-		g2d.drawString("OrganismNumber: " + spielfeld.getNumber(), x, y * yMod++);
-		g2d.drawString("Max Population: " + spielfeld.getPopulation(), x, y * yMod++);
-		g2d.drawString("Generation: " + (spielfeld.getNumber() / spielfeld.getPopulation()), x, y * yMod++);
-		g2d.drawString("Number: " + (spielfeld.getNumber() - ((spielfeld.getNumber() / spielfeld.getPopulation()) * spielfeld.getPopulation())), x, y * yMod++);
-		g2d.drawString("Mode: " + spielfeld.getMode(), x, y * yMod++);
-		g2d.drawString("Last fitness: " + spielfeld.getLastFitness(), x, y * yMod++);
+		if (!spielfeld.getMode().equalsIgnoreCase("Run saved"))
+		{
+			g2d.drawString("Seed: " + spielfeld.getSeed(), x, y * yMod++);
+			g2d.drawString("Goal: " + spielfeld.getGoal(), x, y * yMod++);
+			g2d.drawString("OrganismNumber: " + spielfeld.getNumber(), x, y * yMod++);
+			g2d.drawString("Max Population: " + spielfeld.getPopulation(), x, y * yMod++);
+			g2d.drawString("Generation: " + (spielfeld.getNumber() / spielfeld.getPopulation()), x, y * yMod++);
+			g2d.drawString("Number: " + (spielfeld.getNumber() - ((spielfeld.getNumber() / spielfeld.getPopulation()) * spielfeld.getPopulation())), x, y * yMod++);
+			g2d.drawString("Mode: " + spielfeld.getMode(), x, y * yMod++);
+			g2d.drawString("Last fitness: " + spielfeld.getLastFitness(), x, y * yMod++);
+		} else
+		{
+			g2d.drawString("Mode: " + spielfeld.getMode(), x, y * yMod++);
+			g2d.drawString("AI name: " + spielfeld.getGameEngine().getAi().getName(), x, y * yMod++);
+		}
 	}
 
 	private void paintField(int x, int y, Graphics2D g2d)
@@ -55,7 +62,7 @@ public class SpielfeldGui extends JPanel
 		int yPos = y * 10;
 		g2d.setColor(Color.BLACK);
 		g2d.fillRect(xPos, yPos, 10, 10);
-		g2d.setColor(Color.WHITE);
+		g2d.setColor(spielfeld.getSnakeBodyColor());
 		switch (spielfeld.getState(x, y))
 		{
 		case APPLE:
@@ -72,19 +79,19 @@ public class SpielfeldGui extends JPanel
 			break;
 
 		case HEADEAST:
-			g2d.setColor(Color.BLUE);
+			g2d.setColor(Color.WHITE);
 			g2d.fillRect(xPos, yPos + 1, 9, 8);
 			break;
 		case HEADWEST:
-			g2d.setColor(Color.BLUE);
+			g2d.setColor(Color.WHITE);
 			g2d.fillRect(xPos + 1, yPos + 1, 9, 8);
 			break;
 		case HEADNORTH:
-			g2d.setColor(Color.BLUE);
+			g2d.setColor(Color.WHITE);
 			g2d.fillRect(xPos + 1, yPos + 1, 8, 9);
 			break;
 		case HEADSOUTH:
-			g2d.setColor(Color.BLUE);
+			g2d.setColor(Color.WHITE);
 			g2d.fillRect(xPos + 1, yPos, 8, 9);
 			break;
 
