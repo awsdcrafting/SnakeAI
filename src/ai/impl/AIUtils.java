@@ -2,6 +2,7 @@ package ai.impl;
 import snake.spielfeld.Node;
 import snake.spielfeld.Spielfeld;
 
+import java.net.NoRouteToHostException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -65,6 +66,31 @@ public class AIUtils
 		return new Spielfeld.direction[]{left, forward, right, backward};
 	}
 
+	public Spielfeld.direction determineChoice(Node newNode)
+	{
+		int dx = newNode.x - spielfeld.getHeadX();
+		int dy = newNode.y - spielfeld.getHeadY();
+
+		Spielfeld.direction choice = spielfeld.getMoveDirection();
+		if (dx == -1)
+		{
+			choice = Spielfeld.direction.WEST;
+		}
+		if (dx == 1)
+		{
+			choice = Spielfeld.direction.EAST;
+		}
+		if (dy == -1)
+		{
+			choice = Spielfeld.direction.NORTH;
+		}
+		if (dy == 1)
+		{
+			choice = Spielfeld.direction.SOUTH;
+		}
+		return choice;
+	}
+
 	ArrayList<Node> path = new ArrayList<>();
 
 	public ArrayList<Node> getPath()
@@ -75,15 +101,13 @@ public class AIUtils
 	/**
 	 * A* pathfinding
 	 */
-	public boolean pathfinding(int endX, int endY, boolean ignorePassable)
+	public boolean pathfinding(Node start, Node end, boolean ignorePassable)
 	{
 		System.out.println("pathfinding");
 		spielfeld.resetGrid();
 		ArrayList<Node> openList = new ArrayList<>();
 		ArrayList<Node> closedList = new ArrayList<>();
 		path = new ArrayList<>();
-		Node start = spielfeld.getNode(spielfeld.getHeadX(), spielfeld.getHeadY());
-		Node end = spielfeld.getNode(endX, endY);
 		openList.add(start);
 		while (!openList.isEmpty())
 		{
@@ -505,6 +529,8 @@ public class AIUtils
 	public Node fill(Spielfeld.direction moveDirection)
 	{
 
+		Node currentNode = spielfeld.getNode(spielfeld.getHeadX(), spielfeld.getHeadY());
+
 		Spielfeld.direction[] directions = AIUtils.determineDirections(moveDirection);
 
 		Spielfeld.direction left = directions[0];
@@ -551,7 +577,7 @@ public class AIUtils
 				{
 					lastChoice = Choice.RIGHT;
 				}
-			} else
+			} else if (isSave(otherTurn))
 			{
 				choice = otherTurn;
 				if (otherTurn == left)
@@ -560,6 +586,34 @@ public class AIUtils
 				} else
 				{
 					lastChoice = Choice.RIGHT;
+				}
+			} else
+			{
+				System.out.println("Didnt found save");
+				if (!isATrapPathFinding(currentNode, forward))
+				{
+					choice = forward;
+					lastChoice = Choice.FORWARD;
+				} else if (!isATrapPathFinding(currentNode, prioTurn))
+				{
+					choice = prioTurn;
+					if (prioTurn == left)
+					{
+						lastChoice = Choice.LEFT;
+					} else
+					{
+						lastChoice = Choice.RIGHT;
+					}
+				} else
+				{
+					choice = otherTurn;
+					if (otherTurn == left)
+					{
+						lastChoice = Choice.LEFT;
+					} else
+					{
+						lastChoice = Choice.RIGHT;
+					}
 				}
 			}
 			break;
@@ -572,10 +626,26 @@ public class AIUtils
 			{
 				choice = forward;
 				lastChoice = Choice.FORWARD;
-			} else
+			} else if (isSave(right))
 			{
 				choice = right;
 				lastChoice = Choice.RIGHT;
+			} else
+			{
+				if (!isATrapPathFinding(currentNode, left))
+				{
+					choice = left;
+					lastChoice = Choice.FORWARD;
+				} else if (!isATrapPathFinding(currentNode, forward))
+				{
+					choice = forward;
+					lastChoice = Choice.FORWARD;
+				} else
+				{
+					choice = right;
+					lastChoice = Choice.RIGHT;
+
+				}
 			}
 			break;
 		case RIGHT:
@@ -587,10 +657,27 @@ public class AIUtils
 			{
 				choice = forward;
 				lastChoice = Choice.FORWARD;
-			} else
+			} else if (isSave(left))
 			{
 				choice = left;
 				lastChoice = Choice.LEFT;
+			} else
+			{
+				System.out.println("Didnt found save");
+				if (!isATrapPathFinding(currentNode, right))
+				{
+					choice = right;
+					lastChoice = Choice.RIGHT;
+				} else if (!isATrapPathFinding(currentNode, forward))
+				{
+					choice = forward;
+					lastChoice = Choice.FORWARD;
+				} else
+				{
+					choice = left;
+					lastChoice = Choice.LEFT;
+
+				}
 			}
 			break;
 		}
@@ -613,10 +700,52 @@ public class AIUtils
 		{
 			return false;
 		}
-		return !isATrap(spielfeld.getNodeIn(moveDirection, 2), moveDirection);
+		return !isATrapPathFinding(spielfeld.getNode(spielfeld.getHeadX(), spielfeld.getHeadY()), moveDirection) &&
+			   !isATrapRecursive(spielfeld.getNodeIn(moveDirection, 1), moveDirection);
+	}
+	public boolean isATrapPathFinding(Node startingNode, Spielfeld.direction moveDirection)
+	{
+		if (deadlySurroundAmount(startingNode, moveDirection) == 3)
+		{
+			return true;
+		}
+
+		Node movingToNode = spielfeld.getNodeIn(moveDirection, 1);
+
+		if (spielfeld.isDeadly(spielfeld.getState(movingToNode.x, movingToNode.y)))
+		{
+			return true;
+		}
+
+		int[] northXY = spielfeld.getXYInFrom(Spielfeld.direction.NORTH, 1, movingToNode.x, movingToNode.y);
+		Spielfeld.state northState = (isValid(northXY[0]) && isValid(northXY[1])) ? spielfeld.getState(northXY[0], northXY[1]) : Spielfeld.state.WALL;
+		int[] eastXY = spielfeld.getXYInFrom(Spielfeld.direction.EAST, 1, movingToNode.x, movingToNode.y);
+		Spielfeld.state eastState = (isValid(eastXY[0]) && isValid(eastXY[1])) ? spielfeld.getState(eastXY[0], eastXY[1]) : Spielfeld.state.WALL;
+		int[] southXY = spielfeld.getXYInFrom(Spielfeld.direction.SOUTH, 1, movingToNode.x, movingToNode.y);
+		Spielfeld.state southState = (isValid(southXY[0]) && isValid(southXY[1])) ? spielfeld.getState(southXY[0], southXY[1]) : Spielfeld.state.WALL;
+		int[] westXY = spielfeld.getXYInFrom(Spielfeld.direction.WEST, 1, movingToNode.x, movingToNode.y);
+		Spielfeld.state westState = (isValid(westXY[0]) && isValid(westXY[1])) ? spielfeld.getState(westXY[0], westXY[1]) : Spielfeld.state.WALL;
+
+		if (!spielfeld.isDeadly(northState) && !isOpposite(moveDirection, Spielfeld.direction.NORTH) && Spielfeld.direction.NORTH != moveDirection)
+		{
+			return !pathfinding(startingNode, spielfeld.getNode(northXY[0], northXY[1]), false);
+		}
+		if (!spielfeld.isDeadly(eastState) && !isOpposite(moveDirection, Spielfeld.direction.EAST) && Spielfeld.direction.EAST != moveDirection)
+		{
+			return !pathfinding(startingNode, spielfeld.getNode(eastXY[0], eastXY[1]), false);
+		}
+		if (!spielfeld.isDeadly(southState) && !isOpposite(moveDirection, Spielfeld.direction.SOUTH) && Spielfeld.direction.SOUTH != moveDirection)
+		{
+			return !pathfinding(startingNode, spielfeld.getNode(southXY[0], southXY[1]), false);
+		}
+		if (!spielfeld.isDeadly(westState) && !isOpposite(moveDirection, Spielfeld.direction.WEST) && Spielfeld.direction.WEST != moveDirection)
+		{
+			return !pathfinding(startingNode, spielfeld.getNode(westXY[0], westXY[1]), false);
+		}
+		return false;
 	}
 
-	public boolean isATrap(Node startingNode, Spielfeld.direction moveDirection)
+	public boolean isATrapRecursive(Node startingNode, Spielfeld.direction moveDirection)
 	{
 		if (deadlySurroundAmount(startingNode, moveDirection) == 3)
 		{
@@ -637,19 +766,19 @@ public class AIUtils
 
 			if (!spielfeld.isDeadly(northState) && !isOpposite(moveDirection, Spielfeld.direction.NORTH))
 			{
-				return isATrap(spielfeld.getNode(northXY[0], northXY[1]), Spielfeld.direction.NORTH);
+				return isATrapRecursive(spielfeld.getNode(northXY[0], northXY[1]), Spielfeld.direction.NORTH);
 			}
 			if (!spielfeld.isDeadly(eastState) && !isOpposite(moveDirection, Spielfeld.direction.EAST))
 			{
-				return isATrap(spielfeld.getNode(eastXY[0], eastXY[1]), Spielfeld.direction.EAST);
+				return isATrapRecursive(spielfeld.getNode(eastXY[0], eastXY[1]), Spielfeld.direction.EAST);
 			}
 			if (!spielfeld.isDeadly(southState) && !isOpposite(moveDirection, Spielfeld.direction.SOUTH))
 			{
-				return isATrap(spielfeld.getNode(southXY[0], southXY[1]), Spielfeld.direction.SOUTH);
+				return isATrapRecursive(spielfeld.getNode(southXY[0], southXY[1]), Spielfeld.direction.SOUTH);
 			}
 			if (!spielfeld.isDeadly(westState) && !isOpposite(moveDirection, Spielfeld.direction.WEST))
 			{
-				return isATrap(spielfeld.getNode(westXY[0], westXY[1]), Spielfeld.direction.WEST);
+				return isATrapRecursive(spielfeld.getNode(westXY[0], westXY[1]), Spielfeld.direction.WEST);
 			}
 		}
 
