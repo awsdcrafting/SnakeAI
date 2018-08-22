@@ -31,6 +31,7 @@ public class SnakePathFindingBot extends AI
 	ArrayList<Node> greedPath = new ArrayList<>();
 	ArrayList<Node> fillPath = new ArrayList<>();
 	private int greedStep = 0;
+	private int maxGreedSteps = 1;
 
 	private long defaultLoopTime = spielfeld.getGameEngine().getLoopTime();
 	private int loopTimeMod = 1;
@@ -40,7 +41,7 @@ public class SnakePathFindingBot extends AI
 	{
 
 		boolean worked;
-		if (greedPath.size() == 0 || greedStep == 10)
+		if (greedPath.size() == 0 || greedStep >= maxGreedSteps)
 		{
 			worked = aiUtils.pathfinding(spielfeld.getAppleX(), spielfeld.getAppleY(), false);
 			greedPath = aiUtils.getPath();

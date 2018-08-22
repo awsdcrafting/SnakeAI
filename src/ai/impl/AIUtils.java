@@ -616,17 +616,41 @@ public class AIUtils
 		return !isATrap(spielfeld.getNodeIn(moveDirection, 2), moveDirection);
 	}
 
-	public boolean isATrap(Node node, Spielfeld.direction moveDirection)
+	public boolean isATrap(Node startingNode, Spielfeld.direction moveDirection)
 	{
-		if (deadlySurroundAmount(node, moveDirection) == 3)
+		if (deadlySurroundAmount(startingNode, moveDirection) == 3)
 		{
 			return true;
 		}
 
-		if (deadlySurroundAmount(node, moveDirection) == 2)
+		if (deadlySurroundAmount(startingNode, moveDirection) == 2)
 		{
-			int[] xy = spielfeld.getXYInFrom(moveDirection, 1, node.x, node.y);
-			return isATrap(spielfeld.getNode(xy[0], xy[1]), moveDirection);
+
+			int[] northXY = spielfeld.getXYInFrom(Spielfeld.direction.NORTH, 1, startingNode.x, startingNode.y);
+			Spielfeld.state northState = (isValid(northXY[0]) && isValid(northXY[1])) ? spielfeld.getState(northXY[0], northXY[1]) : Spielfeld.state.WALL;
+			int[] eastXY = spielfeld.getXYInFrom(Spielfeld.direction.EAST, 1, startingNode.x, startingNode.y);
+			Spielfeld.state eastState = (isValid(eastXY[0]) && isValid(eastXY[1])) ? spielfeld.getState(eastXY[0], eastXY[1]) : Spielfeld.state.WALL;
+			int[] southXY = spielfeld.getXYInFrom(Spielfeld.direction.SOUTH, 1, startingNode.x, startingNode.y);
+			Spielfeld.state southState = (isValid(southXY[0]) && isValid(southXY[1])) ? spielfeld.getState(southXY[0], southXY[1]) : Spielfeld.state.WALL;
+			int[] westXY = spielfeld.getXYInFrom(Spielfeld.direction.WEST, 1, startingNode.x, startingNode.y);
+			Spielfeld.state westState = (isValid(westXY[0]) && isValid(westXY[1])) ? spielfeld.getState(westXY[0], westXY[1]) : Spielfeld.state.WALL;
+
+			if (!spielfeld.isDeadly(northState) && !isOpposite(moveDirection, Spielfeld.direction.NORTH))
+			{
+				return isATrap(spielfeld.getNode(northXY[0], northXY[1]), Spielfeld.direction.NORTH);
+			}
+			if (!spielfeld.isDeadly(eastState) && !isOpposite(moveDirection, Spielfeld.direction.EAST))
+			{
+				return isATrap(spielfeld.getNode(eastXY[0], eastXY[1]), Spielfeld.direction.EAST);
+			}
+			if (!spielfeld.isDeadly(southState) && !isOpposite(moveDirection, Spielfeld.direction.SOUTH))
+			{
+				return isATrap(spielfeld.getNode(southXY[0], southXY[1]), Spielfeld.direction.SOUTH);
+			}
+			if (!spielfeld.isDeadly(westState) && !isOpposite(moveDirection, Spielfeld.direction.WEST))
+			{
+				return isATrap(spielfeld.getNode(westXY[0], westXY[1]), Spielfeld.direction.WEST);
+			}
 		}
 
 		return false;
@@ -645,13 +669,13 @@ public class AIUtils
 		int[] westXY = spielfeld.getXYInFrom(Spielfeld.direction.WEST, 1, startingNode.x, startingNode.y);
 		Spielfeld.state westState = (isValid(westXY[0]) && isValid(westXY[1])) ? spielfeld.getState(westXY[0], westXY[1]) : Spielfeld.state.WALL;
 
-		HashMap<Spielfeld.direction, Spielfeld.state> nodeHashMap = new HashMap<>();
-		nodeHashMap.put(Spielfeld.direction.NORTH, northState);
-		nodeHashMap.put(Spielfeld.direction.EAST, eastState);
-		nodeHashMap.put(Spielfeld.direction.SOUTH, southState);
-		nodeHashMap.put(Spielfeld.direction.WEST, westState);
+		HashMap<Spielfeld.direction, Spielfeld.state> stateHashmap = new HashMap<>();
+		stateHashmap.put(Spielfeld.direction.NORTH, northState);
+		stateHashmap.put(Spielfeld.direction.EAST, eastState);
+		stateHashmap.put(Spielfeld.direction.SOUTH, southState);
+		stateHashmap.put(Spielfeld.direction.WEST, westState);
 
-		nodeHashMap.forEach((direction, state) -> {
+		stateHashmap.forEach((direction, state) -> {
 			if (!isOpposite(moveDirection, direction) && spielfeld.isDeadly(state))
 			{
 				amount.getAndIncrement();
