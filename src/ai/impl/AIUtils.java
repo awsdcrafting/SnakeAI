@@ -1,10 +1,11 @@
 package ai.impl;
 import snake.spielfeld.Node;
 import snake.spielfeld.Spielfeld;
-import sun.swing.BakedArrayList;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 /**
  * Project: SnakeAI
  * Created by scisneromam on 21.08.2018.
@@ -496,7 +497,7 @@ public class AIUtils
 
 	public boolean isValid(int i)
 	{
-		return i > 0 && i < 77;
+		return i > 0 && i < spielfeld.getWidth();
 	}
 
 	private Choice lastChoice = Choice.FORWARD;
@@ -510,30 +511,64 @@ public class AIUtils
 		Spielfeld.direction forward = directions[1];
 		Spielfeld.direction right = directions[2];
 
+		Spielfeld.direction prioTurn = left;
+		Spielfeld.direction otherTurn = right;
+
 		Spielfeld.direction choice = null;
+
+		if (spielfeld.getNodeIn(left, 1).x != spielfeld.getHeadX())
+		{
+
+			if (spielfeld.getHeadX() <= spielfeld.getWidth() / 2)
+			{
+				prioTurn = right;
+				otherTurn = left;
+			}
+
+		} else
+		{
+			if (spielfeld.getHeadY() <= spielfeld.getHeight() / 2)
+			{
+				prioTurn = right;
+				otherTurn = left;
+			}
+		}
+
 		switch (lastChoice)
 		{
 		case FORWARD:
-			if (!spielfeld.isDeadly(spielfeld.getStateIn(forward, 1)) && !spielfeld.isDeadly(spielfeld.getStateIn(forward, 2)))
+			if (isSave(forward))
 			{
 				choice = forward;
 				lastChoice = Choice.FORWARD;
-			} else if (!spielfeld.isDeadly(spielfeld.getStateIn(left, 1)) && !spielfeld.isDeadly(spielfeld.getStateIn(left, 2)))
+			} else if (isSave(prioTurn))
 			{
-				choice = left;
-				lastChoice = Choice.LEFT;
+				choice = prioTurn;
+				if (prioTurn == left)
+				{
+					lastChoice = Choice.LEFT;
+				} else
+				{
+					lastChoice = Choice.RIGHT;
+				}
 			} else
 			{
-				choice = right;
-				lastChoice = Choice.RIGHT;
+				choice = otherTurn;
+				if (otherTurn == left)
+				{
+					lastChoice = Choice.LEFT;
+				} else
+				{
+					lastChoice = Choice.RIGHT;
+				}
 			}
 			break;
 		case LEFT:
-			if (!spielfeld.isDeadly(spielfeld.getStateIn(left, 1)) && !spielfeld.isDeadly(spielfeld.getStateIn(left, 2)))
+			if (isSave(left))
 			{
 				choice = left;
 				lastChoice = Choice.LEFT;
-			} else if (!spielfeld.isDeadly(spielfeld.getStateIn(forward, 1)) && !spielfeld.isDeadly(spielfeld.getStateIn(forward, 2)))
+			} else if (isSave(forward))
 			{
 				choice = forward;
 				lastChoice = Choice.FORWARD;
@@ -544,11 +579,11 @@ public class AIUtils
 			}
 			break;
 		case RIGHT:
-			if (!spielfeld.isDeadly(spielfeld.getStateIn(right, 1)) && !spielfeld.isDeadly(spielfeld.getStateIn(right, 2)))
+			if (isSave(right))
 			{
 				choice = right;
 				lastChoice = Choice.RIGHT;
-			} else if (!spielfeld.isDeadly(spielfeld.getStateIn(forward, 1)) && !spielfeld.isDeadly(spielfeld.getStateIn(forward, 2)))
+			} else if (isSave(forward))
 			{
 				choice = forward;
 				lastChoice = Choice.FORWARD;
@@ -566,6 +601,63 @@ public class AIUtils
 		{
 			return spielfeld.getNodeIn(choice, 1);
 		}
+	}
+
+	public boolean isSave(Spielfeld.direction moveDirection)
+	{
+		if (spielfeld.isDeadly(spielfeld.getStateIn(moveDirection, 1)))
+		{
+			return false;
+		}
+		if (spielfeld.isDeadly(spielfeld.getStateIn(moveDirection, 2)))
+		{
+			return false;
+		}
+		return !isATrap(spielfeld.getNodeIn(moveDirection, 2), moveDirection);
+	}
+
+	public boolean isATrap(Node node, Spielfeld.direction moveDirection)
+	{
+		if (deadlySurroundAmount(node, moveDirection) == 3)
+		{
+			return true;
+		}
+
+		if (deadlySurroundAmount(node, moveDirection) == 2)
+		{
+			int[] xy = spielfeld.getXYInFrom(moveDirection, 1, node.x, node.y);
+			return isATrap(spielfeld.getNode(xy[0], xy[1]), moveDirection);
+		}
+
+		return false;
+	}
+
+	public int deadlySurroundAmount(Node startingNode, Spielfeld.direction moveDirection)
+	{
+
+		AtomicInteger amount = new AtomicInteger();
+		int[] northXY = spielfeld.getXYInFrom(Spielfeld.direction.NORTH, 1, startingNode.x, startingNode.y);
+		Spielfeld.state northState = (isValid(northXY[0]) && isValid(northXY[1])) ? spielfeld.getState(northXY[0], northXY[1]) : Spielfeld.state.WALL;
+		int[] eastXY = spielfeld.getXYInFrom(Spielfeld.direction.EAST, 1, startingNode.x, startingNode.y);
+		Spielfeld.state eastState = (isValid(eastXY[0]) && isValid(eastXY[1])) ? spielfeld.getState(eastXY[0], eastXY[1]) : Spielfeld.state.WALL;
+		int[] southXY = spielfeld.getXYInFrom(Spielfeld.direction.SOUTH, 1, startingNode.x, startingNode.y);
+		Spielfeld.state southState = (isValid(southXY[0]) && isValid(southXY[1])) ? spielfeld.getState(southXY[0], southXY[1]) : Spielfeld.state.WALL;
+		int[] westXY = spielfeld.getXYInFrom(Spielfeld.direction.WEST, 1, startingNode.x, startingNode.y);
+		Spielfeld.state westState = (isValid(westXY[0]) && isValid(westXY[1])) ? spielfeld.getState(westXY[0], westXY[1]) : Spielfeld.state.WALL;
+
+		HashMap<Spielfeld.direction, Spielfeld.state> nodeHashMap = new HashMap<>();
+		nodeHashMap.put(Spielfeld.direction.NORTH, northState);
+		nodeHashMap.put(Spielfeld.direction.EAST, eastState);
+		nodeHashMap.put(Spielfeld.direction.SOUTH, southState);
+		nodeHashMap.put(Spielfeld.direction.WEST, westState);
+
+		nodeHashMap.forEach((direction, state) -> {
+			if (!isOpposite(moveDirection, direction) && spielfeld.isDeadly(state))
+			{
+				amount.getAndIncrement();
+			}
+		});
+		return amount.get();
 	}
 
 	public enum Choice

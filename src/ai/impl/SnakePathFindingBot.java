@@ -53,6 +53,7 @@ public class SnakePathFindingBot extends AI
 		if (worked && greedPath.size() > 0)
 		{
 			spielfeld.setSnakeBodyColor(Color.YELLOW);
+			spielfeld.setSnakeHeadColor(Color.BLUE);
 			p = greedPath.remove(greedPath.size() - 1);
 			while (p.x == spielfeld.getHeadX() && p.y == spielfeld.getHeadY() && greedPath.size() > 0)
 			{
@@ -69,6 +70,7 @@ public class SnakePathFindingBot extends AI
 			System.out.println("Pathfinding didnt work - trying to fill now");
 			p = aiUtils.fill(spielfeld.getMoveDirection());
 			spielfeld.setSnakeBodyColor(Color.BLUE);
+			spielfeld.setSnakeHeadColor(Color.YELLOW);
 			if (spielfeld.getGameEngine().getLoopTime() == defaultLoopTime)
 			{
 				spielfeld.getGameEngine().setLoopTime(defaultLoopTime * loopTimeMod);

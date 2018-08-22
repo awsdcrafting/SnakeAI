@@ -92,6 +92,7 @@ public class Spielfeld
 	private int tailY;
 
 	private Color snakeBodyColor = Color.WHITE;
+	private Color snakeHeadColor = Color.BLUE;
 
 	private int appleX;
 	private int appleY;
@@ -122,6 +123,14 @@ public class Spielfeld
 	{
 		this.snakeBodyColor = snakeBodyColor;
 	}
+	public Color getSnakeHeadColor()
+	{
+		return snakeHeadColor;
+	}
+	public void setSnakeHeadColor(Color snakeHeadColor)
+	{
+		this.snakeHeadColor = snakeHeadColor;
+	}
 	public state getState(int x, int y)
 	{
 		return field[x][y];
@@ -135,36 +144,37 @@ public class Spielfeld
 	public Node getNodeIn(direction moveDirection, int step)
 	{
 
-		switch (moveDirection)
-		{
-		case NORTH:
-			return grid[headX][headY - step];
-		case WEST:
-			return grid[headX - step][headY];
-		case EAST:
-			return grid[headX + step][headY];
-		case SOUTH:
-			return grid[headX][headY + step];
-		}
-		return grid[headX][headY];
+		int[] xy = getXYIn(moveDirection, step);
+		return grid[xy[0]][xy[1]];
 
 	}
 
 	public state getStateIn(direction moveDirection, int step)
 	{
+		int[] xy = getXYIn(moveDirection, step);
+		return field[xy[0]][xy[1]];
+
+	}
+
+	public int[] getXYIn(direction moveDirection, int step)
+	{
+		return getXYInFrom(moveDirection, step, headX, headY);
+	}
+
+	public int[] getXYInFrom(direction moveDirection, int step, int startX, int startY)
+	{
 		switch (moveDirection)
 		{
 		case NORTH:
-			return field[headX][headY - step];
+			return new int[]{startX, startY - step};
 		case WEST:
-			return field[headX - step][headY];
-		case EAST:
-			return field[headX + step][headY];
+			return new int[]{startX - step, startY};
 		case SOUTH:
-			return field[headX][headY + step];
+			return new int[]{startX, startY + step};
+		case EAST:
+			return new int[]{startX + step, startY};
 		}
-		return field[headX][headY];
-
+		return new int[]{startX, startY};
 	}
 
 	public void resetGrid()

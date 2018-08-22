@@ -79,19 +79,19 @@ public class SpielfeldGui extends JPanel
 			break;
 
 		case HEADEAST:
-			g2d.setColor(Color.WHITE);
+			g2d.setColor(spielfeld.getSnakeHeadColor());
 			g2d.fillRect(xPos, yPos + 1, 9, 8);
 			break;
 		case HEADWEST:
-			g2d.setColor(Color.WHITE);
+			g2d.setColor(spielfeld.getSnakeHeadColor());
 			g2d.fillRect(xPos + 1, yPos + 1, 9, 8);
 			break;
 		case HEADNORTH:
-			g2d.setColor(Color.WHITE);
+			g2d.setColor(spielfeld.getSnakeHeadColor());
 			g2d.fillRect(xPos + 1, yPos + 1, 8, 9);
 			break;
 		case HEADSOUTH:
-			g2d.setColor(Color.WHITE);
+			g2d.setColor(spielfeld.getSnakeHeadColor());
 			g2d.fillRect(xPos + 1, yPos, 8, 9);
 			break;
 
