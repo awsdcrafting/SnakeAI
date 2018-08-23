@@ -96,7 +96,7 @@ public class GameMaster
 				e.printStackTrace();
 			}
 			System.out.println(ai.getName() + " is Controlling the run!");
-			gameEngine.run();
+			gameEngine.startRun();
 			System.out.println(ai.getName() + " finished its run with " + gameEngine.getTurn() + " turns and a score of " + gameEngine.getScore() + ".");
 			System.out.println(ai.getName() + " took " + (System.currentTimeMillis() - time));
 

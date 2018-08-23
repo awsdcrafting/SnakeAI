@@ -31,7 +31,7 @@ public class SnakeFitnessFunction extends AbstractFitnessFunction
 		gameEngine.setAi(baseAI);
 		spielfeld.setNumber(organism.getInnovationId());
 		spielfeld.setUp(77, 77);
-		gameEngine.run();
+		gameEngine.startRun();
 		/*int maxTurns = 5625;
 		int turns = gameEngine.getTurn();
 		double baseAppleValue = gameEngine.getScore() * maxTurns;

@@ -16,7 +16,6 @@ public class GameEngine
 
 	private boolean snakeAlive = true;
 	private boolean running = true;
-	private boolean paused;
 	private long loopTime = 50;
 
 	private int turn;
@@ -30,7 +29,6 @@ public class GameEngine
 
 	public GameEngine()
 	{
-		this.loopTime = 50;
 	}
 
 	public int getTurn()
@@ -68,12 +66,35 @@ public class GameEngine
 	{
 		this.loopTime = loopTime;
 	}
-	public void run()
+
+	public void pause()
+	{
+		this.running = false;
+	}
+
+	public void resume()
+	{
+		this.running = true;
+		run();
+	}
+
+	public void stop()
+	{
+		this.running = false;
+		this.snakeAlive = false;
+	}
+
+	public void startRun()
 	{
 		turn = 1;
 		score = 0;
 		turnSinceLastApple = 0;
 		snakeAlive = true;
+		run();
+	}
+
+	public void run()
+	{
 		while (running && snakeAlive)
 		{
 			long time = System.currentTimeMillis();
@@ -81,11 +102,9 @@ public class GameEngine
 			{
 				if (Settings.debugOutput)
 				{
-					System.out.println("Ai turn: " + turn++);
-				} else
-				{
-					turn++;
+					System.out.println("Ai turn: " + turn);
 				}
+				turn++;
 				ai.zug();
 			}
 			//doing things
@@ -97,44 +116,23 @@ public class GameEngine
 			{
 			case EAST:
 				fieldState = spielfeld.getState(++headX, headY);
-				if (willSurvive)
-				{
-					spielfeld.updateSnake(fieldState == Spielfeld.state.APPLE);
-				} else
-				{
-					snakeAlive = false;
-				}
 				break;
 			case WEST:
 				fieldState = spielfeld.getState(--headX, headY);
-				if (willSurvive)
-				{
-					spielfeld.updateSnake(fieldState == Spielfeld.state.APPLE);
-				} else
-				{
-					snakeAlive = false;
-				}
 				break;
 			case NORTH:
 				fieldState = spielfeld.getState(headX, --headY);
-				if (willSurvive)
-				{
-					spielfeld.updateSnake(fieldState == Spielfeld.state.APPLE);
-				} else
-				{
-					snakeAlive = false;
-				}
 				break;
 			case SOUTH:
 				fieldState = spielfeld.getState(headX, ++headY);
-				if (willSurvive)
-				{
-					spielfeld.updateSnake(fieldState == Spielfeld.state.APPLE);
-				} else
-				{
-					snakeAlive = false;
-				}
 				break;
+			}
+			if (willSurvive)
+			{
+				spielfeld.updateSnake(fieldState == Spielfeld.state.APPLE);
+			} else
+			{
+				snakeAlive = false;
 			}
 			turnSinceLastApple++;
 			if (fieldState == Spielfeld.state.APPLE)
@@ -181,7 +179,7 @@ public class GameEngine
 				}
 			}*/
 			System.out.println("Snake survived " + turn + " turns and achieved a score of " + score + ".");
-			System.out.println("This equals a fitnes of: " + SnakeFitnessFunction.getFitness(turn, score) + ".");
+			System.out.println("This equals a fitness of: " + SnakeFitnessFunction.getFitness(turn, score) + ".");
 
 		}
 	}

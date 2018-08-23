@@ -5,10 +5,7 @@ import snake.spielfeld.Spielfeld;
 
 import java.net.NoRouteToHostException;
 import java.security.acl.LastOwnerException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 /**
  * Project: SnakeAI
@@ -119,6 +116,10 @@ public class AIUtils
 		{
 			Collections.sort(openList);
 			Node currentNode = openList.remove(0);
+			while (currentNode == null)
+			{
+				currentNode = openList.remove(0);
+			}
 			if (currentNode.x == end.x && currentNode.y == end.y)
 			{
 				Node temp = currentNode;
@@ -719,9 +720,9 @@ public class AIUtils
 					int rightCount = countEnclosedNodes(spielfeld.getNodeIn(right, 1));
 					if (Settings.debugOutput)
 					{
-						System.out.println("left: " + prioTurn + " " + leftCount);
+						System.out.println("left: " + left + " " + leftCount);
 						System.out.println("forward: " + forward + " " + forwardCount);
-						System.out.println("right: " + otherTurn + " " + rightCount);
+						System.out.println("right: " + right + " " + rightCount);
 					}
 
 					if (leftCount > max)
@@ -782,14 +783,14 @@ public class AIUtils
 					{
 						System.out.println("Everything is a trap deciding on amount of turns");
 					}
-					int leftCount = countEnclosedNodes(spielfeld.getNodeIn(prioTurn, 1));
+					int leftCount = countEnclosedNodes(spielfeld.getNodeIn(left, 1));
 					int forwardCount = countEnclosedNodes(spielfeld.getNodeIn(forward, 1));
-					int rightCount = countEnclosedNodes(spielfeld.getNodeIn(otherTurn, 1));
+					int rightCount = countEnclosedNodes(spielfeld.getNodeIn(right, 1));
 					if (Settings.debugOutput)
 					{
-						System.out.println("left: " + prioTurn + " " + leftCount);
+						System.out.println("left: " + left + " " + leftCount);
 						System.out.println("forward: " + forward + " " + forwardCount);
-						System.out.println("right: " + otherTurn + " " + rightCount);
+						System.out.println("right: " + right + " " + rightCount);
 					}
 					int max = -1;
 					if (rightCount > max)
@@ -842,6 +843,12 @@ public class AIUtils
 		{
 			return true;
 		}
+
+		if (countEnclosedNodes(spielfeld.getNodeIn(moveDirection, 1), 75) < 75)
+		{
+			return true;
+		}
+
 		return isATrapPathFinding(moveDirection);
 	}
 
@@ -869,16 +876,6 @@ public class AIUtils
 			{
 				return true;
 			}
-			int[] northXY = spielfeld.getXYInFrom(Spielfeld.direction.NORTH, 1, movingToNode.x, movingToNode.y);
-			Spielfeld.state northState = (isValid(northXY[0]) && isValid(northXY[1])) ? spielfeld.getState(northXY[0], northXY[1]) : Spielfeld.state.WALL;
-			int[] eastXY = spielfeld.getXYInFrom(Spielfeld.direction.EAST, 1, movingToNode.x, movingToNode.y);
-			Spielfeld.state eastState = (isValid(eastXY[0]) && isValid(eastXY[1])) ? spielfeld.getState(eastXY[0], eastXY[1]) : Spielfeld.state.WALL;
-			int[] southXY = spielfeld.getXYInFrom(Spielfeld.direction.SOUTH, 1, movingToNode.x, movingToNode.y);
-			Spielfeld.state southState = (isValid(southXY[0]) && isValid(southXY[1])) ? spielfeld.getState(southXY[0], southXY[1]) : Spielfeld.state.WALL;
-			int[] westXY = spielfeld.getXYInFrom(Spielfeld.direction.WEST, 1, movingToNode.x, movingToNode.y);
-			Spielfeld.state westState = (isValid(westXY[0]) && isValid(westXY[1])) ? spielfeld.getState(westXY[0], westXY[1]) : Spielfeld.state.WALL;
-
-			Node startingNode = null;
 			int[] startNorthXY = spielfeld.getXYInFrom(Spielfeld.direction.NORTH, 1, headNode.x, headNode.y);
 			Spielfeld.state startNorthState = (isValid(startNorthXY[0]) && isValid(startNorthXY[1])) ? spielfeld.getState(startNorthXY[0], startNorthXY[1]) : Spielfeld.state.WALL;
 			int[] startEastXY = spielfeld.getXYInFrom(Spielfeld.direction.EAST, 1, headNode.x, headNode.y);
@@ -888,44 +885,84 @@ public class AIUtils
 			int[] startWestXY = spielfeld.getXYInFrom(Spielfeld.direction.WEST, 1, headNode.x, headNode.y);
 			Spielfeld.state startWestState = (isValid(startWestXY[0]) && isValid(startWestXY[1])) ? spielfeld.getState(startWestXY[0], startWestXY[1]) : Spielfeld.state.WALL;
 
+			Node northNode = null;
+			Node eastNode = null;
+			Node southNode = null;
+			Node westNode = null;
+
 			if (!spielfeld.isDeadly(startNorthState) && Spielfeld.direction.NORTH != moveDirection)
 			{
-				startingNode = spielfeld.getNode(startNorthXY[0], startNorthXY[1]);
+				northNode = spielfeld.getNode(startNorthXY[0], startNorthXY[1]);
 			}
 			if (!spielfeld.isDeadly(startEastState) && Spielfeld.direction.EAST != moveDirection)
 			{
-				startingNode = spielfeld.getNode(startEastXY[0], startEastXY[1]);
+				eastNode = spielfeld.getNode(startEastXY[0], startEastXY[1]);
 			}
 			if (!spielfeld.isDeadly(startSouthState) && Spielfeld.direction.SOUTH != moveDirection)
 			{
-				startingNode = spielfeld.getNode(startSouthXY[0], startSouthXY[1]);
+				southNode = spielfeld.getNode(startSouthXY[0], startSouthXY[1]);
 			}
 			if (!spielfeld.isDeadly(startWestState) && Spielfeld.direction.WEST != moveDirection)
 			{
-				startingNode = spielfeld.getNode(startWestXY[0], startWestXY[1]);
+				westNode = spielfeld.getNode(startWestXY[0], startWestXY[1]);
 			}
 
-			if (startingNode == null)
+			List<Node> nodes = new ArrayList<>();
+
+			if (northNode != null)
+			{
+				nodes.add(northNode);
+			}
+			if (eastNode != null)
+			{
+				nodes.add(eastNode);
+			}
+			if (southNode != null)
+			{
+				nodes.add(southNode);
+			}
+			if (westNode != null)
+			{
+				nodes.add(westNode);
+			}
+			if (nodes.size() == 0)
 			{
 				return true;
 			}
+			nodes.add(movingToNode);
+
+			if (countEnclosedNodes(movingToNode, 250) < 250 && areInTheSameEnclosedArea(nodes))
+			{
+				return true;
+			}
+
 			boolean pathFound = false;
 
-			if (!spielfeld.isDeadly(northState) && !isOpposite(moveDirection, Spielfeld.direction.NORTH) && Spielfeld.direction.NORTH != moveDirection)
+			if (!isOpposite(moveDirection, Spielfeld.direction.NORTH) && Spielfeld.direction.NORTH != moveDirection && northNode != null)
 			{
-				pathFound = pathFound || pathfinding(startingNode, spielfeld.getNode(northXY[0], northXY[1]), false);
+				pathFound = pathFound || pathfinding(northNode, movingToNode, false);
 			}
-			if (!spielfeld.isDeadly(eastState) && !isOpposite(moveDirection, Spielfeld.direction.EAST) && Spielfeld.direction.EAST != moveDirection)
+			if (!isOpposite(moveDirection, Spielfeld.direction.EAST) && Spielfeld.direction.EAST != moveDirection && eastNode != null)
 			{
-				pathFound = pathFound || pathfinding(startingNode, spielfeld.getNode(eastXY[0], eastXY[1]), false);
+				pathFound = pathFound || pathfinding(eastNode, movingToNode, false);
 			}
-			if (!spielfeld.isDeadly(southState) && !isOpposite(moveDirection, Spielfeld.direction.SOUTH) && Spielfeld.direction.SOUTH != moveDirection)
+			if (!isOpposite(moveDirection, Spielfeld.direction.SOUTH) && Spielfeld.direction.SOUTH != moveDirection && southNode != null)
 			{
-				pathFound = pathFound || pathfinding(startingNode, spielfeld.getNode(southXY[0], southXY[1]), false);
+				pathFound = pathFound || pathfinding(southNode, movingToNode, false);
 			}
-			if (!spielfeld.isDeadly(westState) && !isOpposite(moveDirection, Spielfeld.direction.WEST) && Spielfeld.direction.WEST != moveDirection)
+			if (!isOpposite(moveDirection, Spielfeld.direction.WEST) && Spielfeld.direction.WEST != moveDirection && westNode != null)
 			{
-				pathFound = pathFound || pathfinding(startingNode, spielfeld.getNode(westXY[0], westXY[1]), false);
+				pathFound = pathFound || pathfinding(westNode, movingToNode, false);
+			}
+			if (Settings.debugOutput)
+			{
+				System.out.println("Headnode: " + headNode.toString());
+				System.out.println("NorthNode: " + String.valueOf(northNode));
+				System.out.println("EastNode: " + String.valueOf(eastNode));
+				System.out.println("SouthNode: " + String.valueOf(southNode));
+				System.out.println("WestNode: " + String.valueOf(westNode));
+				System.out.println("MovingToNode: " + movingToNode.toString());
+				System.out.println("PathFound: " + pathFound);
 			}
 			return !pathFound;
 		}
@@ -1004,12 +1041,81 @@ public class AIUtils
 
 	public int countEnclosedNodes(Node startingNode)
 	{
-		if (spielfeld.isDeadly(spielfeld.getState(startingNode.x, startingNode.y)))
-		{
-			return 0;
-		}
+		return countEnclosedNodes(startingNode, -1);
+	}
+
+	public int countEnclosedNodes(Node startingNode, int stopAt)
+	{
+		List<Node> nodes = getAllEnclosedNodes(startingNode, stopAt);
+		return nodes.size();
+
+	}
+
+	public boolean areInTheSameEnclosedArea(Node... nodes)
+	{
+		return areInTheSameEnclosedArea(Arrays.asList(nodes));
+	}
+
+	public boolean areInTheSameEnclosedArea(List<Node> enclosedNodes)
+	{
+
 		List<Node> nodes = new ArrayList<>();
 		List<Node> finalNodes = new ArrayList<>();
+		nodes.add(enclosedNodes.get(0));
+
+		for (Node node : enclosedNodes)
+		{
+			if (spielfeld.isDeadly(spielfeld.getState(node.x, node.y)))
+			{
+				return false;
+			}
+		}
+
+		while (nodes.size() > 0)
+		{
+			Node currentNode = nodes.remove(0);
+			int[] northXY = spielfeld.getXYInFrom(Spielfeld.direction.NORTH, 1, currentNode.x, currentNode.y);
+			Spielfeld.state northState = (isValid(northXY[0]) && isValid(northXY[1])) ? spielfeld.getState(northXY[0], northXY[1]) : Spielfeld.state.WALL;
+			int[] eastXY = spielfeld.getXYInFrom(Spielfeld.direction.EAST, 1, currentNode.x, currentNode.y);
+			Spielfeld.state eastState = (isValid(eastXY[0]) && isValid(eastXY[1])) ? spielfeld.getState(eastXY[0], eastXY[1]) : Spielfeld.state.WALL;
+			int[] southXY = spielfeld.getXYInFrom(Spielfeld.direction.SOUTH, 1, currentNode.x, currentNode.y);
+			Spielfeld.state southState = (isValid(southXY[0]) && isValid(southXY[1])) ? spielfeld.getState(southXY[0], southXY[1]) : Spielfeld.state.WALL;
+			int[] westXY = spielfeld.getXYInFrom(Spielfeld.direction.WEST, 1, currentNode.x, currentNode.y);
+			Spielfeld.state westState = (isValid(westXY[0]) && isValid(westXY[1])) ? spielfeld.getState(westXY[0], westXY[1]) : Spielfeld.state.WALL;
+			HashMap<Node, Spielfeld.state> NodeStateHashMap = new HashMap<>();
+			NodeStateHashMap.put(spielfeld.getNode(northXY[0], northXY[1]), northState);
+			NodeStateHashMap.put(spielfeld.getNode(eastXY[0], eastXY[1]), eastState);
+			NodeStateHashMap.put(spielfeld.getNode(southXY[0], southXY[1]), southState);
+			NodeStateHashMap.put(spielfeld.getNode(westXY[0], westXY[1]), westState);
+
+			NodeStateHashMap.forEach((node, state) -> {
+				if (!spielfeld.isDeadly(state) && !finalNodes.contains(node) && !nodes.contains(node))
+				{
+					nodes.add(node);
+				}
+			});
+			finalNodes.add(currentNode);
+			if (finalNodes.containsAll(enclosedNodes))
+			{
+				return true;
+			}
+		}
+		return finalNodes.containsAll(enclosedNodes);
+	}
+
+	public List<Node> getAllEnclosedNodes(Node startingNode)
+	{
+		return getAllEnclosedNodes(startingNode, -1);
+	}
+
+	public List<Node> getAllEnclosedNodes(Node startingNode, int stopAt)
+	{
+		List<Node> finalNodes = new ArrayList<>();
+		if (spielfeld.isDeadly(spielfeld.getState(startingNode.x, startingNode.y)))
+		{
+			return finalNodes;
+		}
+		List<Node> nodes = new ArrayList<>();
 		nodes.add(startingNode);
 		while (nodes.size() > 0)
 		{
@@ -1035,9 +1141,12 @@ public class AIUtils
 				}
 			});
 			finalNodes.add(currentNode);
+			if (finalNodes.size() > stopAt && stopAt != -1)
+			{
+				return finalNodes;
+			}
 		}
-		return finalNodes.size();
-
+		return finalNodes;
 	}
 
 	public enum Choice

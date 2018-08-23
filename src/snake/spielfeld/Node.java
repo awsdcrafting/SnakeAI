@@ -16,9 +16,8 @@ public class Node implements Comparable<Node>
 	public Node previous;
 	public boolean passable;
 	public boolean appleField;
-	public boolean finished;
 
-	public Node(int x, int y, Node north, Node east, Node south, Node west, boolean passable, boolean appleField, boolean finished)
+	public Node(int x, int y, Node north, Node east, Node south, Node west, boolean passable, boolean appleField)
 	{
 		this.x = x;
 		this.y = y;
@@ -28,7 +27,6 @@ public class Node implements Comparable<Node>
 		this.west = west;
 		this.passable = passable;
 		this.appleField = appleField;
-		this.finished = finished;
 	}
 	public Node(int x, int y, boolean passable, boolean appleField)
 	{
@@ -41,7 +39,6 @@ public class Node implements Comparable<Node>
 		east = null;
 		south = null;
 		west = null;
-		finished = false;
 	}
 
 	@Override
@@ -50,4 +47,9 @@ public class Node implements Comparable<Node>
 		return f - node.f;
 	}
 
+	@Override
+	public String toString()
+	{
+		return "Node{" + "x=" + x + ", y=" + y + ", passable=" + passable + ", appleField=" + appleField + '}';
+	}
 }

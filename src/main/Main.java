@@ -185,7 +185,7 @@ public class Main
 		} else
 		{
 			gameEngine.setAi(ai);
-			gameEngine.run();
+			gameEngine.startRun();
 		}
 
 	}
