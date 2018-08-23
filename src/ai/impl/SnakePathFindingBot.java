@@ -2,6 +2,7 @@ package ai.impl;
 import snake.spielfeld.Node;
 import snake.spielfeld.Spielfeld;
 
+import javax.swing.plaf.basic.BasicInternalFrameTitlePane;
 import java.awt.*;
 import java.util.ArrayList;
 /**
@@ -31,16 +32,17 @@ public class SnakePathFindingBot extends AI
 	private int maxGreedSteps = 1;
 
 	private long defaultLoopTime = spielfeld.getGameEngine().getLoopTime();
-	private int loopTimeMod = 1;
+	private int loopTimeMod = 10;
 
 	@Override
 	public void zug()
 	{
 
 		boolean worked;
+		Node headNode = spielfeld.getNode(spielfeld.getHeadX(), spielfeld.getHeadY());
 		if (greedPath.size() == 0 || greedStep >= maxGreedSteps)
 		{
-			worked = aiUtils.pathfinding(spielfeld.getNode(spielfeld.getHeadX(), spielfeld.getHeadY()), spielfeld.getNode(spielfeld.getAppleX(), spielfeld.getAppleY()), false);
+			worked = aiUtils.pathfinding(headNode, spielfeld.getNode(spielfeld.getAppleX(), spielfeld.getAppleY()), false);
 			greedPath = aiUtils.getPath();
 			greedStep = 0;
 		} else
@@ -48,7 +50,6 @@ public class SnakePathFindingBot extends AI
 			worked = true;
 		}
 		Node newNode;
-		Node startingNode = spielfeld.getNode(spielfeld.getHeadX(), spielfeld.getHeadY());
 		if (worked && greedPath.size() > 0)
 		{
 			spielfeld.setSnakeBodyColor(Color.YELLOW);
@@ -90,7 +91,7 @@ public class SnakePathFindingBot extends AI
 		int tries = 0;
 		if (worked)
 		{
-			if (aiUtils.isATrapPathFinding(startingNode, choice))
+			if (aiUtils.isATrap(choice))
 			{
 				System.out.println("Greed would be deadly going somewhere else");
 				newNode = aiUtils.fill(spielfeld.getMoveDirection());
