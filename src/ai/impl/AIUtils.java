@@ -7,6 +7,7 @@ import java.security.acl.LastOwnerException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 /**
  * Project: SnakeAI
@@ -607,7 +608,7 @@ public class AIUtils
 					{
 						lastChoice = Choice.RIGHT;
 					}
-				} else
+				} else if (!isATrap(otherTurn))
 				{
 					choice = otherTurn;
 					if (otherTurn == left)
@@ -616,6 +617,40 @@ public class AIUtils
 					} else
 					{
 						lastChoice = Choice.RIGHT;
+					}
+				} else
+				{
+					int max = -1;
+					if (countEnclosedNodes(spielfeld.getNodeIn(forward, 1)) > max)
+					{
+						max = countEnclosedNodes(spielfeld.getNodeIn(forward, 1));
+						choice = forward;
+						lastChoice = Choice.FORWARD;
+					}
+					if (countEnclosedNodes(spielfeld.getNodeIn(prioTurn, 1)) > max)
+					{
+						max = countEnclosedNodes(spielfeld.getNodeIn(prioTurn, 1));
+						choice = prioTurn;
+						if (prioTurn == left)
+						{
+							lastChoice = Choice.LEFT;
+						} else
+						{
+							lastChoice = Choice.RIGHT;
+						}
+					}
+					if (countEnclosedNodes(spielfeld.getNodeIn(otherTurn, 1)) > max)
+					{
+						max = countEnclosedNodes(spielfeld.getNodeIn(otherTurn, 1));
+						choice = otherTurn;
+						if (otherTurn == left)
+						{
+							lastChoice = Choice.LEFT;
+						} else
+						{
+							lastChoice = Choice.RIGHT;
+						}
+
 					}
 				}
 			}
@@ -643,11 +678,32 @@ public class AIUtils
 				{
 					choice = forward;
 					lastChoice = Choice.FORWARD;
-				} else
+				} else if (!isATrap(right))
 				{
 					choice = right;
 					lastChoice = Choice.RIGHT;
 
+				} else
+				{
+					int max = -1;
+					if (countEnclosedNodes(spielfeld.getNodeIn(left, 1)) > max)
+					{
+						max = countEnclosedNodes(spielfeld.getNodeIn(left, 1));
+						choice = left;
+						lastChoice = Choice.LEFT;
+					}
+					if (countEnclosedNodes(spielfeld.getNodeIn(forward, 1)) > max)
+					{
+						max = countEnclosedNodes(spielfeld.getNodeIn(forward, 1));
+						choice = forward;
+						lastChoice = Choice.FORWARD;
+					}
+					if (countEnclosedNodes(spielfeld.getNodeIn(right, 1)) > max)
+					{
+						max = countEnclosedNodes(spielfeld.getNodeIn(right, 1));
+						choice = right;
+						lastChoice = Choice.RIGHT;
+					}
 				}
 			}
 			break;
@@ -675,11 +731,31 @@ public class AIUtils
 				{
 					choice = forward;
 					lastChoice = Choice.FORWARD;
-				} else
+				} else if (!isATrap(left))
 				{
 					choice = left;
 					lastChoice = Choice.LEFT;
-
+				} else
+				{
+					int max = -1;
+					if (countEnclosedNodes(spielfeld.getNodeIn(right, 1)) > max)
+					{
+						max = countEnclosedNodes(spielfeld.getNodeIn(right, 1));
+						choice = right;
+						lastChoice = Choice.RIGHT;
+					}
+					if (countEnclosedNodes(spielfeld.getNodeIn(forward, 1)) > max)
+					{
+						max = countEnclosedNodes(spielfeld.getNodeIn(forward, 1));
+						choice = forward;
+						lastChoice = Choice.FORWARD;
+					}
+					if (countEnclosedNodes(spielfeld.getNodeIn(left, 1)) > max)
+					{
+						max = countEnclosedNodes(spielfeld.getNodeIn(left, 1));
+						choice = left;
+						lastChoice = Choice.LEFT;
+					}
 				}
 			}
 			break;
@@ -864,6 +940,40 @@ public class AIUtils
 			}
 		});
 		return amount.get();
+	}
+
+	public int countEnclosedNodes(Node startingNode)
+	{
+		List<Node> nodes = new ArrayList<>();
+		List<Node> finalNodes = new ArrayList<>();
+		nodes.add(startingNode);
+		while (nodes.size() > 0)
+		{
+			Node currentNode = nodes.remove(0);
+			int[] northXY = spielfeld.getXYInFrom(Spielfeld.direction.NORTH, 1, currentNode.x, currentNode.y);
+			Spielfeld.state northState = (isValid(northXY[0]) && isValid(northXY[1])) ? spielfeld.getState(northXY[0], northXY[1]) : Spielfeld.state.WALL;
+			int[] eastXY = spielfeld.getXYInFrom(Spielfeld.direction.EAST, 1, currentNode.x, currentNode.y);
+			Spielfeld.state eastState = (isValid(eastXY[0]) && isValid(eastXY[1])) ? spielfeld.getState(eastXY[0], eastXY[1]) : Spielfeld.state.WALL;
+			int[] southXY = spielfeld.getXYInFrom(Spielfeld.direction.SOUTH, 1, currentNode.x, currentNode.y);
+			Spielfeld.state southState = (isValid(southXY[0]) && isValid(southXY[1])) ? spielfeld.getState(southXY[0], southXY[1]) : Spielfeld.state.WALL;
+			int[] westXY = spielfeld.getXYInFrom(Spielfeld.direction.WEST, 1, currentNode.x, currentNode.y);
+			Spielfeld.state westState = (isValid(westXY[0]) && isValid(westXY[1])) ? spielfeld.getState(westXY[0], westXY[1]) : Spielfeld.state.WALL;
+			HashMap<Node, Spielfeld.state> NodeStateHashMap = new HashMap<>();
+			NodeStateHashMap.put(spielfeld.getNode(northXY[0], northXY[1]), northState);
+			NodeStateHashMap.put(spielfeld.getNode(eastXY[0], eastXY[1]), eastState);
+			NodeStateHashMap.put(spielfeld.getNode(southXY[0], southXY[1]), southState);
+			NodeStateHashMap.put(spielfeld.getNode(westXY[0], westXY[1]), westState);
+
+			NodeStateHashMap.forEach((node, state) -> {
+				if (!spielfeld.isDeadly(state) && !finalNodes.contains(node) && !nodes.contains(node))
+				{
+					nodes.add(node);
+				}
+			});
+			finalNodes.add(currentNode);
+		}
+		return finalNodes.size();
+
 	}
 
 	public enum Choice
