@@ -632,15 +632,24 @@ public class AIUtils
 						System.out.println("Everything is a trap deciding on amount of turns");
 					}
 					int max = -1;
-					if (countEnclosedNodes(spielfeld.getNodeIn(forward, 1)) > max)
+					int forwardCount = countEnclosedNodes(spielfeld.getNodeIn(forward, 1));
+					int prioCount = countEnclosedNodes(spielfeld.getNodeIn(prioTurn, 1));
+					int otherCount = countEnclosedNodes(spielfeld.getNodeIn(otherTurn, 1));
+					if (Settings.debugOutput)
 					{
-						max = countEnclosedNodes(spielfeld.getNodeIn(forward, 1));
+						System.out.println("forward: " + forward + " " + forwardCount);
+						System.out.println("prio: " + prioTurn + " " + prioCount);
+						System.out.println("other: " + otherTurn + " " + otherCount);
+					}
+					if (forwardCount > max)
+					{
+						max = forwardCount;
 						choice = forward;
 						lastChoice = Choice.FORWARD;
 					}
-					if (countEnclosedNodes(spielfeld.getNodeIn(prioTurn, 1)) > max)
+					if (prioCount > max)
 					{
-						max = countEnclosedNodes(spielfeld.getNodeIn(prioTurn, 1));
+						max = prioCount;
 						choice = prioTurn;
 						if (prioTurn == left)
 						{
@@ -650,9 +659,9 @@ public class AIUtils
 							lastChoice = Choice.RIGHT;
 						}
 					}
-					if (countEnclosedNodes(spielfeld.getNodeIn(otherTurn, 1)) > max)
+					if (otherCount > max)
 					{
-						max = countEnclosedNodes(spielfeld.getNodeIn(otherTurn, 1));
+						max = otherCount;
 						choice = otherTurn;
 						if (otherTurn == left)
 						{
@@ -705,21 +714,31 @@ public class AIUtils
 						System.out.println("Everything is a trap deciding on amount of turns");
 					}
 					int max = -1;
-					if (countEnclosedNodes(spielfeld.getNodeIn(left, 1)) > max)
+					int leftCount = countEnclosedNodes(spielfeld.getNodeIn(left, 1));
+					int forwardCount = countEnclosedNodes(spielfeld.getNodeIn(forward, 1));
+					int rightCount = countEnclosedNodes(spielfeld.getNodeIn(right, 1));
+					if (Settings.debugOutput)
 					{
-						max = countEnclosedNodes(spielfeld.getNodeIn(left, 1));
+						System.out.println("left: " + prioTurn + " " + leftCount);
+						System.out.println("forward: " + forward + " " + forwardCount);
+						System.out.println("right: " + otherTurn + " " + rightCount);
+					}
+
+					if (leftCount > max)
+					{
+						max = leftCount;
 						choice = left;
 						lastChoice = Choice.LEFT;
 					}
-					if (countEnclosedNodes(spielfeld.getNodeIn(forward, 1)) > max)
+					if (forwardCount > max)
 					{
-						max = countEnclosedNodes(spielfeld.getNodeIn(forward, 1));
+						max = forwardCount;
 						choice = forward;
 						lastChoice = Choice.FORWARD;
 					}
-					if (countEnclosedNodes(spielfeld.getNodeIn(right, 1)) > max)
+					if (rightCount > max)
 					{
-						max = countEnclosedNodes(spielfeld.getNodeIn(right, 1));
+						max = rightCount;
 						choice = right;
 						lastChoice = Choice.RIGHT;
 					}
@@ -763,22 +782,31 @@ public class AIUtils
 					{
 						System.out.println("Everything is a trap deciding on amount of turns");
 					}
-					int max = -1;
-					if (countEnclosedNodes(spielfeld.getNodeIn(right, 1)) > max)
+					int leftCount = countEnclosedNodes(spielfeld.getNodeIn(prioTurn, 1));
+					int forwardCount = countEnclosedNodes(spielfeld.getNodeIn(forward, 1));
+					int rightCount = countEnclosedNodes(spielfeld.getNodeIn(otherTurn, 1));
+					if (Settings.debugOutput)
 					{
-						max = countEnclosedNodes(spielfeld.getNodeIn(right, 1));
+						System.out.println("left: " + prioTurn + " " + leftCount);
+						System.out.println("forward: " + forward + " " + forwardCount);
+						System.out.println("right: " + otherTurn + " " + rightCount);
+					}
+					int max = -1;
+					if (rightCount > max)
+					{
+						max = rightCount;
 						choice = right;
 						lastChoice = Choice.RIGHT;
 					}
-					if (countEnclosedNodes(spielfeld.getNodeIn(forward, 1)) > max)
+					if (forwardCount > max)
 					{
-						max = countEnclosedNodes(spielfeld.getNodeIn(forward, 1));
+						max = forwardCount;
 						choice = forward;
 						lastChoice = Choice.FORWARD;
 					}
-					if (countEnclosedNodes(spielfeld.getNodeIn(left, 1)) > max)
+					if (leftCount > max)
 					{
-						max = countEnclosedNodes(spielfeld.getNodeIn(left, 1));
+						max = leftCount;
 						choice = left;
 						lastChoice = Choice.LEFT;
 					}
@@ -805,7 +833,7 @@ public class AIUtils
 		{
 			return false;
 		}
-		return !isATrapPathFinding(moveDirection) && !isATrapRecursive(spielfeld.getNodeIn(moveDirection, 1), moveDirection);
+		return !isATrap(moveDirection);
 	}
 
 	public boolean isATrap(Spielfeld.direction moveDirection)
@@ -835,8 +863,12 @@ public class AIUtils
 		{
 			return true;
 		}
-		if (deadlySurroundAmount(movingToNode, moveDirection) == 2 && deadlySurroundAmount(headNode, spielfeld.getMoveDirection()) < 2)
+		if (deadlySurroundAmount(movingToNode, moveDirection) == 2)
 		{
+			if (deadlySurroundAmount(headNode, spielfeld.getMoveDirection()) == 2)
+			{
+				return true;
+			}
 			int[] northXY = spielfeld.getXYInFrom(Spielfeld.direction.NORTH, 1, movingToNode.x, movingToNode.y);
 			Spielfeld.state northState = (isValid(northXY[0]) && isValid(northXY[1])) ? spielfeld.getState(northXY[0], northXY[1]) : Spielfeld.state.WALL;
 			int[] eastXY = spielfeld.getXYInFrom(Spielfeld.direction.EAST, 1, movingToNode.x, movingToNode.y);
@@ -877,23 +909,25 @@ public class AIUtils
 			{
 				return true;
 			}
+			boolean pathFound = false;
 
 			if (!spielfeld.isDeadly(northState) && !isOpposite(moveDirection, Spielfeld.direction.NORTH) && Spielfeld.direction.NORTH != moveDirection)
 			{
-				return !pathfinding(startingNode, spielfeld.getNode(northXY[0], northXY[1]), false);
+				pathFound = pathFound || pathfinding(startingNode, spielfeld.getNode(northXY[0], northXY[1]), false);
 			}
 			if (!spielfeld.isDeadly(eastState) && !isOpposite(moveDirection, Spielfeld.direction.EAST) && Spielfeld.direction.EAST != moveDirection)
 			{
-				return !pathfinding(startingNode, spielfeld.getNode(eastXY[0], eastXY[1]), false);
+				pathFound = pathFound || pathfinding(startingNode, spielfeld.getNode(eastXY[0], eastXY[1]), false);
 			}
 			if (!spielfeld.isDeadly(southState) && !isOpposite(moveDirection, Spielfeld.direction.SOUTH) && Spielfeld.direction.SOUTH != moveDirection)
 			{
-				return !pathfinding(startingNode, spielfeld.getNode(southXY[0], southXY[1]), false);
+				pathFound = pathFound || pathfinding(startingNode, spielfeld.getNode(southXY[0], southXY[1]), false);
 			}
 			if (!spielfeld.isDeadly(westState) && !isOpposite(moveDirection, Spielfeld.direction.WEST) && Spielfeld.direction.WEST != moveDirection)
 			{
-				return !pathfinding(startingNode, spielfeld.getNode(westXY[0], westXY[1]), false);
+				pathFound = pathFound || pathfinding(startingNode, spielfeld.getNode(westXY[0], westXY[1]), false);
 			}
+			return !pathFound;
 		}
 
 		return false;
