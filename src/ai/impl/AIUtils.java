@@ -1,4 +1,5 @@
 package ai.impl;
+import main.Settings;
 import snake.spielfeld.Node;
 import snake.spielfeld.Spielfeld;
 
@@ -105,7 +106,10 @@ public class AIUtils
 	 */
 	public boolean pathfinding(Node start, Node end, boolean ignorePassable)
 	{
-		System.out.println("pathfinding");
+		if (Settings.debugOutput)
+		{
+			System.out.println("pathfinding");
+		}
 		spielfeld.resetGrid();
 		ArrayList<Node> openList = new ArrayList<>();
 		ArrayList<Node> closedList = new ArrayList<>();
@@ -593,7 +597,10 @@ public class AIUtils
 				}
 			} else
 			{
-				System.out.println("Didnt found save");
+				if (Settings.debugOutput)
+				{
+					System.out.println("Did not found save");
+				}
 				if (!isATrap(forward))
 				{
 					choice = forward;
@@ -620,6 +627,10 @@ public class AIUtils
 					}
 				} else
 				{
+					if (Settings.debugOutput)
+					{
+						System.out.println("Everything is a trap deciding on amount of turns");
+					}
 					int max = -1;
 					if (countEnclosedNodes(spielfeld.getNodeIn(forward, 1)) > max)
 					{
@@ -670,6 +681,10 @@ public class AIUtils
 				lastChoice = Choice.RIGHT;
 			} else
 			{
+				if (Settings.debugOutput)
+				{
+					System.out.println("Did not found save");
+				}
 				if (!isATrap(left))
 				{
 					choice = left;
@@ -685,6 +700,10 @@ public class AIUtils
 
 				} else
 				{
+					if (Settings.debugOutput)
+					{
+						System.out.println("Everything is a trap deciding on amount of turns");
+					}
 					int max = -1;
 					if (countEnclosedNodes(spielfeld.getNodeIn(left, 1)) > max)
 					{
@@ -722,7 +741,10 @@ public class AIUtils
 				lastChoice = Choice.LEFT;
 			} else
 			{
-				System.out.println("Didnt found save");
+				if (Settings.debugOutput)
+				{
+					System.out.println("Did not found save");
+				}
 				if (!isATrap(right))
 				{
 					choice = right;
@@ -737,6 +759,10 @@ public class AIUtils
 					lastChoice = Choice.LEFT;
 				} else
 				{
+					if (Settings.debugOutput)
+					{
+						System.out.println("Everything is a trap deciding on amount of turns");
+					}
 					int max = -1;
 					if (countEnclosedNodes(spielfeld.getNodeIn(right, 1)) > max)
 					{
@@ -944,6 +970,10 @@ public class AIUtils
 
 	public int countEnclosedNodes(Node startingNode)
 	{
+		if (spielfeld.isDeadly(spielfeld.getState(startingNode.x, startingNode.y)))
+		{
+			return 0;
+		}
 		List<Node> nodes = new ArrayList<>();
 		List<Node> finalNodes = new ArrayList<>();
 		nodes.add(startingNode);

@@ -1,4 +1,5 @@
 package snake.spielfeld;
+import main.Settings;
 import snake.engine.GameEngine;
 import utils.RandomUtils;
 
@@ -84,8 +85,6 @@ public class Spielfeld
 		this.lastFitness = lastFitness;
 	}
 
-	private boolean log = true;
-
 	private int headX;
 	private int headY;
 	private int tailX;
@@ -100,11 +99,6 @@ public class Spielfeld
 	private int emptyPlaces;
 
 	private direction moveDirection;
-
-	public void setLog(boolean log)
-	{
-		this.log = log;
-	}
 
 	public int getWidth()
 	{
@@ -509,7 +503,7 @@ public class Spielfeld
 			appleX = x;
 			appleY = y;
 			field[x][y] = state.APPLE;
-			if (log)
+			if (Settings.debugOutput)
 			{
 				System.out.println("Placed the apple after " + tries + " tries");
 			}

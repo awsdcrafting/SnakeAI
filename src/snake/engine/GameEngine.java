@@ -1,6 +1,7 @@
 package snake.engine;
 import ai.impl.AI;
 import ai.impl.SnakeFitnessFunction;
+import main.Settings;
 import org.neuroph.contrib.neat.gen.operations.FitnessFunction;
 import snake.gui.Gui;
 import snake.spielfeld.Spielfeld;
@@ -17,8 +18,6 @@ public class GameEngine
 	private boolean running = true;
 	private boolean paused;
 	private long loopTime = 50;
-
-	private boolean log = true;
 
 	private int turn;
 	private int score;
@@ -41,11 +40,6 @@ public class GameEngine
 	public int getScore()
 	{
 		return score;
-	}
-
-	public void setLog(boolean log)
-	{
-		this.log = log;
 	}
 
 	public void setSpielfeld(Spielfeld spielfeld)
@@ -85,7 +79,7 @@ public class GameEngine
 			long time = System.currentTimeMillis();
 			if (ai != null)
 			{
-				if (log)
+				if (Settings.debugOutput)
 				{
 					System.out.println("Ai turn: " + turn++);
 				} else
@@ -166,7 +160,7 @@ public class GameEngine
 					Thread.sleep(waitTime);
 				} else
 				{
-					if (log)
+					if (Settings.debugOutput)
 					{
 						System.out.println("We are " + (-waitTime) + "ms behind!");
 					}
@@ -186,11 +180,9 @@ public class GameEngine
 					System.out.println(spielfeld.getState(x, y) + "@x:" + x + " y:" + y);
 				}
 			}*/
-			if (log)
-			{
-				System.out.println("Snake survived " + turn + " turns and achieved a score of " + score + ".");
-				System.out.println("This equals a fitnes of: " + SnakeFitnessFunction.getFitness(turn, score) + ".");
-			}
+			System.out.println("Snake survived " + turn + " turns and achieved a score of " + score + ".");
+			System.out.println("This equals a fitnes of: " + SnakeFitnessFunction.getFitness(turn, score) + ".");
+
 		}
 	}
 

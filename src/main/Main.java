@@ -1,5 +1,7 @@
 package main;
 import ai.impl.*;
+import io.gitlab.scisneromam.utils.StringUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.neuroph.contrib.neat.gen.persistence.PersistenceException;
 import org.neuroph.core.NeuralNetwork;
 import snake.engine.GameEngine;
@@ -17,7 +19,6 @@ public class Main
 {
 
 	private static boolean bGui = true;
-	private static boolean bLog = true;
 	private static boolean runSaved = false;
 	private static AI ai = null;
 	private static String path = "Winner";
@@ -32,6 +33,9 @@ public class Main
 		double fitness = -1;
 		if (args.length > 0)
 		{
+			if(ArrayUtils.contains(args, "nogui")){
+				bGui = false;
+			}
 			if (args[0].equalsIgnoreCase("run"))
 			{
 				runSaved = true;
@@ -54,11 +58,10 @@ public class Main
 							population = Integer.parseInt(args[2]);
 							if (args.length > 3)
 							{
-								if (args[3].equalsIgnoreCase("speed") || args[3].equalsIgnoreCase("fast") || args[3].equalsIgnoreCase("speedevolve") || args[3]
-										.equalsIgnoreCase("fastevolve"))
+								if (args[3].equalsIgnoreCase("speed") || args[3].equalsIgnoreCase("fast") || args[3].equalsIgnoreCase("speedevolve") ||
+									args[3].equalsIgnoreCase("fastevolve"))
 								{
 									bGui = false;
-									bLog = false;
 									loopTime = 0;
 								} else
 								{
@@ -85,11 +88,10 @@ public class Main
 							population = Integer.parseInt(args[t++]);
 							if (args.length > 3)
 							{
-								if (args[3].equalsIgnoreCase("speed") || args[3].equalsIgnoreCase("fast") || args[3].equalsIgnoreCase("speedevolve") || args[3]
-										.equalsIgnoreCase("fastevolve"))
+								if (args[3].equalsIgnoreCase("speed") || args[3].equalsIgnoreCase("fast") || args[3].equalsIgnoreCase("speedevolve") ||
+									args[3].equalsIgnoreCase("fastevolve"))
 								{
 									bGui = false;
-									bLog = false;
 									loopTime = 0;
 								}
 							}
@@ -116,9 +118,6 @@ public class Main
 
 		gameEngine.setSpielfeld(spielfeld);
 		spielfeld.setGameEngine(gameEngine);
-		gameEngine.setLog(bLog);
-		evolutionMaster.setLog(bLog);
-		spielfeld.setLog(bLog);
 		evolutionMaster.setGameEngine(gameEngine);
 		evolutionMaster.setSpielfeld(spielfeld);
 		if (bGui)
@@ -188,6 +187,11 @@ public class Main
 			gameEngine.setAi(ai);
 			gameEngine.run();
 		}
+
+	}
+
+	private static void setUp()
+	{
 
 	}
 

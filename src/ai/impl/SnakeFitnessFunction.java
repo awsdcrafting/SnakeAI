@@ -1,4 +1,5 @@
 package ai.impl;
+import main.Settings;
 import org.neuroph.contrib.neat.gen.Organism;
 import org.neuroph.contrib.neat.gen.operations.fitness.AbstractFitnessFunction;
 import org.neuroph.core.NeuralNetwork;
@@ -14,22 +15,19 @@ public class SnakeFitnessFunction extends AbstractFitnessFunction
 	Spielfeld spielfeld;
 	GameEngine gameEngine;
 	Gui gui;
-	private boolean log = true;
 	private int snakeID = 0;
 
-	public SnakeFitnessFunction(Spielfeld spielfeld, GameEngine gameEngine, Gui gui, boolean log)
+	public SnakeFitnessFunction(Spielfeld spielfeld, GameEngine gameEngine, Gui gui)
 	{
 		this.spielfeld = spielfeld;
 		this.gameEngine = gameEngine;
 		this.gui = gui;
-		this.log = log;
 	}
 
 	@Override
 	protected double evaluate(Organism organism, NeuralNetwork neuralNetwork)
 	{
 		BaseAI baseAI = new BaseAI(spielfeld, neuralNetwork);
-		baseAI.setLog(log);
 		gameEngine.setAi(baseAI);
 		spielfeld.setNumber(organism.getInnovationId());
 		spielfeld.setUp(77, 77);
@@ -47,7 +45,7 @@ public class SnakeFitnessFunction extends AbstractFitnessFunction
 
 		double fitness = turns + appleValue;*/
 		double fitness = getFitness(gameEngine.getTurn(), gameEngine.getScore());
-		if (log)
+		if (Settings.debugOutput)
 		{
 			System.out.println(
 					"Snake " + (++snakeID) + " survived " + gameEngine.getTurn() + " turns and achieved a score of " + gameEngine.getScore() + " and has a fitness of: " + fitness);

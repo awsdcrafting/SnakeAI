@@ -1,4 +1,5 @@
 package ai.impl;
+import main.Settings;
 import snake.spielfeld.Node;
 import snake.spielfeld.Spielfeld;
 
@@ -32,7 +33,7 @@ public class SnakePathFindingBot extends AI
 	private int maxGreedSteps = 1;
 
 	private long defaultLoopTime = spielfeld.getGameEngine().getLoopTime();
-	private int loopTimeMod = 10;
+	private int loopTimeMod = 2;
 
 	@Override
 	public void zug()
@@ -67,7 +68,10 @@ public class SnakePathFindingBot extends AI
 
 		} else
 		{
-			System.out.println("Pathfinding didnt work - trying to fill now");
+			if (Settings.debugOutput)
+			{
+				System.out.println("Pathfinding didnt work - trying to fill now");
+			}
 			newNode = aiUtils.fill(spielfeld.getMoveDirection());
 			spielfeld.setSnakeBodyColor(Color.BLUE);
 			spielfeld.setSnakeHeadColor(Color.YELLOW);
@@ -93,7 +97,10 @@ public class SnakePathFindingBot extends AI
 		{
 			if (aiUtils.isATrap(choice))
 			{
-				System.out.println("Greed would be deadly going somewhere else");
+				if (Settings.debugOutput)
+				{
+					System.out.println("Greed would be deadly going somewhere else");
+				}
 				newNode = aiUtils.fill(spielfeld.getMoveDirection());
 				choice = aiUtils.determineChoice(newNode);
 			}
@@ -116,7 +123,10 @@ public class SnakePathFindingBot extends AI
 		}
 		if (!found)
 		{
-			System.out.println("error! trying to go backward");
+			if (Settings.debugOutput)
+			{
+				System.out.println("error! trying to go backward");
+			}
 		}
 
 		System.out.println("Choice: " + out + " - " + choice);

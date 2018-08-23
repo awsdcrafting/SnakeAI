@@ -72,6 +72,7 @@ public class GameMaster
 			n++;
 			long time = System.currentTimeMillis();
 			System.out.println("----------");
+
 			ai.reset();
 			ai.setName(ai.getBaseName() + "_Gen-" + gen + "_number-" + n);
 			ai.save();
@@ -116,6 +117,7 @@ public class GameMaster
 		for (int i = 0; i < 3; i++)
 		{
 			System.out.println("----------");
+
 		}
 
 		for (String s : outComes)
@@ -130,15 +132,14 @@ public class GameMaster
 	{
 		Collections.sort(aiArrayList);
 		ArrayList<AI> workingList = new ArrayList<>();
-		for(int i = 0;i<4;i++){
+		for (int i = 0; i < 4; i++)
+		{
 			workingList.add(aiArrayList.get(i));
 		}
 
 		ArrayList<AI> nextGen = new ArrayList<>();
 		nextGen.add(workingList.get(0));
 		nextGen.add(workingList.get(1));
-
-
 
 	}
 

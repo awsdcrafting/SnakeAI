@@ -1,4 +1,5 @@
 package ai.impl;
+import main.Settings;
 import org.neuroph.core.NeuralNetwork;
 import org.neuroph.util.NeuralNetworkFactory;
 import org.neuroph.util.TransferFunctionType;
@@ -13,12 +14,6 @@ public class BaseAI extends AI
 {
 
 	protected NeuralNetwork neuralNetwork;
-	protected boolean log = true;
-
-	public void setLog(boolean log)
-	{
-		this.log = log;
-	}
 
 	public void save()
 	{
@@ -79,7 +74,7 @@ public class BaseAI extends AI
 		int in1 = appleIns[0];
 		int in2 = appleIns[1];
 
-		if (log)
+		if (Settings.debugOutput)
 		{
 			System.out.println(in1 + " " + in2);
 		}
@@ -128,10 +123,11 @@ public class BaseAI extends AI
 			break;
 		}
 		out = out + " Going to: " + spielfeld.getMoveDirection();
-		if (log)
+		if (Settings.debugOutput)
 		{
 			System.out.println(out);
 		}
+
 	}
 
 	@Override

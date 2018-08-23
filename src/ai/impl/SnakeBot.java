@@ -1,4 +1,5 @@
 package ai.impl;
+import main.Settings;
 import snake.spielfeld.Spielfeld;
 import utils.MathUtils;
 import utils.RandomUtils;
@@ -313,8 +314,14 @@ public class SnakeBot extends AI
 				break;
 			}
 		}
-		System.out.println("left: " + leftMod + " forward: " + forwardMod + " right: " + rightMod);
-		System.out.println(willBeDeadEnd(left) + " " + leftAllowed + " " + willBeDeadEnd(forward) + " " + forwardAllowed + " " + willBeDeadEnd(right) + " " + rightAllowed);
+		if (Settings.debugOutput)
+		{
+			System.out.println("left: " + leftMod + " forward: " + forwardMod + " right: " + rightMod);
+		}
+		if (Settings.debugOutput)
+		{
+			System.out.println(willBeDeadEnd(left) + " " + leftAllowed + " " + willBeDeadEnd(forward) + " " + forwardAllowed + " " + willBeDeadEnd(right) + " " + rightAllowed);
+		}
 
 		Spielfeld.direction choice = decide(leftMod, forwardMod, rightMod, leftAllowed, forwardAllowed, rightAllowed, left, forward, right, appleXDir, appleYDir, in1, in2);
 
@@ -334,31 +341,55 @@ public class SnakeBot extends AI
 				out = "right";
 			}
 
-			System.out.println("Choice: " + out + " - " + choice);
+			if (Settings.debugOutput)
+			{
+				System.out.println("Choice: " + out + " - " + choice);
+			}
 			spielfeld.setMoveDirection(choice);
 			return;
 		}
 
-		System.out.println("well something went wrong?");
+		if (Settings.debugOutput)
+		{
+			if (Settings.debugOutput)
+			{
+				System.out.println("well something went wrong?");
+			}
+		}
 		if (leftAllowed)
 		{
-			System.out.println("Choice: left " + left);
+			if (Settings.debugOutput)
+			{
+				System.out.println("Choice: left " + left);
+			}
 			spielfeld.setMoveDirection(left);
 			return;
 		}
 		if (forwardAllowed)
 		{
-			System.out.println("Choice: forward " + forward);
+			if (Settings.debugOutput)
+			{
+				System.out.println("Choice: forward " + forward);
+			}
 			spielfeld.setMoveDirection(forward);
 			return;
 		}
 		if (rightAllowed)
 		{
-			System.out.println("Choice: right " + right);
+			if (Settings.debugOutput)
+			{
+				System.out.println("Choice: right " + right);
+			}
 			spielfeld.setMoveDirection(right);
 			return;
 		}
-		System.out.println("looool");
+		if (Settings.debugOutput)
+		{
+			if (Settings.debugOutput)
+			{
+				System.out.println("looool");
+			}
+		}
 
 		spielfeld.setMoveDirection(forward);
 
@@ -445,7 +476,13 @@ public class SnakeBot extends AI
 		}
 		if (doubled)
 		{
-			System.out.println("Doubled! deciding by apple");
+			if (Settings.debugOutput)
+			{
+				if (Settings.debugOutput)
+				{
+					System.out.println("Doubled! deciding by apple");
+				}
+			}
 			if (appleXDir == left && !leftAllowed)
 			{
 				appleXDir = null;

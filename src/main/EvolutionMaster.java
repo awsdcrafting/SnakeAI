@@ -30,8 +30,6 @@ public class EvolutionMaster
 	GameEngine gameEngine;
 	Gui gui;
 
-	private boolean log = true;
-
 	private long generations = 100;
 	private int population = 25;
 	private double fitness = -1;
@@ -56,11 +54,6 @@ public class EvolutionMaster
 		this.gui = gui;
 	}
 
-	public void setLog(boolean log)
-	{
-		this.log = log;
-	}
-
 	public void setGenerations(long generations)
 	{
 		this.generations = generations;
@@ -82,7 +75,7 @@ public class EvolutionMaster
 		String time = localDateTime.getDayOfMonth() + "_" + localDateTime.getMonthValue() + "_" + localDateTime.getYear() + "-" + localDateTime.getHour() + "_" + localDateTime
 				.getMinute() + "_" + localDateTime.getSecond();
 		SimpleNeatParameters simpleNeatParameters = new SimpleNeatParameters();
-		simpleNeatParameters.setFitnessFunction(new SnakeFitnessFunction(spielfeld, gameEngine, gui, log));
+		simpleNeatParameters.setFitnessFunction(new SnakeFitnessFunction(spielfeld, gameEngine, gui));
 		simpleNeatParameters.setPopulationSize(population);
 		if (fitness != -1)
 		{
