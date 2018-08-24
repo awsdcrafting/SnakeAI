@@ -20,6 +20,7 @@ public class Main
 
 	private static boolean bGui = true;
 	private static boolean runSaved = false;
+	private static boolean bGameMaster = true;
 	private static AI ai = null;
 	private static String path = "Winner";
 
@@ -27,7 +28,7 @@ public class Main
 	{
 		long time = System.currentTimeMillis();
 
-		long loopTime = 5;
+		long loopTime = 1;
 		long generations = 100;
 		int population = 25;
 		double fitness = -1;
@@ -121,6 +122,8 @@ public class Main
 		spielfeld.setGameEngine(gameEngine);
 		evolutionMaster.setGameEngine(gameEngine);
 		evolutionMaster.setSpielfeld(spielfeld);
+
+		GameMaster gameMaster = new GameMaster(spielfeld, gameEngine);
 		if (bGui)
 		{
 			try
@@ -157,7 +160,13 @@ public class Main
 				ai = new SnakeBot(spielfeld);
 			} else if (path.equalsIgnoreCase("snakepathfindingbot"))
 			{
-				ai = new SnakePathFindingBot(spielfeld);
+				//ai = new SnakePathFindingBot(spielfeld);
+				gameMaster.addAI(new SnakePathFindingBot(spielfeld));
+				gameMaster.addAI(new SnakePathFindingBot(spielfeld, 75, 5));
+				gameMaster.addAI(new SnakePathFindingBot(spielfeld, 25, 3));
+				gameMaster.addAI(new SnakePathFindingBot(spielfeld, 25, 1));
+				gameMaster.addAI(new SnakePathFindingBot(spielfeld, 1, 3));
+
 			} else if (path.equalsIgnoreCase("random"))
 			{
 				ai = new RandomAI(spielfeld, 1337777666);
@@ -188,8 +197,14 @@ public class Main
 			System.out.println("Did " + generations + " generations with a population of " + population + " in " + (System.currentTimeMillis() - time) + "ms.");
 		} else
 		{
-			gameEngine.setAi(ai);
-			gameEngine.startRun();
+			if (bGameMaster)
+			{
+				gameMaster.testAIs();
+			} else
+			{
+				gameEngine.setAi(ai);
+				gameEngine.startRun();
+			}
 		}
 
 	}
@@ -208,6 +223,5 @@ public class Main
 			gameMaster.addAI(new BaseAI2(spielfeld));
 		}
 	}
-
 
 }

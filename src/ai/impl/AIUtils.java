@@ -556,17 +556,40 @@ public class AIUtils
 
 			if (spielfeld.getHeadX() <= spielfeld.getWidth() / 2)
 			{
-				prioTurn = right;
-				otherTurn = left;
+				if (forward == Spielfeld.direction.NORTH)
+				{
+					prioTurn = right;
+					otherTurn = left;
+				}
+			} else
+			{
+				if (forward == Spielfeld.direction.SOUTH)
+				{
+					prioTurn = right;
+					otherTurn = left;
+				}
 			}
 
 		} else
 		{
+
 			if (spielfeld.getHeadY() <= spielfeld.getHeight() / 2)
 			{
-				prioTurn = right;
-				otherTurn = left;
+				if (forward == Spielfeld.direction.EAST)
+				{
+					prioTurn = right;
+					otherTurn = left;
+				}
+			} else
+			{
+
+				if (forward == Spielfeld.direction.WEST)
+				{
+					prioTurn = right;
+					otherTurn = left;
+				}
 			}
+
 		}
 
 		switch (lastChoice)

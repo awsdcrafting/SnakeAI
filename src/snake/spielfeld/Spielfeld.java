@@ -363,7 +363,6 @@ public class Spielfeld
 		field[2][4] = state.BODYNORTHWEST;
 		field[2][6] = state.BODYSOUTHEAST;
 		field[2][8] = state.BODYSOUTHWEST;*/
-
 	}
 
 	private void connectNodes()

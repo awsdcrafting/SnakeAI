@@ -52,7 +52,10 @@ public class SpielfeldGui extends JPanel
 		} else
 		{
 			g2d.drawString("Mode: " + spielfeld.getMode(), x, y * yMod++);
-			g2d.drawString("AI name: " + spielfeld.getGameEngine().getAi().getName(), x, y * yMod++);
+			if (spielfeld.getGameEngine().getAi() != null)
+			{
+				g2d.drawString("AI name: " + spielfeld.getGameEngine().getAi().getName(), x, y * yMod++);
+			}
 		}
 	}
 

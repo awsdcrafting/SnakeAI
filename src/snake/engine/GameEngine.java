@@ -95,6 +95,7 @@ public class GameEngine
 
 	public void startRun()
 	{
+		gui.repaint();
 		turn = -1;
 		score = 0;
 		turnSinceLastApple = 0;

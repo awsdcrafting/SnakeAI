@@ -55,4 +55,9 @@ public abstract class AI implements Comparable<AI>
 		return fitness - anotherAI.fitness;
 	}
 
+	@Override
+	public String toString()
+	{
+		return "AI{" + "name='" + name + '\'' + '}';
+	}
 }

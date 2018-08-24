@@ -16,7 +16,17 @@ public class SnakePathFindingBot extends AI
 
 	public SnakePathFindingBot(Spielfeld spielfeld)
 	{
+		this(spielfeld, 1, 1);
+		baseName = "SnakePathFindingBot";
+		name = baseName;
+		aiUtils = new AIUtils(spielfeld);
+	}
+
+	public SnakePathFindingBot(Spielfeld spielfeld, int maxGreedSteps, int minFillSteps)
+	{
 		super(spielfeld);
+		this.maxGreedSteps = maxGreedSteps;
+		this.minFillSteps = minFillSteps;
 		baseName = "SnakePathFindingBot";
 		name = baseName;
 		aiUtils = new AIUtils(spielfeld);
@@ -30,9 +40,9 @@ public class SnakePathFindingBot extends AI
 	ArrayList<Node> greedPath = new ArrayList<>();
 	ArrayList<Node> fillPath = new ArrayList<>();
 	private int greedStep = 0;
-	private int maxGreedSteps = 1;
+	private int maxGreedSteps = 75;
 	private int fillSteps = 0;
-	private int minFillStep = 1;
+	private int minFillSteps = 3;
 
 	private long defaultLoopTime = spielfeld.getGameEngine().getLoopTime();
 	private int loopTimeMod = 2;
@@ -89,7 +99,7 @@ public class SnakePathFindingBot extends AI
 			}
 			if (fillSteps == 0)
 			{
-				fillSteps = minFillStep;
+				fillSteps = minFillSteps;
 			}
 			fillSteps--;
 		}
@@ -154,5 +164,11 @@ public class SnakePathFindingBot extends AI
 	public void reset()
 	{
 
+	}
+
+	@Override
+	public String toString()
+	{
+		return "SnakePathFindingBot{" + "name='" + name + "\'," + "maxGreedSteps=" + maxGreedSteps + ", minFillSteps=" + minFillSteps + "}";
 	}
 }
