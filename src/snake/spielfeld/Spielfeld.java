@@ -505,7 +505,7 @@ public class Spielfeld
 			field[x][y] = state.APPLE;
 			if (Settings.debugOutput)
 			{
-				System.out.println("Placed the apple after " + tries + " tries");
+				gameEngine.log("Placed the apple after " + tries + " tries");
 			}
 		}
 	}

@@ -1,5 +1,6 @@
 package main;
 import ai.impl.AI;
+import io.gitlab.scisneromam.utils.TableRenderer;
 import org.neuroph.nnet.learning.BackPropagation;
 import snake.engine.GameEngine;
 import snake.gui.Gui;
@@ -7,21 +8,19 @@ import snake.spielfeld.Spielfeld;
 
 import javax.swing.*;
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.Collections;
+import java.util.*;
+import java.util.stream.Collectors;
 /**
  * Created by scisneromam on 17.02.2018.
  */
 public class GameMaster
 {
 
-	Spielfeld spielfeld;
-	GameEngine gameEngine;
-	Gui gui;
-	ArrayList<AI> aiArrayList;
-	ArrayList<String> outComes;
-
-	private int gen = 1;
+	private Spielfeld spielfeld;
+	private GameEngine gameEngine;
+	private Gui gui;
+	private ArrayList<AI> aiArrayList;
+	private ArrayList<String> outComes;
 
 	public GameMaster()
 	{
@@ -66,16 +65,12 @@ public class GameMaster
 
 	public void testAIs()
 	{
-		int n = 0;
+		List<String> outComeList = new ArrayList<>();
+
 		for (AI ai : aiArrayList)
 		{
-			n++;
 			long time = System.currentTimeMillis();
 			System.out.println("----------");
-
-			ai.reset();
-			ai.setName(ai.getBaseName() + "_Gen-" + gen + "_number-" + n);
-			ai.save();
 			try
 			{
 				SwingUtilities.invokeAndWait(new Runnable()
@@ -83,15 +78,13 @@ public class GameMaster
 					@Override
 					public void run()
 					{
+
 						gameEngine.setAi(ai);
 						spielfeld.setUp(77, 77);
 						gui.repaint();
 					}
 				});
-			} catch (InterruptedException e)
-			{
-				e.printStackTrace();
-			} catch (InvocationTargetException e)
+			} catch (InterruptedException | InvocationTargetException e)
 			{
 				e.printStackTrace();
 			}
@@ -101,7 +94,9 @@ public class GameMaster
 			System.out.println(ai.getName() + " took " + (System.currentTimeMillis() - time));
 
 			ai.setFitness(gameEngine.getTurn() + gameEngine.getScore() * 100);
-			outComes.add(ai.getName() + ": Turns: " + gameEngine.getTurn() + " Score: " + gameEngine.getScore() + " Fitness: " + ai.getFitness());
+			String outCome = ai.getName() + ": Turns: " + gameEngine.getTurn() + " Score: " + gameEngine.getScore() + " Fitness: " + ai.getFitness();
+			outComeList.add(outCome);
+			outComes.add(outCome);
 			System.out.println("----------");
 
 			try
@@ -124,22 +119,10 @@ public class GameMaster
 		{
 			System.out.println(s);
 		}
-		outComes.add("Gen: " + (gen++));
 
-	}
-
-	public void advanceGen()
-	{
-		Collections.sort(aiArrayList);
-		ArrayList<AI> workingList = new ArrayList<>();
-		for (int i = 0; i < 4; i++)
-		{
-			workingList.add(aiArrayList.get(i));
-		}
-
-		ArrayList<AI> nextGen = new ArrayList<>();
-		nextGen.add(workingList.get(0));
-		nextGen.add(workingList.get(1));
+		TableRenderer tableRenderer = new TableRenderer();
+		tableRenderer.setHeader(aiArrayList.stream().map(AI::getName).toArray());
+		tableRenderer.addRow(outComeList.toArray());
 
 	}
 

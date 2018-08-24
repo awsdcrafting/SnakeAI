@@ -76,7 +76,7 @@ public class BaseAI extends AI
 
 		if (Settings.debugOutput)
 		{
-			System.out.println(in1 + " " + in2);
+			spielfeld.getGameEngine().log(in1 + " " + in2);
 		}
 
 		int in3 = spielfeld.getDistance(Spielfeld.state.WALL, left);
@@ -125,7 +125,7 @@ public class BaseAI extends AI
 		out = out + " Going to: " + spielfeld.getMoveDirection();
 		if (Settings.debugOutput)
 		{
-			System.out.println(out);
+			spielfeld.getGameEngine().log(out);
 		}
 
 	}

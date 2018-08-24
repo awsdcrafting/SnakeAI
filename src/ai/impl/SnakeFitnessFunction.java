@@ -47,7 +47,7 @@ public class SnakeFitnessFunction extends AbstractFitnessFunction
 		double fitness = getFitness(gameEngine.getTurn(), gameEngine.getScore());
 		if (Settings.debugOutput)
 		{
-			System.out.println(
+			spielfeld.getGameEngine().log(
 					"Snake " + (++snakeID) + " survived " + gameEngine.getTurn() + " turns and achieved a score of " + gameEngine.getScore() + " and has a fitness of: " + fitness);
 		}
 		spielfeld.setLastFitness(fitness);

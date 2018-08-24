@@ -78,7 +78,7 @@ public class SnakePathFindingBot extends AI
 		{
 			if (Settings.debugOutput)
 			{
-				System.out.println("Pathfinding didnt work - trying to fill now");
+				spielfeld.getGameEngine().log("Pathfinding didnt work - trying to fill now");
 			}
 			newNode = aiUtils.fill(spielfeld.getMoveDirection());
 			spielfeld.setSnakeBodyColor(Color.BLUE);
@@ -112,10 +112,15 @@ public class SnakePathFindingBot extends AI
 			{
 				if (Settings.debugOutput)
 				{
-					System.out.println("Greed would be deadly going somewhere else");
+					spielfeld.getGameEngine().log("Greed would be deadly going somewhere else");
 				}
 				newNode = aiUtils.fill(spielfeld.getMoveDirection());
 				choice = aiUtils.determineChoice(newNode);
+				spielfeld.setSnakeBodyColor(Color.GREEN);
+				if (spielfeld.getGameEngine().getLoopTime() == defaultLoopTime)
+				{
+					spielfeld.getGameEngine().setLoopTime(defaultLoopTime * loopTimeMod);
+				}
 			}
 		}
 
@@ -138,11 +143,10 @@ public class SnakePathFindingBot extends AI
 		{
 			if (Settings.debugOutput)
 			{
-				System.out.println("error! trying to go backward");
+				spielfeld.getGameEngine().log("error! trying to go backward");
 			}
 		}
-
-		System.out.println("Choice: " + out + " - " + choice);
+		spielfeld.getGameEngine().log("Choice: " + out + " - " + choice);
 		spielfeld.setMoveDirection(choice);
 	}
 

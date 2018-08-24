@@ -1,8 +1,8 @@
 package snake.engine;
 import ai.impl.AI;
 import ai.impl.SnakeFitnessFunction;
+import main.Logger;
 import main.Settings;
-import org.neuroph.contrib.neat.gen.operations.FitnessFunction;
 import snake.gui.Gui;
 import snake.spielfeld.Spielfeld;
 /**
@@ -13,22 +13,26 @@ public class GameEngine
 	private Spielfeld spielfeld;
 	private Gui gui;
 	private AI ai;
+	private Logger logger;
 
 	private boolean snakeAlive = true;
 	private boolean running = true;
 	private long loopTime = 50;
 
-	private int turn;
+	private int turn = -1;
 	private int score;
 	private int turnSinceLastApple;
+	private int maxTurns = -1;
 
 	public GameEngine(long loopTime)
 	{
 		this.loopTime = loopTime;
+		logger = new Logger();
 	}
 
 	public GameEngine()
 	{
+		this(50);
 	}
 
 	public int getTurn()
@@ -38,6 +42,11 @@ public class GameEngine
 	public int getScore()
 	{
 		return score;
+	}
+
+	public void setMaxTurns(int maxTurns)
+	{
+		this.maxTurns = maxTurns;
 	}
 
 	public void setSpielfeld(Spielfeld spielfeld)
@@ -86,15 +95,23 @@ public class GameEngine
 
 	public void startRun()
 	{
-		turn = 1;
+		turn = -1;
 		score = 0;
 		turnSinceLastApple = 0;
 		snakeAlive = true;
+		if (ai != null)
+		{
+			logger.setSnakeName(ai.getName());
+		}
 		run();
 	}
 
 	public void run()
 	{
+		if (turn == -1)
+		{
+			turn = 1;
+		}
 		while (running && snakeAlive)
 		{
 			long time = System.currentTimeMillis();
@@ -102,10 +119,11 @@ public class GameEngine
 			{
 				if (Settings.debugOutput)
 				{
-					System.out.println("Ai turn: " + turn);
+					log("Ai turn: " + turn);
 				}
-				turn++;
 				ai.zug();
+				logger.setDirection(turn, spielfeld.getMoveDirection());
+				turn++;
 			}
 			//doing things
 			int headX = spielfeld.getHeadX();
@@ -145,6 +163,10 @@ public class GameEngine
 			{
 				snakeAlive = false;
 			}
+			if (maxTurns != -1 && turn >= maxTurns)
+			{
+				snakeAlive = false;
+			}
 			if (gui != null)
 			{
 				gui.repaint();
@@ -160,7 +182,7 @@ public class GameEngine
 				{
 					if (Settings.debugOutput)
 					{
-						System.out.println("We are " + (-waitTime) + "ms behind!");
+						log("We are " + (-waitTime) + "ms behind!");
 					}
 				}
 			} catch (InterruptedException e)
@@ -175,12 +197,25 @@ public class GameEngine
 			{
 				for (int y = 0; y < 77; y++)
 				{
-					System.out.println(spielfeld.getState(x, y) + "@x:" + x + " y:" + y);
+					log(spielfeld.getState(x, y) + "@x:" + x + " y:" + y);
 				}
 			}*/
-			System.out.println("Snake survived " + turn + " turns and achieved a score of " + score + ".");
-			System.out.println("This equals a fitness of: " + SnakeFitnessFunction.getFitness(turn, score) + ".");
+			log("Snake survived " + turn + " turns and achieved a score of " + score + ".");
+			log("This equals a fitness of: " + SnakeFitnessFunction.getFitness(turn, score) + ".");
 
+		}
+		String jsonString = logger.toJsonString();
+		System.out.print(jsonString);
+	}
+
+	public void log(String message)
+	{
+		if (snakeAlive)
+		{
+			logger.addOutput(turn, message);
+		} else
+		{
+			logger.addOutput(-2, message);
 		}
 	}
 

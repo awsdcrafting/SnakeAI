@@ -105,7 +105,7 @@ public class AIUtils
 	{
 		if (Settings.debugOutput)
 		{
-			System.out.println("pathfinding");
+			spielfeld.getGameEngine().log("pathfinding");
 		}
 		spielfeld.resetGrid();
 		ArrayList<Node> openList = new ArrayList<>();
@@ -549,7 +549,7 @@ public class AIUtils
 
 		Spielfeld.direction choice = null;
 
-		System.out.println("LastChoice: " + lastChoice);
+		spielfeld.getGameEngine().log("LastChoice: " + lastChoice);
 
 		if (spielfeld.getNodeIn(left, 1).x != spielfeld.getHeadX())
 		{
@@ -600,7 +600,7 @@ public class AIUtils
 			{
 				if (Settings.debugOutput)
 				{
-					System.out.println("Did not found save");
+					spielfeld.getGameEngine().log("Did not found save");
 				}
 				if (!isATrap(forward))
 				{
@@ -630,7 +630,7 @@ public class AIUtils
 				{
 					if (Settings.debugOutput)
 					{
-						System.out.println("Everything is a trap deciding on amount of turns");
+						spielfeld.getGameEngine().log("Everything is a trap deciding on amount of turns");
 					}
 					int max = -1;
 					int forwardCount = countEnclosedNodes(spielfeld.getNodeIn(forward, 1));
@@ -638,9 +638,9 @@ public class AIUtils
 					int otherCount = countEnclosedNodes(spielfeld.getNodeIn(otherTurn, 1));
 					if (Settings.debugOutput)
 					{
-						System.out.println("forward: " + forward + " " + forwardCount);
-						System.out.println("prio: " + prioTurn + " " + prioCount);
-						System.out.println("other: " + otherTurn + " " + otherCount);
+						spielfeld.getGameEngine().log("forward: " + forward + " " + forwardCount);
+						spielfeld.getGameEngine().log("prio: " + prioTurn + " " + prioCount);
+						spielfeld.getGameEngine().log("other: " + otherTurn + " " + otherCount);
 					}
 					if (forwardCount > max)
 					{
@@ -693,7 +693,7 @@ public class AIUtils
 			{
 				if (Settings.debugOutput)
 				{
-					System.out.println("Did not found save");
+					spielfeld.getGameEngine().log("Did not found save");
 				}
 				if (!isATrap(left))
 				{
@@ -712,7 +712,7 @@ public class AIUtils
 				{
 					if (Settings.debugOutput)
 					{
-						System.out.println("Everything is a trap deciding on amount of turns");
+						spielfeld.getGameEngine().log("Everything is a trap deciding on amount of turns");
 					}
 					int max = -1;
 					int leftCount = countEnclosedNodes(spielfeld.getNodeIn(left, 1));
@@ -720,9 +720,9 @@ public class AIUtils
 					int rightCount = countEnclosedNodes(spielfeld.getNodeIn(right, 1));
 					if (Settings.debugOutput)
 					{
-						System.out.println("left: " + left + " " + leftCount);
-						System.out.println("forward: " + forward + " " + forwardCount);
-						System.out.println("right: " + right + " " + rightCount);
+						spielfeld.getGameEngine().log("left: " + left + " " + leftCount);
+						spielfeld.getGameEngine().log("forward: " + forward + " " + forwardCount);
+						spielfeld.getGameEngine().log("right: " + right + " " + rightCount);
 					}
 
 					if (leftCount > max)
@@ -763,7 +763,7 @@ public class AIUtils
 			{
 				if (Settings.debugOutput)
 				{
-					System.out.println("Did not found save");
+					spielfeld.getGameEngine().log("Did not found save");
 				}
 				if (!isATrap(right))
 				{
@@ -781,16 +781,16 @@ public class AIUtils
 				{
 					if (Settings.debugOutput)
 					{
-						System.out.println("Everything is a trap deciding on amount of turns");
+						spielfeld.getGameEngine().log("Everything is a trap deciding on amount of turns");
 					}
 					int leftCount = countEnclosedNodes(spielfeld.getNodeIn(left, 1));
 					int forwardCount = countEnclosedNodes(spielfeld.getNodeIn(forward, 1));
 					int rightCount = countEnclosedNodes(spielfeld.getNodeIn(right, 1));
 					if (Settings.debugOutput)
 					{
-						System.out.println("left: " + left + " " + leftCount);
-						System.out.println("forward: " + forward + " " + forwardCount);
-						System.out.println("right: " + right + " " + rightCount);
+						spielfeld.getGameEngine().log("left: " + left + " " + leftCount);
+						spielfeld.getGameEngine().log("forward: " + forward + " " + forwardCount);
+						spielfeld.getGameEngine().log("right: " + right + " " + rightCount);
 					}
 					int max = -1;
 					if (rightCount > max)
@@ -931,10 +931,8 @@ public class AIUtils
 			}
 			nodes.add(movingToNode);
 
-			if (countEnclosedNodes(movingToNode, 250) < 250 && areInTheSameEnclosedArea(nodes))
-			{
-				return true;
-			}
+			int enclosedNodes = countEnclosedNodes(movingToNode, 250);
+			boolean inTheSameEnclosedArea = areInTheSameEnclosedArea(nodes);
 
 			boolean pathFound = false;
 
@@ -954,16 +952,25 @@ public class AIUtils
 			{
 				pathFound = pathFound || pathfinding(westNode, movingToNode, false);
 			}
+
 			if (Settings.debugOutput)
 			{
-				System.out.println("Headnode: " + headNode.toString());
-				System.out.println("NorthNode: " + String.valueOf(northNode));
-				System.out.println("EastNode: " + String.valueOf(eastNode));
-				System.out.println("SouthNode: " + String.valueOf(southNode));
-				System.out.println("WestNode: " + String.valueOf(westNode));
-				System.out.println("MovingToNode: " + movingToNode.toString());
-				System.out.println("PathFound: " + pathFound);
+				spielfeld.getGameEngine().log("HeadNode: " + headNode.toString());
+				spielfeld.getGameEngine().log("NorthNode: " + String.valueOf(northNode));
+				spielfeld.getGameEngine().log("EastNode: " + String.valueOf(eastNode));
+				spielfeld.getGameEngine().log("SouthNode: " + String.valueOf(southNode));
+				spielfeld.getGameEngine().log("WestNode: " + String.valueOf(westNode));
+				spielfeld.getGameEngine().log("MovingToNode: " + movingToNode.toString());
+				spielfeld.getGameEngine().log("Enclosed nodes: " + enclosedNodes);
+				spielfeld.getGameEngine().log("In the same area: " + inTheSameEnclosedArea);
+				spielfeld.getGameEngine().log("PathFound: " + pathFound);
 			}
+
+			if (enclosedNodes < 250 && inTheSameEnclosedArea)
+			{
+				return true;
+			}
+
 			return !pathFound;
 		}
 

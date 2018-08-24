@@ -33,7 +33,8 @@ public class Main
 		double fitness = -1;
 		if (args.length > 0)
 		{
-			if(ArrayUtils.contains(args, "nogui")){
+			if (ArrayUtils.contains(args, "nogui"))
+			{
 				bGui = false;
 			}
 			if (args[0].equalsIgnoreCase("run"))
@@ -111,7 +112,7 @@ public class Main
 		evolutionMaster.setFitness(fitness);
 
 		long seed = RandomUtils.randomLong();
-		System.out.println(seed);
+		gameEngine.log("Seed: " + String.valueOf(seed));
 		Spielfeld spielfeld = new Spielfeld(75, 75, seed);
 		spielfeld.setPopulation(population);
 		spielfeld.setSeed(seed);
@@ -157,6 +158,9 @@ public class Main
 			} else if (path.equalsIgnoreCase("snakepathfindingbot"))
 			{
 				ai = new SnakePathFindingBot(spielfeld);
+			} else if (path.equalsIgnoreCase("random"))
+			{
+				ai = new RandomAI(spielfeld, 1337777666);
 			} else
 			{
 				ai = new BaseAI(spielfeld, NeuralNetwork.load(path));
@@ -203,7 +207,7 @@ public class Main
 			gameMaster.addAI(new BaseAI(spielfeld));
 			gameMaster.addAI(new BaseAI2(spielfeld));
 		}
-
 	}
+
 
 }

@@ -8,6 +8,7 @@ public class RandomAI extends AI
 {
 	private int failSaves = 777;
 	private int maxFailSaves = 777;
+	private boolean infiniteFailSaves;
 
 	public void reset()
 	{
@@ -34,28 +35,32 @@ public class RandomAI extends AI
 		boolean accepted = false;
 		while (!accepted)
 		{
+			if (infiniteFailSaves)
+			{
+				failSaves = maxFailSaves;
+			}
 			switch (RandomUtils.randomInt(4))
 			{
 			case 0:
-				System.out.println("Going " + Spielfeld.direction.NORTH);
+				spielfeld.getGameEngine().log("Going " + Spielfeld.direction.NORTH);
 				dir = Spielfeld.direction.NORTH;
 				break;
 			case 1:
-				System.out.println("Going " + Spielfeld.direction.EAST);
+				spielfeld.getGameEngine().log("Going " + Spielfeld.direction.EAST);
 				dir = Spielfeld.direction.EAST;
 				break;
 			case 2:
-				System.out.println("Going " + Spielfeld.direction.SOUTH);
+				spielfeld.getGameEngine().log("Going " + Spielfeld.direction.SOUTH);
 				dir = Spielfeld.direction.SOUTH;
 				break;
 			case 3:
-				System.out.println("Going " + Spielfeld.direction.WEST);
+				spielfeld.getGameEngine().log("Going " + Spielfeld.direction.WEST);
 				dir = Spielfeld.direction.WEST;
 				break;
 			}
 			if (!spielfeld.validMoveDirection(dir))
 			{
-				System.out.println(dir + " is not a valid direction retrying!");
+				spielfeld.getGameEngine().log(dir + " is not a valid direction retrying!");
 				continue;
 			}
 			//failsave
@@ -80,10 +85,10 @@ public class RandomAI extends AI
 			{
 				if (failSaves > 0)
 				{
-					System.out.println("Would crash into " + spielfeld.getState(headX, headY) + " using 1 of " + failSaves-- + " failsaves to avoid death retrying now");
+					spielfeld.getGameEngine().log("Would crash into " + spielfeld.getState(headX, headY) + " using 1 of " + failSaves-- + " failsaves to avoid death retrying now");
 				} else
 				{
-					System.out.println("Will crash into " + spielfeld.getState(headX, headY) + " no failsave left to avoid death :(");
+					spielfeld.getGameEngine().log("Will crash into " + spielfeld.getState(headX, headY) + " no failsave left to avoid death :(");
 					accepted = true;
 				}
 			} else

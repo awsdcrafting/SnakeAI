@@ -10,11 +10,14 @@ import java.util.Random;
  */
 public class SnakeBot extends AI
 {
+
+	private AIUtils aiUtils;
 	public SnakeBot(Spielfeld spielfeld)
 	{
 		super(spielfeld);
 		name = "SnakeBot";
 		baseName = "SnakeBot";
+		aiUtils = new AIUtils(spielfeld);
 	}
 
 	@Override
@@ -316,11 +319,12 @@ public class SnakeBot extends AI
 		}
 		if (Settings.debugOutput)
 		{
-			System.out.println("left: " + leftMod + " forward: " + forwardMod + " right: " + rightMod);
+			spielfeld.getGameEngine().log("left: " + leftMod + " forward: " + forwardMod + " right: " + rightMod);
 		}
 		if (Settings.debugOutput)
 		{
-			System.out.println(willBeDeadEnd(left) + " " + leftAllowed + " " + willBeDeadEnd(forward) + " " + forwardAllowed + " " + willBeDeadEnd(right) + " " + rightAllowed);
+			spielfeld.getGameEngine()
+					.log(willBeDeadEnd(left) + " " + leftAllowed + " " + willBeDeadEnd(forward) + " " + forwardAllowed + " " + willBeDeadEnd(right) + " " + rightAllowed);
 		}
 
 		Spielfeld.direction choice = decide(leftMod, forwardMod, rightMod, leftAllowed, forwardAllowed, rightAllowed, left, forward, right, appleXDir, appleYDir, in1, in2);
@@ -343,7 +347,7 @@ public class SnakeBot extends AI
 
 			if (Settings.debugOutput)
 			{
-				System.out.println("Choice: " + out + " - " + choice);
+				spielfeld.getGameEngine().log("Choice: " + out + " - " + choice);
 			}
 			spielfeld.setMoveDirection(choice);
 			return;
@@ -353,32 +357,59 @@ public class SnakeBot extends AI
 		{
 			if (Settings.debugOutput)
 			{
-				System.out.println("well something went wrong?");
+				spielfeld.getGameEngine().log("well something went wrong?");
 			}
+		}
+		if (aiUtils.isSave(left))
+		{
+			if (Settings.debugOutput)
+			{
+				spielfeld.getGameEngine().log("Choice: left " + left);
+			}
+			spielfeld.setMoveDirection(left);
+			return;
+		}
+		if (aiUtils.isSave(forward))
+		{
+			if (Settings.debugOutput)
+			{
+				spielfeld.getGameEngine().log("Choice: forward " + forward);
+			}
+			spielfeld.setMoveDirection(forward);
+			return;
+		}
+		if (aiUtils.isSave(right))
+		{
+			if (Settings.debugOutput)
+			{
+				spielfeld.getGameEngine().log("Choice: right " + right);
+			}
+			spielfeld.setMoveDirection(right);
+			return;
 		}
 		if (leftAllowed)
 		{
 			if (Settings.debugOutput)
 			{
-				System.out.println("Choice: left " + left);
+				spielfeld.getGameEngine().log("Choice: left " + left);
 			}
 			spielfeld.setMoveDirection(left);
 			return;
 		}
-		if (forwardAllowed)
+		if (forwardAllowed )
 		{
 			if (Settings.debugOutput)
 			{
-				System.out.println("Choice: forward " + forward);
+				spielfeld.getGameEngine().log("Choice: forward " + forward);
 			}
 			spielfeld.setMoveDirection(forward);
 			return;
 		}
-		if (rightAllowed)
+		if (rightAllowed )
 		{
 			if (Settings.debugOutput)
 			{
-				System.out.println("Choice: right " + right);
+				spielfeld.getGameEngine().log("Choice: right " + right);
 			}
 			spielfeld.setMoveDirection(right);
 			return;
@@ -387,7 +418,7 @@ public class SnakeBot extends AI
 		{
 			if (Settings.debugOutput)
 			{
-				System.out.println("looool");
+				spielfeld.getGameEngine().log("looool");
 			}
 		}
 
@@ -480,7 +511,7 @@ public class SnakeBot extends AI
 			{
 				if (Settings.debugOutput)
 				{
-					System.out.println("Doubled! deciding by apple");
+					spielfeld.getGameEngine().log("Doubled! deciding by apple");
 				}
 			}
 			if (appleXDir == left && !leftAllowed)
